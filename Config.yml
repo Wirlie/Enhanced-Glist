@@ -1,0 +1,108 @@
+command:
+  global-list:
+    # Label for the List Command, for example, if you set "glist" you should use /glist
+    # to display the enhanced Bungee List.
+    label: "glist"
+    # Required permission to use this command, remove this configuration if you want that
+    # everyone can use the List Command.
+    permission: "bungeecord.command.list"
+    # Aliases of the List Command, for example, if you set "blist" and "bls" as aliases of
+    # the List Command then you can use /blist and /bls to display the enhanced Bungee List.
+    aliases:
+    - "blist"
+    - "bls"
+formats:
+  global-list:
+    # Available Formats:
+    # {SERVER_NAME} = Replaced by the server name configured in the Config.yml of your BungeeCord Server.
+    # {PLAYER_AMOUNT} = Amount of players connected to the server.
+    # {GRAPHIC_BAR} = A graphic bar that display the amount of players in a enhanced bar.
+    # {PERCENT} = Percent calculated: ((Server Player Amount * 100) / Total Network Player Amount)
+    server-row-format: " &b{SERVER_NAME} &6{PLAYER_AMOUNT} &8{GRAPHIC_BAR} &8[&6{PERCENT}&8]"
+    # Background color for the {GRAPHIC_BAR} format.
+    graphic-background-color: "&8&l"
+    # Bar color for the {GRAPHIC_BAR} format.
+    graphic-bar-color: "&7&l"
+    # Available Formats:
+    # {SERVERS_ROWS} = Display rows that contains all servers on the Network. A row is formatted with the
+    #                   'server-row-format' format configured previously.
+    # {NOT_DISPLAYED_AMOUNT} = Amount of not displayed servers in the List.
+    # {LABEL} = Label or alias used to display the Enhanced List.
+    # {TOTAL_PLAYER_AMOUNT} = Amount of total players in the Network.
+    full-message-format:
+    - "&8&m&l----------------------------------&r"
+    - " &eList of all servers on the Network:"
+    - ""
+    - "{SERVERS_ROWS}"
+    - ""
+    - " &7&oAnd &f&o{NOT_DISPLAYED_AMOUNT} &7&oservers not displayed.&r"
+    - " &6Total Players: &f{TOTAL_PLAYER_AMOUNT}"
+    - ""
+    - " &fTIP: &7Use &e/{LABEL} <server> &7to display a list of all players in the specified server."
+    - "&8&m&l----------------------------------"
+    # Message when no rows are available to display in the {SERVERS_ROW} format (configured previously).
+    no-servers-format: " &cNo servers to display."
+  server-list:
+    # Message displayed when the executor uses the command /glist <server>
+    # Available Formats:
+    # {SERVER_NAME} = The name of the server.
+    # {PLAYERS_COUNT} = The number of players that are in the server.
+    # {PAGE} = Current page.
+    # {TOTAL_PAGES} = Total number of pages.
+    # {PLAYERS_ROWS} = Rows that displays the players names that are in the server.
+    # {PAGINATION_CONTROLLER} = Pagination controller (for previous and next page).
+    full-message-format:
+    - "&8&m--------------------------------------&r"
+    - " &6Server Name: &f{SERVER_NAME}"
+    - " &6Players: &f{PLAYERS_COUNT}"
+    - " &eDisplaying page &f{PAGE} &6of &f{TOTAL_PAGES}"
+    - ""
+    - "{PLAYERS_ROWS}"
+    - "{PAGINATION_CONTROLLER}"
+    - "&8&m--------------------------------------"
+    # Message displayed when the executor tries to retrieve a page that are out of the index bounds.
+    # Available Formats:
+    # {TOTAL_PAGES} = Total number of pages.
+    no-page-data-message:
+    - "&8&m--------------------------------------&r"
+    - " &cNo data to show in this page! Please try with a another page between &f1 &cand &f{TOTAL_PAGES}&c."
+    - "&8&m--------------------------------------"
+    # Message displayed when the executor tries to list a server that not have players.
+    no-players-message:
+    - "&8&m--------------------------------------&r"
+    - " &cThis server not have players at this moment."
+    - "&8&m--------------------------------------"
+behaviour:
+  global-list:
+    # Hide servers that not have players in the Enhanced List.
+    hide-empty-servers: true
+    # Max amount of server rows that should be displayed in the Enhanced List, set this as
+    # -1 to disable this behaviour (not recommended, long messages will not be displayed if exceeds the
+    # maximum allowed size).
+    max-servers-rows: 20
+    # The minimum amount of players required on a server to be displayed in the Enhanced List.
+    # For example, if you set '3', and you have these servers:
+    # - Lobby (1 player)
+    # - Survival (6 players)
+    # - Login (3 players)
+    # - TNTRun (2 players)
+    # Survival and Login will be displayed because these servers have 3 or more players.
+    # ** Set this as 0 to disable this behaviour.
+    min-player-count-to-display-server: 3
+  server-list:
+    # Amount of players displayed per page. (/glist <server>)
+    players-per-page: 16
+  # A list of servers names that you want to ignore/hide.
+  blacklisted-servers:
+  - "Login"
+  global-list-uppercase-server-names: false
+  server-list-uppercase-server-name: false
+messages:
+  server-players: "{SERVER_NAME} players:"
+  cannot-found-server: "&cThe specified server name {NAME} &ccannot be found in the Network."
+  previous-page-hover-message: "&eClick here to go to the page &f#{PAGE_NUMBER}"
+  next-page-hover-message: "&eClick here to go to the page &f#{PAGE_NUMBER}"
+  previous-page: "Previous Page"
+  next-page: "Next Page"
+  no-previous-page: "&cNo previous page available."
+  no-next-page: "&cNo next page available."

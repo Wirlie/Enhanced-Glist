@@ -1,0 +1,59 @@
+staff-group:
+  # REQUIRED PERMISSION TO CONSIDER A USER AS STAFF MEMBER.
+  permission: "ebl.groups.staff"
+groups:
+  # GROUP ID
+- id: "owner"
+  # GROUP WEIGHT. (HIGH WEIGHT = HIGH PRIORITY)
+  weight: 6
+  # GROUP PREFIX TO SHOW IN THE /GLIST
+  prefix: "&4&lOWN"
+  # REQUIRED PERMISSION TO DISPLAY THIS PREFIX
+  prefix-permission: "ebl.groups.owner"
+  # SET THIS SETTING TO TRUE IF USERS SHOULD VIEW THIS PREFIX IN /GLIST
+  # IF YOU SET THIS SETTING TO FALSE ONLY STAFF MEMBERS CAN VIEW THE PREFIX.
+  prefix-visible-to-users: true
+  # PLAYER NAME COLOR IN /GLIST
+  name-color: "&f"
+- id: "admin"
+  weight: 5
+  prefix: "&c&lADM"
+  prefix-permission: "ebl.groups.admin"
+  prefix-visible-to-users: true
+  name-color: "&f"
+- id: "mod"
+  weight: 4
+  prefix: "&9&lMOD"
+  prefix-permission: "ebl.groups.mod"
+  prefix-visible-to-users: true
+  name-color: "&f"
+- id: "helper"
+  weight: 3
+  prefix: "&6&lHLP"
+  prefix-permission: "ebl.groups.helper"
+  prefix-visible-to-users: true
+  name-color: "&f"
+- id: "builder"
+  weight: 2
+  prefix: "&2&lBLD"
+  prefix-permission: "ebl.groups.builder"
+  prefix-visible-to-users: true
+  name-color: "&f"
+- id: "developer"
+  weight: 1
+  prefix: "&2&lDEV"
+  prefix-permission: "ebl.groups.developer"
+  prefix-visible-to-users: true
+  name-color: "&f"
+- id: "user"
+  weight: 0
+# UNCOMMENT THIS LINE TO DEFINE A PREFIX FOR USERS.
+# prefix: "&7&lUSER"
+#############
+# IF DEFAULT GROUP IS TRUE, THIS SETTING IS IGNORED.
+# prefix-permission: "ebl.groups.user"
+#############
+# IF DEFAULT GROUP IS TRUE, THIS SETTING IS IGNORED.
+# prefix-visible-to-users: true
+  name-color: "&7"
+  default-group: true
