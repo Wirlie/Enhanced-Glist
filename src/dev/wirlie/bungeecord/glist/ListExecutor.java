@@ -9,12 +9,14 @@ import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.TabExecutor;
 
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ListExecutor extends Command {
+public class ListExecutor extends Command implements TabExecutor {
+
 	private String globalListFullFormat = DefaultValues.getDefaultString("formats.global-list.full-message-format");
 	private String globalListServerRowFormat = DefaultValues.getDefaultString("formats.global-list.server-row-format");
 	private String globalListNoServersFormat = DefaultValues.getDefaultString("formats.global-list.no-servers-format");
@@ -455,6 +457,22 @@ public class ListExecutor extends Command {
 				}
 			}
 		}
-
 	}
+
+	@Override
+	public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
+
+		if(args.length == 1) {
+			List<String> suggestions = BungeeCord.getInstance().getServers().values().stream().filter(s -> s.getName().toLowerCase().contains(args[0].toLowerCase())).map(ServerInfo::getName).collect(Collectors.toList());
+			if(args[0].isEmpty() || args[0].startsWith("-")) {
+				suggestions.add("-g");
+				suggestions.add("-sp");
+				suggestions.add("-a");
+			}
+			return suggestions;
+		}
+
+		return Collections.emptyList();
+	}
+
 }
