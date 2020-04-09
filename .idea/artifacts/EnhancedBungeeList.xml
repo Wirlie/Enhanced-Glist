@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="EnhancedBungeeList">
+    <output-path>$PROJECT_DIR$/../CompiledJars</output-path>
+    <root id="archive" name="EnhancedBungeeList.jar">
+      <element id="module-output" name="EnhancedBungeeList" />
+    </root>
+  </artifact>
+</component>
