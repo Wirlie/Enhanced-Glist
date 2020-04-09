@@ -344,33 +344,84 @@ public class ListExecutor extends Command {
 
 						ComponentBuilder cb = null;
 						if (page > 1 && page < temporalPaginator.getTotalPages()) {
+							cb = new ComponentBuilder("");
+
 							if (isPlayerExecutor) {
-								cb = new ComponentBuilder("");
-								cb.append("<<").color(ChatColor.WHITE).event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1))).event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesPreviousPageHover.replace("{PAGE_NUMBER}", String.valueOf(page - 1)) ))).append(" ").append(messagesPreviousPage).append(" ").color(ChatColor.GOLD).append("|", FormatRetention.NONE).color(ChatColor.DARK_GRAY).append(" ").append(messagesNextPage).append(" ").color(ChatColor.GOLD).event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1))).event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNextPageHover.replace("{PAGE_NUMBER}", String.valueOf(page + 1))))).append(">>").color(ChatColor.WHITE);
+								cb.append("<<")
+										.color(ChatColor.WHITE)
+										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1)))
+										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesPreviousPageHover.replace("{PAGE_NUMBER}", String.valueOf(page - 1)) )))
+									.append(" " + messagesPreviousPage + " ")
+										.color(ChatColor.GOLD)
+									.append("|", FormatRetention.NONE)
+										.color(ChatColor.DARK_GRAY)
+									.append(" " + messagesNextPage + " ")
+										.color(ChatColor.GOLD)
+										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1)))
+										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNextPageHover.replace("{PAGE_NUMBER}", String.valueOf(page + 1)))))
+									.append(">>").color(ChatColor.WHITE);
 							} else {
-								cb = new ComponentBuilder("");
 								cb.append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1)).color(ChatColor.WHITE).append(" to go to the previous page.\n").color(ChatColor.GOLD).append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1)).color(ChatColor.WHITE).append(" to go to the next page.").color(ChatColor.GOLD);
 							}
 						} else if (page <= 1) {
 							if (page + 1 <= temporalPaginator.getTotalPages()) {
+								cb = new ComponentBuilder("");
 								if (isPlayerExecutor) {
-									cb = new ComponentBuilder("");
-									cb.append("<<").color(ChatColor.DARK_RED).event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNoPreviousPage))).append(" ").append(messagesPreviousPage).append(" ").color(ChatColor.RED).append("|", FormatRetention.NONE).color(ChatColor.DARK_GRAY).append(" ").append(messagesNextPage).append(" ").color(ChatColor.GOLD).event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1))).event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNextPageHover.replace("{PAGE_NUMBER}", String.valueOf(page + 1))))).append(">>").color(ChatColor.WHITE);
+									cb.append("<<")
+											.color(ChatColor.DARK_RED)
+											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNoPreviousPage)))
+										.append(" " + messagesPreviousPage + " ")
+											.color(ChatColor.RED)
+										.append("|", FormatRetention.NONE)
+											.color(ChatColor.DARK_GRAY)
+										.append(" " + messagesNextPage + " ")
+											.color(ChatColor.GOLD)
+											.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1)))
+											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNextPageHover.replace("{PAGE_NUMBER}", String.valueOf(page + 1)))))
+										.append(">>").color(ChatColor.WHITE);
 								} else {
-									cb = new ComponentBuilder("");
-									cb.append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1)).color(ChatColor.WHITE).append(" to go to the next page.").color(ChatColor.GOLD);
+									cb.append("Use ").color(ChatColor.GOLD)
+										.append("/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1))
+											.color(ChatColor.WHITE)
+										.append(" to go to the next page.")
+											.color(ChatColor.GOLD);
 								}
 							} else if (isPlayerExecutor) {
-								cb = new ComponentBuilder("");
-								cb.append("<<").color(ChatColor.DARK_RED).event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNoPreviousPage))).append(" ").append(messagesPreviousPage).append(" ").color(ChatColor.RED).append("|", FormatRetention.NONE).color(ChatColor.DARK_GRAY).append(" ").append(messagesNextPage).append(" ").color(ChatColor.RED).event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNoNextPage))).append(">>").color(ChatColor.DARK_RED);
+								cb = new ComponentBuilder("<<")
+											.color(ChatColor.DARK_RED)
+											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNoPreviousPage)))
+										.append(" " + messagesPreviousPage + " ")
+											.color(ChatColor.RED)
+										.append("|", FormatRetention.NONE)
+											.color(ChatColor.DARK_GRAY)
+										.append(" " + messagesNextPage + " ")
+											.color(ChatColor.RED)
+											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNoNextPage)))
+										.append(">>")
+											.color(ChatColor.DARK_RED);
 							}
 						} else if (page >= temporalPaginator.getTotalPages()) {
 							if (isPlayerExecutor) {
-								cb = new ComponentBuilder("");
-								cb.append("<<").color(ChatColor.WHITE).event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1))).event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesPreviousPageHover.replace("{PAGE_NUMBER}", String.valueOf(page - 1))))).append(" ").append(messagesPreviousPage).append(" ").color(ChatColor.GOLD).append("|", FormatRetention.NONE).color(ChatColor.DARK_GRAY).append(" ").append(messagesNextPage).append(" ").color(ChatColor.RED).event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNoNextPage))).append(">>").color(ChatColor.DARK_RED);
+								cb = new ComponentBuilder("<<")
+											.color(ChatColor.WHITE)
+											.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1)))
+											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesPreviousPageHover.replace("{PAGE_NUMBER}", String.valueOf(page - 1)))))
+										.append(" " + messagesPreviousPage + " ")
+											.color(ChatColor.GOLD)
+										.append("|", FormatRetention.NONE)
+											.color(ChatColor.DARK_GRAY)
+										.append(" " + messagesNextPage + " ")
+											.color(ChatColor.RED)
+											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(messagesNoNextPage)))
+										.append(">>")
+											.color(ChatColor.DARK_RED);
 							} else {
-								cb = new ComponentBuilder("");
-								cb.append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1)).color(ChatColor.WHITE).append(" to go to the previous page.").color(ChatColor.GOLD);
+								cb = new ComponentBuilder("Use ")
+											.color(ChatColor.GOLD)
+										.append("/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1))
+											.color(ChatColor.WHITE)
+										.append(" to go to the previous page.")
+											.color(ChatColor.GOLD);
 							}
 						}
 
