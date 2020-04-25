@@ -32,7 +32,7 @@ public class EnhancedBCL extends Plugin {
 		yamlProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
 
 		logger.info("Enabling plugin ...");
-		configFile = new File(this.getDataFolder() + File.separator + "Config.yml");
+		configFile = new File(this.getDataFolder() + File.separator + "Config.json");
 
 		getLogger().info("Validating Config.yml ...");
 		ConfigurationValidator.validate(this);
