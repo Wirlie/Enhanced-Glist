@@ -48,10 +48,6 @@ public class EnhancedBCL extends Plugin {
 		return groupManager;
 	}
 
-	public void unloadConfig() {
-		config = null;
-	}
-
 	public Configuration getConfig() {
 		if (config == null) {
 			loadConfig();
@@ -85,19 +81,8 @@ public class EnhancedBCL extends Plugin {
 				getLogger().warning("Cannot make parent dir: " + configFile.getParentFile().getAbsolutePath());
 			}
 
-			try {
-				InputStream in = getResourceAsStream("Config.yml");
-
-				try {
-					Files.copy(in, configFile.toPath());
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-					if (in != null) {
-						in.close();
-					}
-
-				}
+			try (InputStream in = getResourceAsStream("Config.yml")) {
+				Files.copy(in, configFile.toPath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
