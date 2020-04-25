@@ -134,16 +134,11 @@ public class ListExecutor extends Command implements TabExecutor {
 	public void execute(CommandSender sender, String[] args) {
 		boolean isPlayerExecutor = sender instanceof ProxiedPlayer;
 		Set<String> options = new HashSet<>();
-		String[] var5 = args;
-		int var6 = args.length;
 
-		int totalPlayers;
-		for(totalPlayers = 0; totalPlayers < var6; ++totalPlayers) {
-			String arg = var5[totalPlayers];
+		for(String arg : args) {
 			String[] backup;
 			boolean alreadySkipped;
 			int i;
-			int j;
 			String b;
 			if (arg.equalsIgnoreCase("-g")) {
 				options.add("-g");
@@ -152,7 +147,7 @@ public class ListExecutor extends Command implements TabExecutor {
 				alreadySkipped = false;
 				i = 0;
 
-				for(j = 0; i < args.length; ++j) {
+				for(int j = 0; i < args.length; ++j) {
 					b = backup[i];
 					if (b.equalsIgnoreCase("-g") && !alreadySkipped) {
 						alreadySkipped = true;
@@ -170,7 +165,7 @@ public class ListExecutor extends Command implements TabExecutor {
 				alreadySkipped = false;
 				i = 0;
 
-				for(j = 0; i < args.length; ++j) {
+				for(int j = 0; i < args.length; ++j) {
 					b = backup[i];
 					if (b.equalsIgnoreCase("-sp") && !alreadySkipped) {
 						alreadySkipped = true;
@@ -188,7 +183,7 @@ public class ListExecutor extends Command implements TabExecutor {
 				alreadySkipped = false;
 				i = 0;
 
-				for(j = 0; i < args.length; ++j) {
+				for(int j = 0; i < args.length; ++j) {
 					b = backup[i];
 					if (b.equalsIgnoreCase("-a") && !alreadySkipped) {
 						alreadySkipped = true;
@@ -202,8 +197,6 @@ public class ListExecutor extends Command implements TabExecutor {
 			}
 		}
 
-		int totalBars;
-		int i;
 		int page;
 		String[] partsController;
 		if (args.length == 0) {
@@ -233,30 +226,30 @@ public class ListExecutor extends Command implements TabExecutor {
 					})
 					.limit(this.globalListBehaviourMaxRows < 1 ? Integer.MAX_VALUE : options.contains("-g") ? Integer.MAX_VALUE : this.globalListBehaviourMaxRows).collect(Collectors.toList());
 			StringBuilder rowsBuilder = new StringBuilder();
-			totalPlayers = BungeeCord.getInstance().getPlayers().size();
+			int totalPlayers = BungeeCord.getInstance().getPlayers().size();
 			if (servers.isEmpty()) {
 				rowsBuilder.append(this.globalListNoServersFormat).append("\n");
 			} else {
 				page = (servers.get(0)).getPlayers().size();
-				Iterator var26 = servers.iterator();
+				Iterator<ServerInfo> serversIterator = servers.iterator();
 
-				label212:
+				mainWhile:
 				while(true) {
 					ServerInfo serverInfo;
 					do {
 						do {
-							if (!var26.hasNext()) {
-								break label212;
+							if (!serversIterator.hasNext()) {
+								break mainWhile;
 							}
 
-							serverInfo = (ServerInfo)var26.next();
-							float percent = totalPlayers == 0 ? 0.0F : (float)serverInfo.getPlayers().size() * 100.0F / (float)totalPlayers;
-							float percentGraphic = page == 0 ? 0.0F : (float)(serverInfo.getPlayers().size() * 100 / page);
+							serverInfo = serversIterator.next();
+							float percent = totalPlayers == 0 ? 0.0F : (serverInfo.getPlayers().size() * 100.0F / totalPlayers);
+							float percentGraphic = page == 0 ? 0.0F : (serverInfo.getPlayers().size() * 100F / page);
 							StringBuilder graphicBarBuilder = new StringBuilder();
 							float barPercent = 5.0F;
-							totalBars = (int)(percentGraphic / barPercent);
+							int totalBars = (int)(percentGraphic / barPercent);
 
-							for(i = 0; i < 20; ++i) {
+							for(int i = 0; i < 20; ++i) {
 								if (i < totalBars) {
 									graphicBarBuilder.append(this.globalListGraphicBarColor).append("|");
 								} else {
@@ -264,7 +257,7 @@ public class ListExecutor extends Command implements TabExecutor {
 								}
 							}
 
-							rowsBuilder.append(this.globalListServerRowFormat.replace("{SERVER_NAME}", globalListUpperCaseServerNames ? serverInfo.getName().toUpperCase() : serverInfo.getName()).replace("{PLAYER_AMOUNT}", String.valueOf(serverInfo.getPlayers().size())).replace("{GRAPHIC_BAR}", graphicBarBuilder.toString()).replace("{PERCENT}", this.format.format((double)percent) + "%")).append("\n");
+							rowsBuilder.append(this.globalListServerRowFormat.replace("{SERVER_NAME}", globalListUpperCaseServerNames ? serverInfo.getName().toUpperCase() : serverInfo.getName()).replace("{PLAYER_AMOUNT}", String.valueOf(serverInfo.getPlayers().size())).replace("{GRAPHIC_BAR}", graphicBarBuilder.toString()).replace("{PERCENT}", this.format.format(percent) + "%")).append("\n");
 						} while(!options.contains("-sp"));
 					} while(serverInfo.getPlayers().isEmpty());
 
@@ -283,9 +276,8 @@ public class ListExecutor extends Command implements TabExecutor {
 			String message = ChatColor.translateAlternateColorCodes('&', fullMessageCopy.replace("{SERVERS_ROWS}", rowsBuilder.toString()).replace("{NOT_DISPLAYED_AMOUNT}", String.valueOf(page)).replace("{TOTAL_PLAYER_AMOUNT}", String.valueOf(totalPlayers)).replace("{LABEL}", this.getName()));
 			String[] lines = message.split("\\n");
 			partsController = lines;
-			int var36 = lines.length;
 
-			for(totalBars = 0; totalBars < var36; ++totalBars) {
+			for(int totalBars = 0; totalBars < lines.length; ++totalBars) {
 				String line = partsController[totalBars];
 				sender.sendMessage(TextUtil.fromLegacy(line));
 			}
@@ -318,15 +310,12 @@ public class ListExecutor extends Command implements TabExecutor {
 						sender.sendMessage(TextUtil.fromLegacy(this.serverListNoPlayersFormat));
 					}
 				} else {
-					String[] namesData = pageData.toArray(new String[pageData.size()]);
+					String[] namesData = pageData.toArray(new String[0]);
 					String message = this.serverListFullFormat.replace("{PLAYERS_ROWS}", TextUtil.makeRows(2, 25, (page - 1) * this.serverListBehaviourPlayerPerPage + 1, ChatColor.GRAY, namesData)).replace("{SERVER_NAME}", serverListUpperCaseServerName ? serverInfo.getName().toUpperCase() : serverInfo.getName()).replace("{PLAYERS_COUNT}", String.valueOf(temporalPaginator.dataSize())).replace("{PAGE}", options.contains("-g") ? "All Pages" : String.valueOf(page)).replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()));
 					if (options.contains("-g")) {
 						partsController = message.split("\\n");
-						String[] var37 = partsController;
-						totalBars = partsController.length;
 
-						for(i = 0; i < totalBars; ++i) {
-							String line = var37[i];
+						for (String line : partsController) {
 							if (!line.contains("{PAGINATION_CONTROLLER}")) {
 								sender.sendMessage(TextUtil.fromLegacy(line));
 							}
@@ -334,13 +323,8 @@ public class ListExecutor extends Command implements TabExecutor {
 					} else if (message.contains("{PAGINATION_CONTROLLER}")) {
 						partsController = message.split("\\{PAGINATION_CONTROLLER}");
 						BaseComponent mainComponent = new TextComponent();
-						BaseComponent[] var41 = TextUtil.fromLegacy(partsController[0]);
-						i = var41.length;
 
-						int var46;
-
-						for(var46 = 0; var46 < i; ++var46) {
-							BaseComponent bc = var41[var46];
+						for (BaseComponent bc : TextUtil.fromLegacy(partsController[0])) {
 							mainComponent.addExtra(bc);
 						}
 
@@ -432,9 +416,8 @@ public class ListExecutor extends Command implements TabExecutor {
 						int j;
 						if (cb != null) {
 							bcObject = cb.create();
-							var46 = bcObject.length;
 
-							for(j = 0; j < var46; ++j) {
+							for(j = 0; j < bcObject.length; ++j) {
 								bc = bcObject[j];
 								mainComponent.addExtra(bc);
 							}
@@ -442,9 +425,8 @@ public class ListExecutor extends Command implements TabExecutor {
 
 						if (partsController.length > 1) {
 							bcObject = TextUtil.fromLegacy(partsController[1]);
-							var46 = bcObject.length;
 
-							for(j = 0; j < var46; ++j) {
+							for(j = 0; j < bcObject.length; ++j) {
 								bc = bcObject[j];
 								mainComponent.addExtra(bc);
 							}
