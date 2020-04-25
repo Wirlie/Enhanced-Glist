@@ -1,0 +1,84 @@
+{
+  "command": {
+    "global-list": {
+      "label": "glist",
+      "permission": "bungeecord.command.list",
+      "aliases": ["blist", "bls"]
+    }
+  },
+  "formats": {
+    "global-list": {
+      "server-row-format": " &b{SERVER_NAME} &6{PLAYER_AMOUNT} &8{GRAPHIC_BAR} &8[&6{PERCENT}&8]",
+      "graphic-background-color": "&8&l",
+      "graphic-bar-color": "&7&l",
+      "full-message-format": [
+        "",
+        "&8&m&l----------------------------------&r",
+        " &eList of all servers on the Network:",
+        "",
+        "{SERVERS_ROWS}",
+        "",
+        " &7&oAnd &f&o{NOT_DISPLAYED_AMOUNT} &7&oservers not displayed.&r",
+        " &6Total Players: &f{TOTAL_PLAYER_AMOUNT}",
+        "",
+        " &fTIP: &7Use &e/{LABEL} <server> &7to display a list of all players in the specified server.",
+        "&8&m&l----------------------------------",
+        ""
+      ],
+      "no-servers-format": " &cNo servers to display."
+    },
+    "server-list": {
+      "full-message-format": [
+        "",
+        "&8&m--------------------------------------&r",
+        " &6Server Name: &f{SERVER_NAME}",
+        " &6Players: &f{PLAYERS_COUNT}",
+        " &eDisplaying page &f{PAGE} &6of &f{TOTAL_PAGES}",
+        "",
+        "{PLAYERS_ROWS}",
+        "{PAGINATION_CONTROLLER}",
+        "&8&m--------------------------------------",
+        ""
+      ],
+      "no-page-data-message": [
+        "",
+        "&8&m--------------------------------------&r",
+        " &cNo data to show in this page! Please try with a another page between &f1 &cand &f{TOTAL_PAGES}&c.",
+        "&8&m--------------------------------------",
+        ""
+      ],
+      "no-players-message": [
+        "",
+        "&8&m--------------------------------------&r",
+        " &cThis server not have players at this moment.",
+        "&8&m--------------------------------------",
+        ""
+      ]
+    }
+  },
+  "behaviour": {
+    "global-list": {
+      "hide-empty-servers": true,
+      "max-servers-rows": 20,
+      "min-player-count-to-display-server": 3
+    },
+    "server-list": {
+      "players-per-page": 16
+    },
+    "blacklisted-servers": [
+      "Login"
+    ],
+    "global-list-uppercase-server-names": false,
+    "server-list-uppercase-server-name": false
+  },
+  "messages": {
+    "server-players": "{SERVER_NAME} players:",
+    "cannot-found-server": "&cThe specified server name {NAME} &ccannot be found in the Network.",
+    "previous-page-hover-message": "&eClick here to go to the page &f#{PAGE_NUMBER}",
+    "next-page-hover-message": "&eClick here to go to the page &f#{PAGE_NUMBER}",
+    "previous-page": "Previous Page",
+    "next-page": "Next Page",
+    "no-previous-page": "&cNo previous page available.",
+    "no-next-page": "&cNo next page available."
+  }
+}
