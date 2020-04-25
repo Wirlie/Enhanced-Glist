@@ -8,10 +8,12 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import dev.wirlie.bungeecord.glist.groups.GroupManager;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
+import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
@@ -24,32 +26,22 @@ public class EnhancedBCL extends Plugin {
 	private GroupManager groupManager;
 
 	public void onEnable() {
-		this.getLogger().info("Enabling plugin ...");
-		this.yamlProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
-		this.configFile = new File(this.getDataFolder() + File.separator + "Config.yml");
+		//declaration of commons variables
+		Logger logger = getLogger();
+		PluginManager pm = BungeeCord.getInstance().getPluginManager();
+		yamlProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
+
+		logger.info("Enabling plugin ...");
+		configFile = new File(this.getDataFolder() + File.separator + "Config.yml");
 
 		getLogger().info("Validating Config.yml ...");
 		ConfigurationValidator.validate(this);
 
-		BungeeCord bc = BungeeCord.getInstance();
+		logger.info("Registering /ebl command ...");
+		pm.registerCommand(this, new PluginExecutor(this));
 
-		this.getLogger().info("Registering Plugin Command ...");
-		bc.getPluginManager().registerCommand(this, new PluginExecutor(this));
-		this.getLogger().info("Registering Enhanced List Command ...");
-		String label = this.getConfig().getString("command.global-list.label", "glist");
-		String permission = this.getConfig().getString("command.global-list.permission", null);
-		List<String> aliasesList = this.getConfig().getStringList("command.global-list.aliases");
-		String[] aliases = aliasesList.toArray(new String[aliasesList.size()]);
-		this.commandExecutor = new ListExecutor(this, label, permission, aliases);
-		this.getLogger().info("Enhanced List Command loaded ...");
-		this.getLogger().info("Label: /" + label + " | Aliases: " + aliasesList.toString());
-
-		this.groupManager = new GroupManager(this);
-
-		BungeeCord.getInstance().getScheduler().schedule(this, () -> {
-			this.getLogger().info("Enhanced List Command Registered!");
-			bc.getPluginManager().registerCommand(this, this.commandExecutor);
-		}, 5L, TimeUnit.SECONDS);
+		registerListExecutor(true);
+		groupManager = new GroupManager(this);
 	}
 
 	public GroupManager getGroupManager() {
@@ -57,38 +49,29 @@ public class EnhancedBCL extends Plugin {
 	}
 
 	public void unloadConfig() {
-		this.config = null;
+		config = null;
 	}
 
 	public Configuration getConfig() {
-		if (this.config == null) {
-			this.loadConfig();
+		if (config == null) {
+			loadConfig();
 		}
 
 		return this.config;
 	}
 
 	public void reloadConfig() {
-		this.config = null;
-		if (this.commandExecutor != null) {
-			BungeeCord.getInstance().getPluginManager().unregisterCommand(this.commandExecutor);
-		}
+		config = null;
 
-		String label = this.getConfig().getString("command.global-list.label", "glist");
-		String permission = this.getConfig().getString("command.global-list.permission", null);
-		List<String> aliasesList = this.getConfig().getStringList("command.global-list.aliases");
-		String[] aliases = aliasesList.toArray(new String[aliasesList.size()]);
-		this.commandExecutor = new ListExecutor(this, label, permission, aliases);
-		BungeeCord.getInstance().getPluginManager().registerCommand(this, this.commandExecutor);
-
+		registerListExecutor(false);
 		getGroupManager().loadGroups();
 	}
 
 	@SuppressWarnings("unused")
 	public void saveConfig() {
-		if (this.config != null) {
+		if (config != null) {
 			try {
-				this.yamlProvider.save(this.config, this.configFile);
+				yamlProvider.save(config, configFile);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -97,16 +80,16 @@ public class EnhancedBCL extends Plugin {
 	}
 
 	private void loadConfig() {
-		if (!this.configFile.exists()) {
-			if (!this.configFile.getParentFile().mkdirs()) {
+		if (!configFile.exists()) {
+			if (!configFile.getParentFile().mkdirs()) {
 				getLogger().warning("Cannot make parent dir: " + configFile.getParentFile().getAbsolutePath());
 			}
 
 			try {
-				InputStream in = this.getResourceAsStream("Config.yml");
+				InputStream in = getResourceAsStream("Config.yml");
 
 				try {
-					Files.copy(in, this.configFile.toPath());
+					Files.copy(in, configFile.toPath());
 				} catch (IOException e) {
 					e.printStackTrace();
 				} finally {
@@ -121,23 +104,43 @@ public class EnhancedBCL extends Plugin {
 		}
 
 		try {
-			this.config = this.yamlProvider.load(new FileReader(this.configFile));
+			config = yamlProvider.load(new FileReader(configFile));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-
-	}
-
-	public File getConfigFile() {
-		return configFile;
 	}
 
 	public Configuration loadConfiguration(File file) throws IOException {
 		return yamlProvider.load(file);
 	}
 
-	public void saveConfiguration(Configuration configuration, File file) throws IOException {
-		yamlProvider.save(configuration, file);
+	private void registerListExecutor(boolean firstRegister) {
+		if (commandExecutor != null) {
+			BungeeCord.getInstance().getPluginManager().unregisterCommand(commandExecutor);
+		}
+
+		//read configuration
+		String label = this.getConfig().getString("command.global-list.label", "glist");
+		getLogger().info("Loading /" + label + " command ...");
+		String permission = this.getConfig().getString("command.global-list.permission", null);
+		List<String> aliasesList = this.getConfig().getStringList("command.global-list.aliases");
+		String[] aliases = aliasesList.toArray(new String[0]);
+
+		//prepare enhanced list executor
+		commandExecutor = new ListExecutor(this, label, permission, aliases);
+
+		if (firstRegister && label.equalsIgnoreCase("glist")) {
+			//TODO: Probably this can be removed if we declare the cmd_glist plugin as soft dependency, so cmd_glist should be loaded before EnhancedBungeeList...
+			//we need to wait some seconds so the original /glist can be replaced.
+			BungeeCord.getInstance().getScheduler().schedule(this, () -> {
+				BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor);
+				getLogger().info("Command /glist registered...");
+			}, 3, TimeUnit.SECONDS);
+		} else {
+			//otherwise, custom commands should no clash to other commands (except if the user defines a command of other plugin)
+			BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor);
+			getLogger().info("Command /" + label + " registered...");
+		}
 	}
 
 }
