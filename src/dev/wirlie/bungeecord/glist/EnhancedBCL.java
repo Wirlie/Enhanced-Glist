@@ -1,10 +1,7 @@
 package dev.wirlie.bungeecord.glist;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -29,10 +26,10 @@ public class EnhancedBCL extends Plugin {
 		//declaration of commons variables
 		Logger logger = getLogger();
 		PluginManager pm = BungeeCord.getInstance().getPluginManager();
-		yamlProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
+        yamlProvider = ConfigurationProvider.getProvider(YamlConfiguration.class);
 
 		logger.info("Enabling plugin ...");
-		configFile = new File(this.getDataFolder() + File.separator + "Config.json");
+		configFile = new File(this.getDataFolder() + File.separator + "Config.yml");
 
 		getLogger().info("Validating Config.yml ...");
 		ConfigurationValidator.validate(this);
@@ -67,7 +64,7 @@ public class EnhancedBCL extends Plugin {
 	public void saveConfig() {
 		if (config != null) {
 			try {
-				yamlProvider.save(config, configFile);
+				yamlProvider.save(config, new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -89,14 +86,14 @@ public class EnhancedBCL extends Plugin {
 		}
 
 		try {
-			config = yamlProvider.load(new FileReader(configFile));
+			config = yamlProvider.load(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public Configuration loadConfiguration(File file) throws IOException {
-		return yamlProvider.load(file);
+		return yamlProvider.load(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
 	}
 
 	private void registerListExecutor(boolean firstRegister) {
