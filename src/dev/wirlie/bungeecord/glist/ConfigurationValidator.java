@@ -11,6 +11,16 @@ public class ConfigurationValidator {
 
 		boolean needCommentsFix = false;
 
+		if(!configuration.contains("formats.global-list.server-sp-option.main-format")) {
+			needCommentsFix = true;
+			configuration.set("formats.global-list.server-sp-option.main-format", "&a{SERVER_NAME}: &8[{PLAYERS_FORMAT}&8]");
+		}
+
+		if(!configuration.contains("formats.global-list.server-sp-option.players-format")) {
+			needCommentsFix = true;
+			configuration.set("formats.global-list.server-sp-option.players-format", "&f{PLAYER_NAME}&7, ");
+		}
+
 		if(!configuration.contains("command.global-list.label")) {
 			needCommentsFix = true;
 			configuration.set("command.global-list.label", "glist");

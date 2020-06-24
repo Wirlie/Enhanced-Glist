@@ -51,5 +51,7 @@ public class DefaultValues {
 		DefaultValues.defaults.put("messages.next-page", "Next Page");
 		DefaultValues.defaults.put("messages.no-previous-page", "&cNo previous page available.");
 		DefaultValues.defaults.put("messages.no-next-page", "&cNo next page available.");
+		DefaultValues.defaults.put("formats.global-list.server-sp-option.main-format", "&a{SERVER_NAME}: &8[{PLAYERS_FORMAT}&8]");
+		DefaultValues.defaults.put("formats.global-list.server-sp-option.players-format", "&f{PLAYER_NAME}&7, ");
 	}
 }

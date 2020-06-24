@@ -1,5 +1,6 @@
 package dev.wirlie.bungeecord.glist;
 
+import com.google.common.collect.Iterators;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 
 public class ListExecutor extends Command implements TabExecutor {
 
+	private String globalListSpOptionMainFormat = DefaultValues.getDefaultString("formats.global-list.server-sp-option.main-format");
+	private String globalListSpOptionPlayersFormat = DefaultValues.getDefaultString("formats.global-list.server-sp-option.players-format");
 	private String globalListFullFormat = DefaultValues.getDefaultString("formats.global-list.full-message-format");
 	private String globalListServerRowFormat = DefaultValues.getDefaultString("formats.global-list.server-row-format");
 	private String globalListNoServersFormat = DefaultValues.getDefaultString("formats.global-list.no-servers-format");
@@ -73,6 +76,8 @@ public class ListExecutor extends Command implements TabExecutor {
 			this.globalListFullFormat = DefaultValues.getDefaultString("formats.global-list.full-message-format");
 		}
 
+		this.globalListSpOptionMainFormat = this.plugin.getConfig().getString("formats.global-list.server-sp-option.main-format", DefaultValues.getDefaultString("formats.global-list.server-sp-option.main-format"));
+		this.globalListSpOptionPlayersFormat = this.plugin.getConfig().getString("formats.global-list.server-sp-option.players-format", DefaultValues.getDefaultString("formats.global-list.server-sp-option.players-format"));
 		this.globalListNoServersFormat = this.plugin.getConfig().getString("formats.global-list.no-servers-format", DefaultValues.getDefaultString("formats.global-list.no-servers-format"));
 		this.globalListBackgroundGraphicColor = this.plugin.getConfig().getString("formats.global-list.graphic-background-color", DefaultValues.getDefaultString("formats.global-list.graphic-background-color"));
 		this.globalListGraphicBarColor = this.plugin.getConfig().getString("formats.global-list.graphic-bar-color", DefaultValues.getDefaultString("formats.global-list.graphic-bar-color"));
@@ -283,13 +288,36 @@ public class ListExecutor extends Command implements TabExecutor {
 						} while(!options.contains("-sp"));
 					} while(serverInfo.getPlayers().isEmpty());
 
-					rowsBuilder.append(" &e").append(messagesServerPlayers.replace("{SERVER_NAME}", globalListUpperCaseServerNames ? serverInfo.getName().toUpperCase() : serverInfo.getName())).append(": &8[&7");
+					String mainFormat = globalListSpOptionMainFormat;
+					String playersFormat = globalListSpOptionPlayersFormat;
+
+					StringBuilder playersString = new StringBuilder();
+					List<ProxiedPlayer> players = new ArrayList<>(serverInfo.getPlayers());
+					for(int i = 0; i < players.size(); i++) {
+						ProxiedPlayer player = players.get(i);
+
+						if(i == players.size() - 1) {
+							//eliminar formato
+							int indexOf = playersFormat.indexOf("{PLAYER_NAME}");
+							if(indexOf != -1) {
+								playersString.append(playersFormat.substring(0, indexOf + "{PLAYER_NAME}".length()).replace("{PLAYER_NAME}", player.getName()));
+							} else {
+								playersString.append(playersFormat.replace("{PLAYER_NAME}", player.getName()));
+							}
+						} else {
+							playersString.append(playersFormat.replace("{PLAYER_NAME}", player.getName()));
+						}
+					}
+
+					rowsBuilder.append(mainFormat.replace("{SERVER_NAME}", globalListUpperCaseServerNames ? serverInfo.getName().toUpperCase() : serverInfo.getName()).replace("{PLAYERS_FORMAT}", playersString.toString())).append("\n");
+
+					/*rowsBuilder.append(" &e").append(messagesServerPlayers.replace("{SERVER_NAME}", globalListUpperCaseServerNames ? serverInfo.getName().toUpperCase() : serverInfo.getName())).append(": &8[&7");
 
 					for (ProxiedPlayer player : serverInfo.getPlayers()) {
 						rowsBuilder.append(player.getName()).append("&8,&7 ");
 					}
 
-					rowsBuilder.append("&8]\n");
+					rowsBuilder.append("&8]\n");*/
 				}
 			}
 
