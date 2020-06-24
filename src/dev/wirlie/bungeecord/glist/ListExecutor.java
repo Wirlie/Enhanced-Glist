@@ -1,5 +1,6 @@
 package dev.wirlie.bungeecord.glist;
 
+import com.google.common.collect.Iterators;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 
 public class ListExecutor extends Command implements TabExecutor {
 
+	private String globalListSpOptionMainFormat = DefaultValues.getDefaultString("formats.global-list.server-sp-option.main-format");
+	private String globalListSpOptionPlayersFormat = DefaultValues.getDefaultString("formats.global-list.server-sp-option.players-format");
 	private String globalListFullFormat = DefaultValues.getDefaultString("formats.global-list.full-message-format");
 	private String globalListServerRowFormat = DefaultValues.getDefaultString("formats.global-list.server-row-format");
 	private String globalListNoServersFormat = DefaultValues.getDefaultString("formats.global-list.no-servers-format");
@@ -60,8 +63,12 @@ public class ListExecutor extends Command implements TabExecutor {
 		if (!fullMessageLines.isEmpty()) {
 			StringBuilder messageBuilder = new StringBuilder();
 
-			for (String line : fullMessageLines) {
-				messageBuilder.append(line).append("\n");
+			for (int i = 0; i < fullMessageLines.size(); i++) {
+				String line = fullMessageLines.get(i);
+				messageBuilder.append(line);
+				if(i < (fullMessageLines.size() - 1)){
+					messageBuilder.append("\n");
+				}
 			}
 
 			this.globalListFullFormat = messageBuilder.toString();
@@ -69,6 +76,8 @@ public class ListExecutor extends Command implements TabExecutor {
 			this.globalListFullFormat = DefaultValues.getDefaultString("formats.global-list.full-message-format");
 		}
 
+		this.globalListSpOptionMainFormat = this.plugin.getConfig().getString("formats.global-list.server-sp-option.main-format", DefaultValues.getDefaultString("formats.global-list.server-sp-option.main-format"));
+		this.globalListSpOptionPlayersFormat = this.plugin.getConfig().getString("formats.global-list.server-sp-option.players-format", DefaultValues.getDefaultString("formats.global-list.server-sp-option.players-format"));
 		this.globalListNoServersFormat = this.plugin.getConfig().getString("formats.global-list.no-servers-format", DefaultValues.getDefaultString("formats.global-list.no-servers-format"));
 		this.globalListBackgroundGraphicColor = this.plugin.getConfig().getString("formats.global-list.graphic-background-color", DefaultValues.getDefaultString("formats.global-list.graphic-background-color"));
 		this.globalListGraphicBarColor = this.plugin.getConfig().getString("formats.global-list.graphic-bar-color", DefaultValues.getDefaultString("formats.global-list.graphic-bar-color"));
@@ -81,8 +90,12 @@ public class ListExecutor extends Command implements TabExecutor {
 		if (!serverListFullMessage.isEmpty()) {
 			StringBuilder messageBuilder = new StringBuilder();
 
-			for (String line : serverListFullMessage) {
-				messageBuilder.append(line).append("\n");
+			for (int i = 0; i < serverListFullMessage.size(); i++) {
+				String line = serverListFullMessage.get(i);
+				messageBuilder.append(line);
+				if(i < (serverListFullMessage.size() - 1)){
+					messageBuilder.append("\n");
+				}
 			}
 
 			this.serverListFullFormat = messageBuilder.toString();
@@ -94,11 +107,18 @@ public class ListExecutor extends Command implements TabExecutor {
 		if (!noPageDataMessage.isEmpty()) {
 			StringBuilder messageBuilder = new StringBuilder();
 
-			for (String line : noPageDataMessage) {
-				messageBuilder.append(line).append("\n");
+			for (int i = 0; i < noPageDataMessage.size(); i++) {
+				String line = noPageDataMessage.get(i);
+				messageBuilder.append(line);
+				if(i < (noPageDataMessage.size() - 1)){
+					messageBuilder.append("\n");
+				}
 			}
 
 			this.serverListNoPageDataFormat = messageBuilder.toString();
+			if(serverListNoPageDataFormat.endsWith("\n")) {
+				serverListNoPageDataFormat = serverListNoPageDataFormat.substring(0, serverListNoPageDataFormat.length() - 2);
+			}
 		} else {
 			this.serverListNoPageDataFormat = DefaultValues.getDefaultString("formats.server-list.no-page-data-message");
 		}
@@ -107,11 +127,18 @@ public class ListExecutor extends Command implements TabExecutor {
 		if (!noPlayersMessage.isEmpty()) {
 			StringBuilder messageBuilder = new StringBuilder();
 
-			for (String line : noPlayersMessage) {
-				messageBuilder.append(line).append("\n");
+			for (int i = 0; i < noPlayersMessage.size(); i++) {
+				String line = noPlayersMessage.get(i);
+				messageBuilder.append(line);
+				if(i < (noPlayersMessage.size() - 1)){
+					messageBuilder.append("\n");
+				}
 			}
 
 			this.serverListNoPlayersFormat = messageBuilder.toString();
+			if(serverListNoPlayersFormat.endsWith("\n")) {
+				serverListNoPlayersFormat = serverListNoPlayersFormat.substring(0, serverListNoPlayersFormat.length() - 2);
+			}
 		} else {
 			this.serverListNoPlayersFormat = DefaultValues.getDefaultString("formats.server-list.no-players-message");
 		}
@@ -228,7 +255,7 @@ public class ListExecutor extends Command implements TabExecutor {
 			StringBuilder rowsBuilder = new StringBuilder();
 			int totalPlayers = BungeeCord.getInstance().getPlayers().size();
 			if (servers.isEmpty()) {
-				rowsBuilder.append(this.globalListNoServersFormat).append("\n");
+				rowsBuilder.append(this.globalListNoServersFormat);
 			} else {
 				page = (servers.get(0)).getPlayers().size();
 				Iterator<ServerInfo> serversIterator = servers.iterator();
@@ -261,19 +288,47 @@ public class ListExecutor extends Command implements TabExecutor {
 						} while(!options.contains("-sp"));
 					} while(serverInfo.getPlayers().isEmpty());
 
-					rowsBuilder.append(" &e").append(messagesServerPlayers.replace("{SERVER_NAME}", globalListUpperCaseServerNames ? serverInfo.getName().toUpperCase() : serverInfo.getName())).append(": &8[&7");
+					String mainFormat = globalListSpOptionMainFormat;
+					String playersFormat = globalListSpOptionPlayersFormat;
+
+					StringBuilder playersString = new StringBuilder();
+					List<ProxiedPlayer> players = new ArrayList<>(serverInfo.getPlayers());
+					for(int i = 0; i < players.size(); i++) {
+						ProxiedPlayer player = players.get(i);
+
+						if(i == players.size() - 1) {
+							//eliminar formato
+							int indexOf = playersFormat.indexOf("{PLAYER_NAME}");
+							if(indexOf != -1) {
+								playersString.append(playersFormat.substring(0, indexOf + "{PLAYER_NAME}".length()).replace("{PLAYER_NAME}", player.getName()));
+							} else {
+								playersString.append(playersFormat.replace("{PLAYER_NAME}", player.getName()));
+							}
+						} else {
+							playersString.append(playersFormat.replace("{PLAYER_NAME}", player.getName()));
+						}
+					}
+
+					rowsBuilder.append(mainFormat.replace("{SERVER_NAME}", globalListUpperCaseServerNames ? serverInfo.getName().toUpperCase() : serverInfo.getName()).replace("{PLAYERS_FORMAT}", playersString.toString())).append("\n");
+
+					/*rowsBuilder.append(" &e").append(messagesServerPlayers.replace("{SERVER_NAME}", globalListUpperCaseServerNames ? serverInfo.getName().toUpperCase() : serverInfo.getName())).append(": &8[&7");
 
 					for (ProxiedPlayer player : serverInfo.getPlayers()) {
 						rowsBuilder.append(player.getName()).append("&8,&7 ");
 					}
 
-					rowsBuilder.append("&8]\n");
+					rowsBuilder.append("&8]\n");*/
 				}
 			}
 
 			page = BungeeCord.getInstance().getServers().size() - servers.size();
 			String fullMessageCopy = this.globalListFullFormat;
 			String message = ChatColor.translateAlternateColorCodes('&', fullMessageCopy.replace("{SERVERS_ROWS}", rowsBuilder.toString()).replace("{NOT_DISPLAYED_AMOUNT}", String.valueOf(page)).replace("{TOTAL_PLAYER_AMOUNT}", String.valueOf(totalPlayers)).replace("{LABEL}", this.getName()));
+
+			if(message.endsWith("\n")) {
+				message = message.substring(message.length() - 2);
+			}
+
 			String[] lines = message.split("\\n");
 			partsController = lines;
 
@@ -434,6 +489,10 @@ public class ListExecutor extends Command implements TabExecutor {
 
 						sender.sendMessage(mainComponent);
 					} else {
+						if(message.endsWith("\n")) {
+							message = message.substring(0, message.length() - 2);
+						}
+
 						sender.sendMessage(TextUtil.fromLegacy(message));
 					}
 				}
