@@ -60,8 +60,12 @@ public class ListExecutor extends Command implements TabExecutor {
 		if (!fullMessageLines.isEmpty()) {
 			StringBuilder messageBuilder = new StringBuilder();
 
-			for (String line : fullMessageLines) {
-				messageBuilder.append(line).append("\n");
+			for (int i = 0; i < fullMessageLines.size(); i++) {
+				String line = fullMessageLines.get(i);
+				messageBuilder.append(line);
+				if(i < (fullMessageLines.size() - 1)){
+					messageBuilder.append("\n");
+				}
 			}
 
 			this.globalListFullFormat = messageBuilder.toString();
@@ -81,8 +85,12 @@ public class ListExecutor extends Command implements TabExecutor {
 		if (!serverListFullMessage.isEmpty()) {
 			StringBuilder messageBuilder = new StringBuilder();
 
-			for (String line : serverListFullMessage) {
-				messageBuilder.append(line).append("\n");
+			for (int i = 0; i < serverListFullMessage.size(); i++) {
+				String line = serverListFullMessage.get(i);
+				messageBuilder.append(line);
+				if(i < (serverListFullMessage.size() - 1)){
+					messageBuilder.append("\n");
+				}
 			}
 
 			this.serverListFullFormat = messageBuilder.toString();
@@ -94,11 +102,18 @@ public class ListExecutor extends Command implements TabExecutor {
 		if (!noPageDataMessage.isEmpty()) {
 			StringBuilder messageBuilder = new StringBuilder();
 
-			for (String line : noPageDataMessage) {
-				messageBuilder.append(line).append("\n");
+			for (int i = 0; i < noPageDataMessage.size(); i++) {
+				String line = noPageDataMessage.get(i);
+				messageBuilder.append(line);
+				if(i < (noPageDataMessage.size() - 1)){
+					messageBuilder.append("\n");
+				}
 			}
 
 			this.serverListNoPageDataFormat = messageBuilder.toString();
+			if(serverListNoPageDataFormat.endsWith("\n")) {
+				serverListNoPageDataFormat = serverListNoPageDataFormat.substring(0, serverListNoPageDataFormat.length() - 2);
+			}
 		} else {
 			this.serverListNoPageDataFormat = DefaultValues.getDefaultString("formats.server-list.no-page-data-message");
 		}
@@ -107,11 +122,18 @@ public class ListExecutor extends Command implements TabExecutor {
 		if (!noPlayersMessage.isEmpty()) {
 			StringBuilder messageBuilder = new StringBuilder();
 
-			for (String line : noPlayersMessage) {
-				messageBuilder.append(line).append("\n");
+			for (int i = 0; i < noPlayersMessage.size(); i++) {
+				String line = noPlayersMessage.get(i);
+				messageBuilder.append(line);
+				if(i < (noPlayersMessage.size() - 1)){
+					messageBuilder.append("\n");
+				}
 			}
 
 			this.serverListNoPlayersFormat = messageBuilder.toString();
+			if(serverListNoPlayersFormat.endsWith("\n")) {
+				serverListNoPlayersFormat = serverListNoPlayersFormat.substring(0, serverListNoPlayersFormat.length() - 2);
+			}
 		} else {
 			this.serverListNoPlayersFormat = DefaultValues.getDefaultString("formats.server-list.no-players-message");
 		}
@@ -228,7 +250,7 @@ public class ListExecutor extends Command implements TabExecutor {
 			StringBuilder rowsBuilder = new StringBuilder();
 			int totalPlayers = BungeeCord.getInstance().getPlayers().size();
 			if (servers.isEmpty()) {
-				rowsBuilder.append(this.globalListNoServersFormat).append("\n");
+				rowsBuilder.append(this.globalListNoServersFormat);
 			} else {
 				page = (servers.get(0)).getPlayers().size();
 				Iterator<ServerInfo> serversIterator = servers.iterator();
@@ -274,6 +296,11 @@ public class ListExecutor extends Command implements TabExecutor {
 			page = BungeeCord.getInstance().getServers().size() - servers.size();
 			String fullMessageCopy = this.globalListFullFormat;
 			String message = ChatColor.translateAlternateColorCodes('&', fullMessageCopy.replace("{SERVERS_ROWS}", rowsBuilder.toString()).replace("{NOT_DISPLAYED_AMOUNT}", String.valueOf(page)).replace("{TOTAL_PLAYER_AMOUNT}", String.valueOf(totalPlayers)).replace("{LABEL}", this.getName()));
+
+			if(message.endsWith("\n")) {
+				message = message.substring(message.length() - 2);
+			}
+
 			String[] lines = message.split("\\n");
 			partsController = lines;
 
@@ -434,6 +461,10 @@ public class ListExecutor extends Command implements TabExecutor {
 
 						sender.sendMessage(mainComponent);
 					} else {
+						if(message.endsWith("\n")) {
+							message = message.substring(0, message.length() - 2);
+						}
+
 						sender.sendMessage(TextUtil.fromLegacy(message));
 					}
 				}
