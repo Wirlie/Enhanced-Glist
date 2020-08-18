@@ -156,6 +156,26 @@ public class ConfigurationValidator {
 			configuration.set("updates.check-updates", true);
 		}
 
+		if(!configuration.contains("updates.notify.enable")) {
+			needCommentsFix = true;
+			configuration.set("updates.notify.enable", true);
+		}
+
+		if(!configuration.contains("updates.notify.permission")) {
+			needCommentsFix = true;
+			configuration.set("updates.notify.permission", "ebcl.update.notify");
+		}
+
+		if(!configuration.contains("updates.notify.message")) {
+			needCommentsFix = true;
+			configuration.set("updates.notify.message", Arrays.asList("&8----------[ &aEnhancedBungeeList &8]----------", "&eA new update is available! Download:", "&bhttps://www.spigotmc.org/resources/enhancedbungeelist.53295/", "&8----------------------------------------------"));
+		}
+
+		if(!configuration.contains("updates.notify.delay-ms")) {
+			needCommentsFix = true;
+			configuration.set("updates.notify.delay-ms", 1500);
+		}
+
 		plugin.saveConfig();
 
 		if(needCommentsFix) {
