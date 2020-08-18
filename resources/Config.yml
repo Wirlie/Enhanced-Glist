@@ -115,6 +115,7 @@ messages:
 updates:
   check-updates: true
   notify:
+    delay-ms: 1500
     enable: true
     permission: "ebcl.update.notify"
     message:

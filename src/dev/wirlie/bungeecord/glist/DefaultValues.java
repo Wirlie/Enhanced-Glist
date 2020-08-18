@@ -57,5 +57,6 @@ public class DefaultValues {
 		DefaultValues.defaults.put("updates.notify.enable", true);
 		DefaultValues.defaults.put("updates.notify.permission", "ebcl.update.notify");
 		DefaultValues.defaults.put("updates.notify.message", Arrays.asList("&8----------[ &aEnhancedBungeeList &8]----------", "&eA new update is available! Download:", "&bhttps://www.spigotmc.org/resources/enhancedbungeelist.53295/", "&8----------------------------------------------"));
+		DefaultValues.defaults.put("updates.notify.delay-ms", 1500);
 	}
 }

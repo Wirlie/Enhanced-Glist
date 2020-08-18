@@ -1,6 +1,6 @@
 package dev.wirlie.bungeecord.glist;
 
-import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -8,6 +8,7 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.event.EventHandler;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class UpdateNotifyListener implements Listener {
 
@@ -25,15 +26,23 @@ public class UpdateNotifyListener implements Listener {
             if(config.getBoolean("updates.notify.enable", DefaultValues.getDefaultBoolean("updates.notify.enable"))) {
                 String permission = config.getString("updates.notify.permission", DefaultValues.getDefaultString("updates.notify.permission"));
                 if(pp.hasPermission(permission)) {
-                    //notificar
-                    List<String> rawMessages = config.getStringList("updates.notify.message");
-                    if(rawMessages.isEmpty()) {
-                        rawMessages = DefaultValues.getDefaultStringList("updates.notify.message");
+                    int delay = config.getInt("updates.notify.delay-ms", DefaultValues.getDefaultInt("updates.notify.delay-ms"));
+
+                    if(delay < 1) {
+                        delay = 1;
                     }
 
-                    for(String line : rawMessages) {
-                        pp.sendMessage(TextUtil.fromLegacy(line));
-                    }
+                    BungeeCord.getInstance().getScheduler().schedule(plugin, () -> {
+                        //notify
+                        List<String> rawMessages = config.getStringList("updates.notify.message");
+                        if(rawMessages.isEmpty()) {
+                            rawMessages = DefaultValues.getDefaultStringList("updates.notify.message");
+                        }
+
+                        for(String line : rawMessages) {
+                            pp.sendMessage(TextUtil.fromLegacy(line));
+                        }
+                    }, delay, TimeUnit.MILLISECONDS);
                 }
             }
         }
