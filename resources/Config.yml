@@ -115,11 +115,11 @@ messages:
 updates:
   check-updates: true
   notify:
-    delay-ms: 1500
+    delay-ms: 2500
     enable: true
     permission: "ebcl.update.notify"
     message:
-      - "&8----------[ &aEnhancedBungeeList &8]----------"
+      - "&8&m-------------[&r &aEnhancedBungeeList &8&m]-------------"
       - "&eA new update is available! Download:"
       - "&bhttps://www.spigotmc.org/resources/enhancedbungeelist.53295/"
-      - "&8----------------------------------------------"
+      - "&8&m----------------------------------------------"
