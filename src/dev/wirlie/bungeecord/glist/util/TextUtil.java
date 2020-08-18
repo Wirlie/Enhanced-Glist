@@ -1,4 +1,4 @@
-package dev.wirlie.bungeecord.glist;
+package dev.wirlie.bungeecord.glist.util;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;

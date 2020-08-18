@@ -1,5 +1,6 @@
-package dev.wirlie.bungeecord.glist;
+package dev.wirlie.bungeecord.glist.updater;
 
+import dev.wirlie.bungeecord.glist.EnhancedBCL;
 import net.md_5.bungee.BungeeCord;
 
 import java.io.InputStream;

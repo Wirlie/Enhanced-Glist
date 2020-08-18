@@ -1,6 +1,9 @@
-package dev.wirlie.bungeecord.glist;
+package dev.wirlie.bungeecord.glist.executor;
 
-import com.google.common.collect.Iterators;
+import dev.wirlie.bungeecord.glist.DefaultValues;
+import dev.wirlie.bungeecord.glist.EnhancedBCL;
+import dev.wirlie.bungeecord.glist.TemporalPaginator;
+import dev.wirlie.bungeecord.glist.util.TextUtil;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -16,7 +19,7 @@ import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ListExecutor extends Command implements TabExecutor {
+public class GlistCommand extends Command implements TabExecutor {
 
 	private String globalListSpOptionMainFormat = DefaultValues.getDefaultString("formats.global-list.server-sp-option.main-format");
 	private String globalListSpOptionPlayersFormat = DefaultValues.getDefaultString("formats.global-list.server-sp-option.players-format");
@@ -50,7 +53,7 @@ public class ListExecutor extends Command implements TabExecutor {
 	private EnhancedBCL plugin;
 	private Map<String, TemporalPaginator<String>> serversPaginators = new HashMap<>();
 
-	ListExecutor(EnhancedBCL plugin, String name, String permission, String... aliases) {
+	GlistCommand(EnhancedBCL plugin, String name, String permission, String... aliases) {
 		super(name, permission, aliases);
 		this.plugin = plugin;
 		this.format.setMaximumFractionDigits(2);

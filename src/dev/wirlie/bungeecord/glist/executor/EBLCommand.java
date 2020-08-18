@@ -1,12 +1,14 @@
-package dev.wirlie.bungeecord.glist;
+package dev.wirlie.bungeecord.glist.executor;
 
+import dev.wirlie.bungeecord.glist.EnhancedBCL;
+import dev.wirlie.bungeecord.glist.util.TextUtil;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 
-public class PluginExecutor extends Command {
+public class EBLCommand extends Command {
    private EnhancedBCL plugin;
 
-   PluginExecutor(EnhancedBCL plugin) {
+   EBLCommand(EnhancedBCL plugin) {
       super("enhancedbungeelist", "ebl.command.reload","enhancedbl", "ebl", "ebcl");
       this.plugin = plugin;
    }

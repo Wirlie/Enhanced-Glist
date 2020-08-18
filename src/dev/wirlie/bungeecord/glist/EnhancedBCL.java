@@ -7,7 +7,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import dev.wirlie.bungeecord.glist.executor.GlistCommand;
+import dev.wirlie.bungeecord.glist.executor.EBLCommand;
 import dev.wirlie.bungeecord.glist.groups.GroupManager;
+import dev.wirlie.bungeecord.glist.updater.UpdateNotifyListener;
+import dev.wirlie.bungeecord.glist.updater.UpdateChecker;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -19,7 +23,7 @@ public class EnhancedBCL extends Plugin {
 	private Configuration config = null;
 	private ConfigurationProvider yamlProvider = null;
 	private File configFile = null;
-	private ListExecutor commandExecutor = null;
+	private GlistCommand commandExecutor = null;
 	private GroupManager groupManager;
 	private UpdateChecker updateChecker = null;
 
@@ -36,7 +40,7 @@ public class EnhancedBCL extends Plugin {
 		ConfigurationValidator.validate(this);
 
 		logger.info("Registering /ebl command ...");
-		pm.registerCommand(this, new PluginExecutor(this));
+		pm.registerCommand(this, new EBLCommand(this));
 
 		registerListExecutor(true);
 		groupManager = new GroupManager(this);
@@ -117,7 +121,7 @@ public class EnhancedBCL extends Plugin {
 		String[] aliases = aliasesList.toArray(new String[0]);
 
 		//prepare enhanced list executor
-		commandExecutor = new ListExecutor(this, label, permission, aliases);
+		commandExecutor = new GlistCommand(this, label, permission, aliases);
 
 		if (firstRegister && label.equalsIgnoreCase("glist")) {
 			//TODO: Probably this can be removed if we declare the cmd_glist plugin as soft dependency, so cmd_glist should be loaded before EnhancedBungeeList...
