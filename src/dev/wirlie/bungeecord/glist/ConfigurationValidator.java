@@ -151,6 +151,11 @@ public class ConfigurationValidator {
 			configuration.set("behaviour.server-list-uppercase-server-name", false);
 		}
 
+		if(!configuration.contains("updates.check-updates")) {
+			needCommentsFix = true;
+			configuration.set("updates.check-updates", true);
+		}
+
 		plugin.saveConfig();
 
 		if(needCommentsFix) {

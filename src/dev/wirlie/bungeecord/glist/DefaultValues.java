@@ -53,5 +53,9 @@ public class DefaultValues {
 		DefaultValues.defaults.put("messages.no-next-page", "&cNo next page available.");
 		DefaultValues.defaults.put("formats.global-list.server-sp-option.main-format", "&a{SERVER_NAME}: &8[{PLAYERS_FORMAT}&8]");
 		DefaultValues.defaults.put("formats.global-list.server-sp-option.players-format", "&f{PLAYER_NAME}&7, ");
+		DefaultValues.defaults.put("updates.check-updates", true);
+		DefaultValues.defaults.put("updates.notify.enable", true);
+		DefaultValues.defaults.put("updates.notify.permission", "ebcl.update.notify");
+		DefaultValues.defaults.put("updates.notify.message", Arrays.asList("&8----------[ &aEnhancedBungeeList &8]----------", "&eA new update is available! Download:", "&bhttps://www.spigotmc.org/resources/enhancedbungeelist.53295/", "&8----------------------------------------------"));
 	}
 }

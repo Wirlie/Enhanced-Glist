@@ -21,6 +21,7 @@ public class EnhancedBCL extends Plugin {
 	private File configFile = null;
 	private ListExecutor commandExecutor = null;
 	private GroupManager groupManager;
+	private UpdateChecker updateChecker = null;
 
 	public void onEnable() {
 		//declaration of commons variables
@@ -39,6 +40,13 @@ public class EnhancedBCL extends Plugin {
 
 		registerListExecutor(true);
 		groupManager = new GroupManager(this);
+
+		if(getConfig().getBoolean("updates.check-updates", DefaultValues.getDefaultBoolean("updates.check-updates"))) {
+			updateChecker = new UpdateChecker(this);
+			updateChecker.getSpigotVersion(v -> {}, Throwable::printStackTrace);
+
+			pm.registerListener(this, new UpdateNotifyListener(this));
+		}
 	}
 
 	public GroupManager getGroupManager() {

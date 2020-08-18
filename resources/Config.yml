@@ -112,3 +112,13 @@ messages:
   next-page: "Next Page"
   no-previous-page: "&cNo previous page available."
   no-next-page: "&cNo next page available."
+updates:
+  check-updates: true
+  notify:
+    enable: true
+    permission: "ebcl.update.notify"
+    message:
+      - "&8----------[ &aEnhancedBungeeList &8]----------"
+      - "&eA new update is available! Download:"
+      - "&bhttps://www.spigotmc.org/resources/enhancedbungeelist.53295/"
+      - "&8----------------------------------------------"
