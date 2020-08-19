@@ -1,6 +1,7 @@
 package dev.wirlie.bungeecord.glist.config;
 
 import java.util.List;
+import java.util.Map;
 
 public class Config {
 
@@ -46,5 +47,7 @@ public class Config {
     public static final ConfigEntry<String> UPDATES__NOTIFY__PERMISSION = new ConfigEntry<>("updates.notify.permission");
     public static final ConfigEntry<List<String>> UPDATES__NOTIFY__MESSAGE = new ConfigEntry<>("updates.notify.message");
     public static final ConfigEntry<Integer> UPDATES__NOTIFY__DELAY_MS = new ConfigEntry<>("updates.notify.delay-ms");
+
+    public static final ConfigEntry<List<Map<String, Object>>> SERVERS__GROUPS = new ConfigEntry<>("servers.groups");
 
 }

@@ -3,7 +3,8 @@ package dev.wirlie.bungeecord.glist.executor;
 import dev.wirlie.bungeecord.glist.EnhancedBCL;
 import dev.wirlie.bungeecord.glist.TemporalPaginator;
 import dev.wirlie.bungeecord.glist.config.Config;
-import dev.wirlie.bungeecord.glist.hooks.GroupHook;
+import dev.wirlie.bungeecord.glist.servers.BungeecordInfoProvider;
+import dev.wirlie.bungeecord.glist.servers.ServerInfoProvider;
 import dev.wirlie.bungeecord.glist.util.TextUtil;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
@@ -105,18 +106,27 @@ public class GlistCommand extends Command implements TabExecutor {
 		int page;
 		String[] partsController;
 		if (args.length == 0) {
-			List<ServerInfo> servers = BungeeCord.getInstance()
-					.getServers()
-					.values()
-					.stream()
-					.sorted((o, o1) -> Integer.compare(o1.getPlayers().size(), o.getPlayers().size()))
+			List<ServerInfoProvider> allServers = new ArrayList<>();
+
+			//bungeecord servers
+			for(ServerInfo sv : BungeeCord.getInstance().getServers().values()) {
+				if(!plugin.isInGroup(sv)) {
+					allServers.add(new BungeecordInfoProvider(sv));
+				}
+			}
+
+			//groups servers
+			allServers.addAll(plugin.getServerGroups());
+
+			List<ServerInfoProvider> servers = allServers.stream()
+					.sorted((o,o1) -> Integer.compare(o1.getPlayerCount(), o.getPlayerCount()))
 					.filter((o) -> {
-						if(Config.BEHAVIOUR__SERVER_LIST__BLACKLISTED_SERVERS.get().contains(o.getName())) {
+						if(Config.BEHAVIOUR__SERVER_LIST__BLACKLISTED_SERVERS.get().contains(o.getId())) {
 							return false;
 						}
 
 						if(options.contains("-a")) {
-							if(o.getPlayers().size() > 0) {
+							if(o.getPlayerCount() > 0) {
 								return true;
 							}
 						}
@@ -124,23 +134,24 @@ public class GlistCommand extends Command implements TabExecutor {
 						if (options.contains("-g")) {
 							return true;
 						} else if (Config.BEHAVIOUR__GLOBAL_LIST__MIN_PLAYER_COUNT_TO_DISPLAY_SERVER.get() >= 1) {
-							return o.getPlayers().size() >= Config.BEHAVIOUR__GLOBAL_LIST__MIN_PLAYER_COUNT_TO_DISPLAY_SERVER.get();
+							return o.getPlayerCount() >= Config.BEHAVIOUR__GLOBAL_LIST__MIN_PLAYER_COUNT_TO_DISPLAY_SERVER.get();
 						} else {
-							return !o.getPlayers().isEmpty() || o.getPlayers().isEmpty() && !Config.BEHAVIOUR__GLOBAL_LIST__HIDE_EMPTY_SERVERS.get();
+							return o.getPlayerCount() > 0 || o.getPlayerCount() == 0 && !Config.BEHAVIOUR__GLOBAL_LIST__HIDE_EMPTY_SERVERS.get();
 						}
 					})
 					.limit(Config.BEHAVIOUR__GLOBAL_LIST__MAX_SERVERS_ROWS.get() < 1 ? Integer.MAX_VALUE : options.contains("-g") ? Integer.MAX_VALUE : Config.BEHAVIOUR__GLOBAL_LIST__MAX_SERVERS_ROWS.get()).collect(Collectors.toList());
+
 			StringBuilder rowsBuilder = new StringBuilder();
 			int totalPlayers = BungeeCord.getInstance().getPlayers().size();
 			if (servers.isEmpty()) {
 				rowsBuilder.append(Config.FORMATS__GLOBAL_LIST__NO_SERVERS_FORMAT.get());
 			} else {
-				page = (servers.get(0)).getPlayers().size();
-				Iterator<ServerInfo> serversIterator = servers.iterator();
+				page = (servers.get(0)).getPlayerCount();
+				Iterator<ServerInfoProvider> serversIterator = servers.iterator();
 
 				mainWhile:
 				while(true) {
-					ServerInfo serverInfo;
+					ServerInfoProvider serverInfo;
 					do {
 						do {
 							if (!serversIterator.hasNext()) {
@@ -148,8 +159,8 @@ public class GlistCommand extends Command implements TabExecutor {
 							}
 
 							serverInfo = serversIterator.next();
-							float percent = totalPlayers == 0 ? 0.0F : (serverInfo.getPlayers().size() * 100.0F / totalPlayers);
-							float percentGraphic = page == 0 ? 0.0F : (serverInfo.getPlayers().size() * 100F / page);
+							float percent = totalPlayers == 0 ? 0.0F : (serverInfo.getPlayerCount() * 100.0F / totalPlayers);
+							float percentGraphic = page == 0 ? 0.0F : (serverInfo.getPlayerCount() * 100F / page);
 							StringBuilder graphicBarBuilder = new StringBuilder();
 							float barPercent = 5.0F;
 							int totalBars = (int)(percentGraphic / barPercent);
@@ -162,9 +173,9 @@ public class GlistCommand extends Command implements TabExecutor {
 								}
 							}
 
-							rowsBuilder.append(Config.FORMATS__GLOBAL_LIST__SERVER_ROW_FORMAT.get().replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getName().toUpperCase() : serverInfo.getName()).replace("{PLAYER_AMOUNT}", String.valueOf(serverInfo.getPlayers().size())).replace("{GRAPHIC_BAR}", graphicBarBuilder.toString()).replace("{PERCENT}", this.format.format(percent) + "%")).append("\n");
+							rowsBuilder.append(Config.FORMATS__GLOBAL_LIST__SERVER_ROW_FORMAT.get().replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYER_AMOUNT}", String.valueOf(serverInfo.getPlayers().size())).replace("{GRAPHIC_BAR}", graphicBarBuilder.toString()).replace("{PERCENT}", this.format.format(percent) + "%")).append("\n");
 						} while(!options.contains("-sp"));
-					} while(serverInfo.getPlayers().isEmpty());
+					} while(serverInfo.getPlayerCount() == 0);
 
 					String mainFormat = Config.FORMATS__GLOBAL_LIST__SERVER_SP_OPTION__MAIN_FORMAT.get();
 					String playersFormat = Config.FORMATS__GLOBAL_LIST__SERVER_SP_OPTION__PLAYERS_FORMAT.get();
@@ -196,7 +207,7 @@ public class GlistCommand extends Command implements TabExecutor {
 						}
 					}
 
-					rowsBuilder.append(mainFormat.replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getName().toUpperCase() : serverInfo.getName()).replace("{PLAYERS_FORMAT}", playersString.toString())).append("\n");
+					rowsBuilder.append(mainFormat.replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYERS_FORMAT}", playersString.toString())).append("\n");
 				}
 			}
 
@@ -208,11 +219,26 @@ public class GlistCommand extends Command implements TabExecutor {
 			}
 		} else {
 			String serverName = args[0];
-			ServerInfo serverInfo = BungeeCord.getInstance().getServerInfo(serverName);
+
+			ServerInfoProvider serverInfoPre = null;
+
+			//try with group first
+			serverInfoPre = plugin.getServerGroups().stream().filter(g -> g.getId().equalsIgnoreCase(serverName)).findFirst().orElse(null);
+
+			if(serverInfoPre == null) {
+				//try with bungeecord
+				ServerInfo bungeeServer = BungeeCord.getInstance().getServerInfo(serverName);
+				if(bungeeServer != null) {
+					serverInfoPre = new BungeecordInfoProvider(bungeeServer);
+				}
+			}
+
+			ServerInfoProvider serverInfo = serverInfoPre;
+
 			if (serverInfo == null) {
 				sender.sendMessage(TextUtil.fromLegacy(Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)));
 			} else {
-				TemporalPaginator<String> temporalPaginator = this.serversPaginators.computeIfAbsent(serverInfo.getName(), (k) -> new TemporalPaginator<>(serverInfo.getPlayers().stream().map(cs -> {
+				TemporalPaginator<String> temporalPaginator = this.serversPaginators.computeIfAbsent(serverInfo.getId(), (k) -> new TemporalPaginator<>(serverInfo.getPlayers().stream().map(cs -> {
 					String prefix = plugin.getPrefix(cs);
 					if(prefix != null) {
 						if(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty()) {
@@ -262,7 +288,7 @@ public class GlistCommand extends Command implements TabExecutor {
 					}
 				} else {
 					String[] namesData = pageData.toArray(new String[0]);
-					String message = String.join("\n", new ArrayList<>(Config.FORMATS__SERVER_LIST__FULL_MESSAGE_FORMAT.get())).replace("{PLAYERS_ROWS}", TextUtil.makeRows(2, 25, (page - 1) * Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get() + 1, ChatColor.GRAY, namesData)).replace("{SERVER_NAME}", Config.BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME.get() ? serverInfo.getName().toUpperCase() : serverInfo.getName()).replace("{PLAYERS_COUNT}", String.valueOf(temporalPaginator.dataSize())).replace("{PAGE}", options.contains("-g") ? Config.MESSAGES__ALL_PAGES.get() : String.valueOf(page)).replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()));
+					String message = String.join("\n", new ArrayList<>(Config.FORMATS__SERVER_LIST__FULL_MESSAGE_FORMAT.get())).replace("{PLAYERS_ROWS}", TextUtil.makeRows(2, 25, (page - 1) * Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get() + 1, ChatColor.GRAY, namesData)).replace("{SERVER_NAME}", Config.BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME.get() ? serverInfo.getDisplayName().toUpperCase() : serverInfo.getDisplayName()).replace("{PLAYERS_COUNT}", String.valueOf(temporalPaginator.dataSize())).replace("{PAGE}", options.contains("-g") ? Config.MESSAGES__ALL_PAGES.get() : String.valueOf(page)).replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()));
 
 					if (options.contains("-g")) {
 						partsController = message.split("\\n");
@@ -287,7 +313,7 @@ public class GlistCommand extends Command implements TabExecutor {
 							if (isPlayerExecutor) {
 								cb.append("<<")
 										.color(ChatColor.WHITE)
-										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1)))
+										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1)))
 										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page - 1)) )))
 										.append(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ")
 										.color(ChatColor.GOLD)
@@ -295,11 +321,11 @@ public class GlistCommand extends Command implements TabExecutor {
 										.color(ChatColor.DARK_GRAY)
 										.append(" " + Config.MESSAGES__NEXT_PAGE.get() + " ")
 										.color(ChatColor.GOLD)
-										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1)))
+										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1)))
 										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NEXT_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page + 1)))))
 										.append(">>").color(ChatColor.WHITE);
 							} else {
-								cb.append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1)).color(ChatColor.WHITE).append(" to go to the previous page.\n").color(ChatColor.GOLD).append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1)).color(ChatColor.WHITE).append(" to go to the next page.").color(ChatColor.GOLD);
+								cb.append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1)).color(ChatColor.WHITE).append(" to go to the previous page.\n").color(ChatColor.GOLD).append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1)).color(ChatColor.WHITE).append(" to go to the next page.").color(ChatColor.GOLD);
 							}
 						} else if (page <= 1) {
 							if (page + 1 <= temporalPaginator.getTotalPages()) {
@@ -314,12 +340,12 @@ public class GlistCommand extends Command implements TabExecutor {
 											.color(ChatColor.DARK_GRAY)
 											.append(" " + Config.MESSAGES__NEXT_PAGE.get() + " ")
 											.color(ChatColor.GOLD)
-											.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1)))
+											.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1)))
 											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NEXT_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page + 1)))))
 											.append(">>").color(ChatColor.WHITE);
 								} else {
 									cb.append("Use ").color(ChatColor.GOLD)
-											.append("/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1))
+											.append("/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1))
 											.color(ChatColor.WHITE)
 											.append(" to go to the next page.")
 											.color(ChatColor.GOLD);
@@ -342,7 +368,7 @@ public class GlistCommand extends Command implements TabExecutor {
 							if (isPlayerExecutor) {
 								cb = new ComponentBuilder("<<")
 										.color(ChatColor.WHITE)
-										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1)))
+										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1)))
 										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page - 1)))))
 										.append(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ")
 										.color(ChatColor.GOLD)
@@ -356,7 +382,7 @@ public class GlistCommand extends Command implements TabExecutor {
 							} else {
 								cb = new ComponentBuilder("Use ")
 										.color(ChatColor.GOLD)
-										.append("/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1))
+										.append("/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1))
 										.color(ChatColor.WHITE)
 										.append(" to go to the previous page.")
 										.color(ChatColor.GOLD);

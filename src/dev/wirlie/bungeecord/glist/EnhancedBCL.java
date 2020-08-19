@@ -5,8 +5,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import dev.wirlie.bungeecord.glist.config.Config;
 import dev.wirlie.bungeecord.glist.config.ConfigEntry;
@@ -16,10 +18,12 @@ import dev.wirlie.bungeecord.glist.groups.GroupManager;
 import dev.wirlie.bungeecord.glist.hooks.GroupHook;
 import dev.wirlie.bungeecord.glist.hooks.InternalGroupSystemHook;
 import dev.wirlie.bungeecord.glist.hooks.LuckPermsHook;
+import dev.wirlie.bungeecord.glist.servers.ServerGroup;
 import dev.wirlie.bungeecord.glist.updater.UpdateNotifyListener;
 import dev.wirlie.bungeecord.glist.updater.UpdateChecker;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -37,7 +41,8 @@ public class EnhancedBCL extends Plugin {
 	private File configFile = null;
 	private GlistCommand commandExecutor = null;
 
-	private List<GroupHook> groupHooks = new ArrayList<>();
+	private final List<GroupHook> groupHooks = new ArrayList<>();
+	private final List<ServerGroup> serverGroups = new ArrayList<>();
 
 	public void onEnable() {
 		//declaration of commons variables
@@ -139,6 +144,57 @@ public class EnhancedBCL extends Plugin {
 				getLogger().warning("Player prefixes are enabled but LuckPerms and the internal Group System are disabled, so... player prefixes will be disabled.");
 			}
 		}
+
+		//server groups
+		serverGroups.clear();
+
+		for(Map<String, Object> configuration : Config.SERVERS__GROUPS.get()) {
+			String id = null;
+			List<String> serversIds = null;
+
+			for(Map.Entry<String, Object> entry : configuration.entrySet()) {
+				if(entry.getKey().equalsIgnoreCase("group-id")) {
+					id = (String) entry.getValue();
+				} else if(entry.getKey().equalsIgnoreCase("servers")) {
+					//noinspection unchecked
+					serversIds = (List<String>) entry.getValue();
+				}
+			}
+
+			if(id == null || serversIds == null) {
+				getLogger().warning("Not valid server group found! Missing id or server list...");
+				getLogger().warning("Full map: {" + (configuration.entrySet().stream().map((e) -> "[k=" + e.getKey() + ",v=" + e.getValue() + "]").collect(Collectors.joining(","))) + "}");
+				continue;
+			}
+
+			BungeeCord bc = BungeeCord.getInstance();
+			List<ServerInfo> matchedServers = new ArrayList<>();
+
+			for(String sid : serversIds) {
+				ServerInfo server = bc.getServerInfo(sid);
+
+				if(server == null) {
+					continue;
+				}
+
+				matchedServers.add(server);
+			}
+
+			if(matchedServers.isEmpty()) {
+				continue;
+			}
+
+			String finalId = id;
+			if(serverGroups.stream().anyMatch(s -> s.getId().equalsIgnoreCase(finalId))) {
+				getLogger().warning("Duplicated server group [id=" + finalId + "], skipping duplicated definition...");
+				continue;
+			}
+
+			getLogger().info("New server group found, id=" + id + " with " + matchedServers.size() + " servers");
+			ServerGroup group = new ServerGroup(id);
+			group.setServers(matchedServers);
+			serverGroups.add(group);
+		}
 	}
 
 	public void reloadConfig() throws IOException {
@@ -214,4 +270,11 @@ public class EnhancedBCL extends Plugin {
 		return null;
 	}
 
+	public List<ServerGroup> getServerGroups() {
+		return serverGroups;
+	}
+
+	public boolean isInGroup(ServerInfo server) {
+		return serverGroups.stream().flatMap(sg -> sg.getServers().stream()).anyMatch(s -> s.getName().equalsIgnoreCase(server.getName()));
+	}
 }
