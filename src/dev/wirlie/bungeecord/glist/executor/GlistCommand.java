@@ -18,6 +18,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 
+import java.text.Collator;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -451,13 +452,16 @@ public class GlistCommand extends Command implements TabExecutor {
 
 			suggestions.addAll(groupSuggestions);
 
+			List<String> sortedSuggestions = new ArrayList<>(suggestions);
+			sortedSuggestions.sort(Collator.getInstance(Locale.US));
+
 			if(args[0].isEmpty() || args[0].startsWith("-")) {
-				suggestions.add("-g");
-				suggestions.add("-sp");
-				suggestions.add("-a");
+				sortedSuggestions.add(0, "-g");
+				sortedSuggestions.add(0, "-sp");
+				sortedSuggestions.add(0, "-a");
 			}
 
-			return suggestions;
+			return sortedSuggestions;
 		}
 
 		return Collections.emptyList();
