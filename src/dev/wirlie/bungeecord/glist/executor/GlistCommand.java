@@ -440,11 +440,7 @@ public class GlistCommand extends Command implements TabExecutor {
 					return false;
 				}
 
-				if(s.getName().toLowerCase().contains(args[0].toLowerCase())) {
-					return true;
-				}
-
-				return false;
+				return s.getName().toLowerCase().contains(args[0].toLowerCase());
 			}).map(ServerInfo::getName).collect(Collectors.toList());
 
 			if(args[0].isEmpty() || args[0].startsWith("-")) {
