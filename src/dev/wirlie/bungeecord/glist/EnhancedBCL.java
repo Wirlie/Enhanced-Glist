@@ -60,25 +60,6 @@ public class EnhancedBCL extends Plugin {
 			return;
 		}
 
-		if(Config.BEHAVIOUR__GROUPS_PREFIX__ENABLE.get()) {
-			if (Config.BEHAVIOUR__GROUPS_PREFIX__USE__LUCKPERMS.get() && pm.getPlugin("LuckPerms") != null) {
-				logger.info("LuckPerms Hooked!");
-				groupHooks.add(new LuckPermsHook());
-			}
-
-			if (Config.BEHAVIOUR__GROUPS_PREFIX__USE__INTERNAL_GROUP_SYSTEM.get()) {
-				logger.info("Enabling internal Group System");
-				groupHooks.add(new InternalGroupSystemHook(this));
-			}
-
-			//sort group hooks by priority
-			groupHooks.sort((v1, v2) -> Integer.compare(v2.getPriority(), v1.getPriority()));
-
-			if (groupHooks.isEmpty()) {
-				logger.warning("Player prefixes are enabled but LuckPerms and the internal Group System are disabled, so... player prefixes will be disabled.");
-			}
-		}
-
 		logger.info("Registering /ebl command ...");
 
 		logger.info("Registering /ebl command ...");
@@ -135,6 +116,28 @@ public class EnhancedBCL extends Plugin {
 
 		if(shouldSave) {
 			saveConfig();
+		}
+
+		//hooks
+		groupHooks.clear();
+
+		if(Config.BEHAVIOUR__GROUPS_PREFIX__ENABLE.get()) {
+			if (Config.BEHAVIOUR__GROUPS_PREFIX__USE__LUCKPERMS.get() && BungeeCord.getInstance().getPluginManager().getPlugin("LuckPerms") != null) {
+				getLogger().info("LuckPerms Hooked!");
+				groupHooks.add(new LuckPermsHook());
+			}
+
+			if (Config.BEHAVIOUR__GROUPS_PREFIX__USE__INTERNAL_GROUP_SYSTEM.get()) {
+				getLogger().info("Enabling internal Group System");
+				groupHooks.add(new InternalGroupSystemHook(this));
+			}
+
+			//sort group hooks by priority
+			groupHooks.sort((v1, v2) -> Integer.compare(v2.getPriority(), v1.getPriority()));
+
+			if (groupHooks.isEmpty()) {
+				getLogger().warning("Player prefixes are enabled but LuckPerms and the internal Group System are disabled, so... player prefixes will be disabled.");
+			}
 		}
 	}
 
