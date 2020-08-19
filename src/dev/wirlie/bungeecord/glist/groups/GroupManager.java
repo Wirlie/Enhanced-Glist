@@ -22,30 +22,30 @@ public class GroupManager {
 	private final EnhancedBCL plugin;
 
 	public GroupManager(EnhancedBCL plugin) {
-		this.groupFile = new File(plugin.getDataFolder(), "Groups.yml");
+		this.groupFile = new File(plugin.getDataFolder(), "GroupsPrefix.yml");
 		this.plugin = plugin;
 	}
 
 	public void loadGroups() {
 		if(!groupFile.exists()) {
-			plugin.getLogger().info("File not found: Groups.yml | Generating file...");
+			plugin.getLogger().info("File not found: GroupsPrefix.yml | Generating file...");
 			File parentFolder = groupFile.getParentFile();
 			if(!parentFolder.exists()) {
 				parentFolder.mkdirs();
 			}
 			try {
-				Files.copy(getClass().getResourceAsStream("/Groups.yml"), groupFile.toPath());
+				Files.copy(getClass().getResourceAsStream("/GroupsPrefix.yml"), groupFile.toPath());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 
 		if(!groupFile.exists()) {
-			plugin.getLogger().warning("File: Groups.yml not found, check folder permissions, plugin cannot create default file...");
+			plugin.getLogger().warning("File: GroupsPrefix.yml not found, check folder permissions, plugin cannot create default file...");
 			return;
 		}
 
-		plugin.getLogger().info("Groups.yml found, reading configuration ...");
+		plugin.getLogger().info("GroupsPrefix.yml found, reading configuration ...");
 
 		try {
 			groups.clear();
@@ -141,14 +141,14 @@ public class GroupManager {
 					}
 				}
 			} catch (ClassCastException e) {
-				plugin.getLogger().log(Level.SEVERE, "Cannot read Groups.yml (ClassCastException)", e);
+				plugin.getLogger().log(Level.SEVERE, "Cannot read GroupsPrefix.yml (ClassCastException)", e);
 			}
 
 			groups.sort(Comparator.naturalOrder());
 			plugin.getLogger().info(groups.size() + " groups loaded.");
 			plugin.getLogger().info(groups.stream().map(Group::getId).collect(Collectors.joining(", ", "[", "]")));
 		} catch (IOException e) {
-			plugin.getLogger().log(Level.SEVERE, "Cannot read Groups.yml (IOException)", e);
+			plugin.getLogger().log(Level.SEVERE, "Cannot read GroupsPrefix.yml (IOException)", e);
 		}
 	}
 

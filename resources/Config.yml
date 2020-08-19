@@ -107,7 +107,7 @@ behaviour:
   server-list-uppercase-server-name: false
   # Configurations related to the Group System
   # If enabled, plugin will show the respective prefix of each player
-  # using LuckPerms (if available), or the internal Group System (Groups.yml)
+  # using LuckPerms (if available), or the internal Group System (GroupsPrefix.yml)
   groups-prefix:
     # Set as true to enable prefixes
     enable: true
@@ -116,7 +116,7 @@ behaviour:
       # Only applicable if LuckPerms is present in your BungeeCord server
       luckperms: true
       # Set as true to use the internal Group System of the plugin
-      # Configurable though the Groups.yml configuration
+      # Configurable though the GroupsPrefix.yml configuration
       internal-group-system: true
     # Set the priority to use, for example, if you enable LuckPerms and internal Group System
     # and you have set LuckPerms with a priority of 20 and the internal Group System with a
