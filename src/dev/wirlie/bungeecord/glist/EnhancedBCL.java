@@ -92,6 +92,12 @@ public class EnhancedBCL extends Plugin {
 		getLogger().info("Starting verification of " + CONFIGURATIONS_REGISTRY.size() + " configurations...");
 
 		if(!configFile.exists()) {
+			File parent = configFile.getParentFile();
+
+			if(!parent.exists()) {
+				parent.mkdirs();
+			}
+
 			Files.copy(getClass().getResourceAsStream("/Config.yml"), configFile.toPath());
 		}
 
