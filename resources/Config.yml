@@ -101,7 +101,9 @@ behaviour:
   # A list of servers names that you want to ignore/hide.
   blacklisted-servers:
   - "Login"
+  # Set as true to show server names in upper case
   global-list-uppercase-server-names: false
+  # Set as true to show the server name in upper case (/glist <server>)
   server-list-uppercase-server-name: false
 messages:
   cannot-found-server: "&cThe specified server name {NAME} &ccannot be found in the Network."
@@ -113,11 +115,17 @@ messages:
   no-next-page: "&cNo next page available."
   all-pages: "Todas las Páginas"
 updates:
+  # Set as true to check updates periodically
   check-updates: true
+  # Notify configurations only have effect if you have set "check-updates" as true
   notify:
-    delay-ms: 2500
+    # Set as true to receive notifications in-game when a new update is available
     enable: true
+    # Delay in milliseconds before the update message will be send to the player that have the correct permission
+    delay-ms: 2500
+    # Permission required to show the notification
     permission: "ebcl.update.notify"
+    # Message to use as notification
     message:
       - "&8&m-------------[&r &aEnhancedBungeeList &8&m]-------------"
       - "&eA new update is available! Download:"
