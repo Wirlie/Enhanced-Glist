@@ -105,6 +105,28 @@ behaviour:
   global-list-uppercase-server-names: false
   # Set as true to show the server name in upper case (/glist <server>)
   server-list-uppercase-server-name: false
+  # Configurations related to the Group System
+  # If enabled, plugin will show the respective prefix of each player
+  # using LuckPerms (if available), or the internal Group System (Groups.yml)
+  groups-prefix:
+    # Set as true to enable prefixes
+    enable: true
+    use:
+      # Set as true if you want to use LuckPerms to get the prefix of a player
+      # Only applicable if LuckPerms is present in your BungeeCord server
+      luckperms: true
+      # Set as true to use the internal Group System of the plugin
+      # Configurable though the Groups.yml configuration
+      internal-group-system: true
+    # Set the priority to use, for example, if you enable LuckPerms and internal Group System
+    # and you have set LuckPerms with a priority of 20 and the internal Group System with a
+    # priority of 1, if a certain player has a prefix through LuckPerms but also is applicable
+    # for a prefix through the internal Group System, then the LuckPerms prefix will be
+    # preferred and displayed as the current prefix of the player discarding the prefix of the
+    # internal Group System
+    priority:
+      luckperms: 20
+      internal-group-system: 1
 messages:
   cannot-found-server: "&cThe specified server name {NAME} &ccannot be found in the Network."
   previous-page-hover-message: "&eClick here to go to the page &f#{PAGE_NUMBER}"

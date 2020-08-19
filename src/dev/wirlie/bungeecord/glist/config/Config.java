@@ -26,6 +26,11 @@ public class Config {
     public static final ConfigEntry<List<String>> BEHAVIOUR__SERVER_LIST__BLACKLISTED_SERVERS = new ConfigEntry<>("behaviour.blacklisted-servers");
     public static final ConfigEntry<Boolean> BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES = new ConfigEntry<>("behaviour.global-list-uppercase-server-names");
     public static final ConfigEntry<Boolean> BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME = new ConfigEntry<>("behaviour.server-list-uppercase-server-name");
+    public static final ConfigEntry<Boolean> BEHAVIOUR__GROUPS_PREFIX__ENABLE = new ConfigEntry<>("behaviour.groups-prefix.enable");
+    public static final ConfigEntry<Boolean> BEHAVIOUR__GROUPS_PREFIX__USE__LUCKPERMS = new ConfigEntry<>("behaviour.groups-prefix.use.luckperms");
+    public static final ConfigEntry<Boolean> BEHAVIOUR__GROUPS_PREFIX__USE__INTERNAL_GROUP_SYSTEM = new ConfigEntry<>("behaviour.groups-prefix.use.internal-group-system");
+    public static final ConfigEntry<Integer> BEHAVIOUR__GROUPS_PREFIX__PRIORITY__LUCKPERMS = new ConfigEntry<>("behaviour.groups-prefix.priority.luckperms");
+    public static final ConfigEntry<Integer> BEHAVIOUR__GROUPS_PREFIX__PRIORITY__INTERNAL_GROUP_SYSTEM = new ConfigEntry<>("behaviour.groups-prefix.priority.internal-group-system");
 
     public static final ConfigEntry<String> MESSAGES__CANNOT_FOUND_SERVER = new ConfigEntry<>("messages.cannot-found-server");
     public static final ConfigEntry<String> MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE = new ConfigEntry<>("messages.previous-page-hover-message");
@@ -35,7 +40,6 @@ public class Config {
     public static final ConfigEntry<String> MESSAGES__NO_PREVIOUS_PAGE = new ConfigEntry<>("messages.no-previous-page");
     public static final ConfigEntry<String> MESSAGES__NO_NEXT_PAGE = new ConfigEntry<>("messages.no-next-page");
     public static final ConfigEntry<String> MESSAGES__ALL_PAGES = new ConfigEntry<>("messages.all-pages");
-
 
     public static final ConfigEntry<Boolean> UPDATES__CHECK_UPDATES = new ConfigEntry<>("updates.check-updates");
     public static final ConfigEntry<Boolean> UPDATES__NOTIFY__ENABLE = new ConfigEntry<>("updates.notify.enable");
