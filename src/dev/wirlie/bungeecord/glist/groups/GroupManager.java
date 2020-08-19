@@ -15,11 +15,10 @@ import java.util.stream.Collectors;
 
 public class GroupManager {
 
-	private List<Group> groups = new ArrayList<>();
-	private String staffGroupPermission = null;
+	private final List<Group> groups = new ArrayList<>();
 
-	private File groupFile;
-	private EnhancedBCL plugin;
+	private final File groupFile;
+	private final EnhancedBCL plugin;
 
 	public GroupManager(EnhancedBCL plugin) {
 		this.groupFile = new File(plugin.getDataFolder(), "Groups.yml");
@@ -36,7 +35,7 @@ public class GroupManager {
 				groups.clear();
 
 				Configuration config = plugin.getYamlProvider().load(new InputStreamReader(new FileInputStream(groupFile), StandardCharsets.UTF_8));
-				staffGroupPermission = config.getString("staff-group.permission", null);
+				String staffGroupPermission = config.getString("staff-group.permission", null);
 
 				if(staffGroupPermission == null) {
 					plugin.getLogger().warning("No permission defined for staff members. Using default permission: 'ebl.groups.staff'");

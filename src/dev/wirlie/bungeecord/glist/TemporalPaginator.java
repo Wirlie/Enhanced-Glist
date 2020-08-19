@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 public class TemporalPaginator<T> {
 	private List<T> data;
 	private int totalPages;
-	private int pageSize;
-	private long createdAt = System.currentTimeMillis();
+	private final int pageSize;
+	private final long createdAt = System.currentTimeMillis();
 	private boolean testedData = false;
 
 	public TemporalPaginator(Collection<T> data, int pageSize) {

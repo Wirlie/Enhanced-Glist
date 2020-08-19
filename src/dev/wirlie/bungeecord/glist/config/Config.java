@@ -1,6 +1,5 @@
 package dev.wirlie.bungeecord.glist.config;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Config {
@@ -43,7 +42,5 @@ public class Config {
     public static final ConfigEntry<String> UPDATES__NOTIFY__PERMISSION = new ConfigEntry<>("updates.notify.permission");
     public static final ConfigEntry<List<String>> UPDATES__NOTIFY__MESSAGE = new ConfigEntry<>("updates.notify.message");
     public static final ConfigEntry<Integer> UPDATES__NOTIFY__DELAY_MS = new ConfigEntry<>("updates.notify.delay-ms");
-
-    public static void preLoad() {}
 
 }

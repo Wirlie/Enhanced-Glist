@@ -31,7 +31,6 @@ public class EnhancedBCL extends Plugin {
 	private File configFile = null;
 	private GlistCommand commandExecutor = null;
 	private GroupManager groupManager;
-	private UpdateChecker updateChecker = null;
 
 	public void onEnable() {
 		//declaration of commons variables
@@ -57,7 +56,7 @@ public class EnhancedBCL extends Plugin {
 		groupManager = new GroupManager(this);
 
 		if(Config.UPDATES__CHECK_UPDATES.get()) {
-			updateChecker = new UpdateChecker(this);
+			UpdateChecker updateChecker = new UpdateChecker(this);
 			updateChecker.getSpigotVersion(v -> {}, Throwable::printStackTrace);
 
 			pm.registerListener(this, new UpdateNotifyListener(this));
@@ -74,8 +73,6 @@ public class EnhancedBCL extends Plugin {
 		}
 
 		config = yamlProvider.load(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8));
-
-		Config.preLoad();
 
 		Configuration defaultConfiguration = yamlProvider.load(new InputStreamReader(getClass().getResourceAsStream("/Config.yml"), StandardCharsets.UTF_8));
 
@@ -137,7 +134,7 @@ public class EnhancedBCL extends Plugin {
 		String[] aliases = aliasesList.toArray(new String[0]);
 
 		//prepare enhanced list executor
-		commandExecutor = new GlistCommand(this, label, permission, aliases);
+		commandExecutor = new GlistCommand(label, permission, aliases);
 
 		if (firstRegister && label.equalsIgnoreCase("glist")) {
 			//TODO: Probably this can be removed if we declare the cmd_glist plugin as soft dependency, so cmd_glist should be loaded before EnhancedBungeeList...

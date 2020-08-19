@@ -1,6 +1,5 @@
 package dev.wirlie.bungeecord.glist.executor;
 
-import dev.wirlie.bungeecord.glist.EnhancedBCL;
 import dev.wirlie.bungeecord.glist.TemporalPaginator;
 import dev.wirlie.bungeecord.glist.config.Config;
 import dev.wirlie.bungeecord.glist.util.TextUtil;
@@ -21,13 +20,11 @@ import java.util.stream.Collectors;
 
 public class GlistCommand extends Command implements TabExecutor {
 
-	private NumberFormat format = NumberFormat.getNumberInstance();
-	private EnhancedBCL plugin;
-	private Map<String, TemporalPaginator<String>> serversPaginators = new HashMap<>();
+	private final NumberFormat format = NumberFormat.getNumberInstance();
+	private final Map<String, TemporalPaginator<String>> serversPaginators = new HashMap<>();
 
-	public GlistCommand(EnhancedBCL plugin, String name, String permission, String... aliases) {
+	public GlistCommand(String name, String permission, String... aliases) {
 		super(name, permission, aliases);
-		this.plugin = plugin;
 		this.format.setMaximumFractionDigits(2);
 	}
 

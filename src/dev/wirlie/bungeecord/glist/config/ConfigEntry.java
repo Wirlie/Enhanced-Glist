@@ -14,6 +14,7 @@ public class ConfigEntry<T> {
         EnhancedBCL.CONFIGURATIONS_REGISTRY.add(this);
     }
 
+    @SuppressWarnings("unchecked")
     public void setValue(@NotNull Object value) {
         this.value = (T) value;
     }
