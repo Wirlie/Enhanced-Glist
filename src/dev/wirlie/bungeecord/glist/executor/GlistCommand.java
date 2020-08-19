@@ -252,8 +252,10 @@ public class GlistCommand extends Command implements TabExecutor {
 				List<String> pageData = options.contains("-g") ? temporalPaginator.getFullData() : temporalPaginator.getPage(page);
 				if (pageData.isEmpty()) {
 					if (temporalPaginator.getTotalPages() > 0) {
-						sender.sendMessage(TextUtil.fromLegacy(Config.FORMATS__SERVER_LIST__NO_PAGE_DATA_MESSAGE.get().replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()))));
-					} else {
+						for (String line : Config.FORMATS__SERVER_LIST__NO_PAGE_DATA_MESSAGE.get()) {
+							sender.sendMessage(TextUtil.fromLegacy(line.replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()))));
+						}
+					}else {
 						for(String line : Config.FORMATS__SERVER_LIST__NO_PLAYERS_MESSAGE.get()) {
 							sender.sendMessage(TextUtil.fromLegacy(line));
 						}
@@ -287,15 +289,15 @@ public class GlistCommand extends Command implements TabExecutor {
 										.color(ChatColor.WHITE)
 										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1)))
 										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page - 1)) )))
-									.append(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ")
+										.append(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ")
 										.color(ChatColor.GOLD)
-									.append("|", FormatRetention.NONE)
+										.append("|", FormatRetention.NONE)
 										.color(ChatColor.DARK_GRAY)
-									.append(" " + Config.MESSAGES__NEXT_PAGE.get() + " ")
+										.append(" " + Config.MESSAGES__NEXT_PAGE.get() + " ")
 										.color(ChatColor.GOLD)
 										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1)))
 										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NEXT_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page + 1)))))
-									.append(">>").color(ChatColor.WHITE);
+										.append(">>").color(ChatColor.WHITE);
 							} else {
 								cb.append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1)).color(ChatColor.WHITE).append(" to go to the previous page.\n").color(ChatColor.GOLD).append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1)).color(ChatColor.WHITE).append(" to go to the next page.").color(ChatColor.GOLD);
 							}
@@ -306,58 +308,58 @@ public class GlistCommand extends Command implements TabExecutor {
 									cb.append("<<")
 											.color(ChatColor.DARK_RED)
 											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NO_PREVIOUS_PAGE.get())))
-										.append(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ")
+											.append(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ")
 											.color(ChatColor.RED)
-										.append("|", FormatRetention.NONE)
+											.append("|", FormatRetention.NONE)
 											.color(ChatColor.DARK_GRAY)
-										.append(" " + Config.MESSAGES__NEXT_PAGE.get() + " ")
+											.append(" " + Config.MESSAGES__NEXT_PAGE.get() + " ")
 											.color(ChatColor.GOLD)
 											.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1)))
 											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NEXT_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page + 1)))))
-										.append(">>").color(ChatColor.WHITE);
+											.append(">>").color(ChatColor.WHITE);
 								} else {
 									cb.append("Use ").color(ChatColor.GOLD)
-										.append("/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1))
+											.append("/" + this.getName() + " " + serverInfo.getName() + " " + (page + 1))
 											.color(ChatColor.WHITE)
-										.append(" to go to the next page.")
+											.append(" to go to the next page.")
 											.color(ChatColor.GOLD);
 								}
 							} else if (isPlayerExecutor) {
 								cb = new ComponentBuilder("<<")
-											.color(ChatColor.DARK_RED)
-											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NO_PREVIOUS_PAGE.get())))
+										.color(ChatColor.DARK_RED)
+										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NO_PREVIOUS_PAGE.get())))
 										.append(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ")
-											.color(ChatColor.RED)
+										.color(ChatColor.RED)
 										.append("|", FormatRetention.NONE)
-											.color(ChatColor.DARK_GRAY)
+										.color(ChatColor.DARK_GRAY)
 										.append(" " + Config.MESSAGES__NEXT_PAGE.get() + " ")
-											.color(ChatColor.RED)
-											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NO_NEXT_PAGE.get())))
+										.color(ChatColor.RED)
+										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NO_NEXT_PAGE.get())))
 										.append(">>")
-											.color(ChatColor.DARK_RED);
+										.color(ChatColor.DARK_RED);
 							}
 						} else if (page >= temporalPaginator.getTotalPages()) {
 							if (isPlayerExecutor) {
 								cb = new ComponentBuilder("<<")
-											.color(ChatColor.WHITE)
-											.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1)))
-											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page - 1)))))
+										.color(ChatColor.WHITE)
+										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1)))
+										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page - 1)))))
 										.append(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ")
-											.color(ChatColor.GOLD)
+										.color(ChatColor.GOLD)
 										.append("|", FormatRetention.NONE)
-											.color(ChatColor.DARK_GRAY)
+										.color(ChatColor.DARK_GRAY)
 										.append(" " + Config.MESSAGES__NEXT_PAGE.get() + " ")
-											.color(ChatColor.RED)
-											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NO_NEXT_PAGE.get())))
+										.color(ChatColor.RED)
+										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NO_NEXT_PAGE.get())))
 										.append(">>")
-											.color(ChatColor.DARK_RED);
+										.color(ChatColor.DARK_RED);
 							} else {
 								cb = new ComponentBuilder("Use ")
-											.color(ChatColor.GOLD)
+										.color(ChatColor.GOLD)
 										.append("/" + this.getName() + " " + serverInfo.getName() + " " + (page - 1))
-											.color(ChatColor.WHITE)
+										.color(ChatColor.WHITE)
 										.append(" to go to the previous page.")
-											.color(ChatColor.GOLD);
+										.color(ChatColor.GOLD);
 							}
 						}
 

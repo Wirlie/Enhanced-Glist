@@ -14,7 +14,7 @@ public class Config {
     public static final ConfigEntry<List<String>> FORMATS__GLOBAL_LIST__FULL_MESSAGE_FORMAT = new ConfigEntry<>("formats.global-list.full-message-format");
     public static final ConfigEntry<String> FORMATS__GLOBAL_LIST__NO_SERVERS_FORMAT = new ConfigEntry<>("formats.global-list.no-servers-format");
     public static final ConfigEntry<List<String>> FORMATS__SERVER_LIST__FULL_MESSAGE_FORMAT = new ConfigEntry<>("formats.server-list.full-message-format");
-    public static final ConfigEntry<String> FORMATS__SERVER_LIST__NO_PAGE_DATA_MESSAGE = new ConfigEntry<>("formats.server-list.no-page-data-message");
+    public static final ConfigEntry<List<String>> FORMATS__SERVER_LIST__NO_PAGE_DATA_MESSAGE = new ConfigEntry<>("formats.server-list.no-page-data-message");
     public static final ConfigEntry<List<String>> FORMATS__SERVER_LIST__NO_PLAYERS_MESSAGE = new ConfigEntry<>("formats.server-list.no-players-message");
     public static final ConfigEntry<String> FORMATS__GLOBAL_LIST__SERVER_SP_OPTION__MAIN_FORMAT = new ConfigEntry<>("formats.global-list.server-sp-option.main-format");
     public static final ConfigEntry<String> FORMATS__GLOBAL_LIST__SERVER_SP_OPTION__PLAYERS_FORMAT = new ConfigEntry<>("formats.global-list.server-sp-option.players-format");
