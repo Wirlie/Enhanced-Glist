@@ -32,6 +32,10 @@ public class GlistCommand extends Command implements TabExecutor {
 		this.format.setMaximumFractionDigits(2);
 	}
 
+	public void reload() {
+		serversPaginators.clear();
+	}
+
 	public void execute(CommandSender sender, String[] args) {
 		boolean isPlayerExecutor = sender instanceof ProxiedPlayer;
 		Set<String> options = new HashSet<>();

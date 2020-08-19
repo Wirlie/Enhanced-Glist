@@ -142,6 +142,7 @@ public class EnhancedBCL extends Plugin {
 		prepareConfig();
 		groupHooks.forEach(GroupHook::reload);
 		registerListExecutor(false);
+		commandExecutor.reload();
 	}
 
 	private void saveConfig() {
