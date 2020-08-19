@@ -3,10 +3,13 @@ package dev.wirlie.bungeecord.glist;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import dev.wirlie.bungeecord.glist.config.Config;
+import dev.wirlie.bungeecord.glist.config.ConfigEntry;
 import dev.wirlie.bungeecord.glist.executor.GlistCommand;
 import dev.wirlie.bungeecord.glist.executor.EBLCommand;
 import dev.wirlie.bungeecord.glist.groups.GroupManager;
@@ -20,6 +23,9 @@ import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 
 public class EnhancedBCL extends Plugin {
+
+	public static final List<ConfigEntry<?>> CONFIGURATIONS_REGISTRY = new ArrayList<>();
+
 	private Configuration config = null;
 	private ConfigurationProvider yamlProvider = null;
 	private File configFile = null;
@@ -36,8 +42,13 @@ public class EnhancedBCL extends Plugin {
 		logger.info("Enabling plugin ...");
 		configFile = new File(this.getDataFolder() + File.separator + "Config.yml");
 
-		getLogger().info("Validating Config.yml ...");
-		ConfigurationValidator.validate(this);
+		logger.info("Preparing and validating configuration ...");
+		try {
+			prepareConfig();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
 
 		logger.info("Registering /ebl command ...");
 		pm.registerCommand(this, new EBLCommand(this));
@@ -45,7 +56,7 @@ public class EnhancedBCL extends Plugin {
 		registerListExecutor(true);
 		groupManager = new GroupManager(this);
 
-		if(getConfig().getBoolean("updates.check-updates", DefaultValues.getDefaultBoolean("updates.check-updates"))) {
+		if(Config.UPDATES__CHECK_UPDATES.get()) {
 			updateChecker = new UpdateChecker(this);
 			updateChecker.getSpigotVersion(v -> {}, Throwable::printStackTrace);
 
@@ -53,27 +64,56 @@ public class EnhancedBCL extends Plugin {
 		}
 	}
 
+	public ConfigurationProvider getYamlProvider() {
+		return yamlProvider;
+	}
+
+	private void prepareConfig() throws IOException {
+		if(!configFile.exists()) {
+			Files.copy(getClass().getResourceAsStream("/Config.yml"), configFile.toPath());
+		}
+
+		config = yamlProvider.load(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8));
+
+		Config.preLoad();
+
+		Configuration defaultConfiguration = yamlProvider.load(new InputStreamReader(getClass().getResourceAsStream("/Config.yml"), StandardCharsets.UTF_8));
+
+		boolean shouldSave = false;
+		for(ConfigEntry<?> pendingResolution : CONFIGURATIONS_REGISTRY) {
+			if(!config.contains(pendingResolution.getKey()) || config.get(pendingResolution.getKey()) == null) {
+				//get fallback value
+				Object fallbackValue = defaultConfiguration.get(pendingResolution.getKey());
+
+				if(fallbackValue == null) {
+					throw new IOException("Cannot get default value of [" + pendingResolution.getKey() + "] from default Configuration...");
+				}
+
+				config.set(pendingResolution.getKey(), fallbackValue);
+				pendingResolution.setValue(fallbackValue);
+				shouldSave = true;
+			} else {
+				pendingResolution.setValue(config.get(pendingResolution.getKey()));
+			}
+		}
+
+		if(shouldSave) {
+			saveConfig();
+		}
+	}
+
 	public GroupManager getGroupManager() {
 		return groupManager;
 	}
 
-	public Configuration getConfig() {
-		if (config == null) {
-			loadConfig();
-		}
-
-		return this.config;
-	}
-
-	public void reloadConfig() {
-		config = null;
+	public void reloadConfig() throws IOException {
+		prepareConfig();
 
 		registerListExecutor(false);
 		getGroupManager().loadGroups();
 	}
 
-	@SuppressWarnings("unused")
-	public void saveConfig() {
+	private void saveConfig() {
 		if (config != null) {
 			try {
 				yamlProvider.save(config, new OutputStreamWriter(new FileOutputStream(configFile), StandardCharsets.UTF_8));
@@ -84,40 +124,16 @@ public class EnhancedBCL extends Plugin {
 
 	}
 
-	private void loadConfig() {
-		if (!configFile.exists()) {
-			if (!configFile.getParentFile().mkdirs()) {
-				getLogger().warning("Cannot make parent dir: " + configFile.getParentFile().getAbsolutePath());
-			}
-
-			try (InputStream in = getResourceAsStream("Config.yml")) {
-				Files.copy(in, configFile.toPath());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		try {
-			config = yamlProvider.load(new InputStreamReader(new FileInputStream(configFile), StandardCharsets.UTF_8));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public Configuration loadConfiguration(File file) throws IOException {
-		return yamlProvider.load(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-	}
-
 	private void registerListExecutor(boolean firstRegister) {
 		if (commandExecutor != null) {
 			BungeeCord.getInstance().getPluginManager().unregisterCommand(commandExecutor);
 		}
 
 		//read configuration
-		String label = this.getConfig().getString("command.global-list.label", "glist");
+		String label = Config.COMMAND__GLIST__LABEL.get();
 		getLogger().info("Loading /" + label + " command ...");
-		String permission = this.getConfig().getString("command.global-list.permission", null);
-		List<String> aliasesList = this.getConfig().getStringList("command.global-list.aliases");
+		String permission = Config.COMMAND__GLIST__PERMISSION.get();
+		List<String> aliasesList = Config.COMMAND__GLIST__ALIASES.get();
 		String[] aliases = aliasesList.toArray(new String[0]);
 
 		//prepare enhanced list executor

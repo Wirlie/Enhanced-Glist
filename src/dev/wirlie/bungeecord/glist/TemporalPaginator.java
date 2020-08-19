@@ -13,7 +13,7 @@ public class TemporalPaginator<T> {
 	private long createdAt = System.currentTimeMillis();
 	private boolean testedData = false;
 
-	TemporalPaginator(Collection<T> data, int pageSize) {
+	public TemporalPaginator(Collection<T> data, int pageSize) {
 		if (pageSize < 1) {
 			pageSize = 1;
 		}
