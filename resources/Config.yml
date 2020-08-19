@@ -9,8 +9,8 @@ command:
     # Aliases of the List Command, for example, if you set "blist" and "bls" as aliases of
     # the List Command then you can use /blist and /bls to display the enhanced Bungee List.
     aliases:
-    - "blist"
-    - "bls"
+      - "blist"
+      - "bls"
 formats:
   global-list:
     # Format for the -sp option
@@ -36,16 +36,16 @@ formats:
     # {LABEL} = Label or alias used to display the Enhanced List.
     # {TOTAL_PLAYER_AMOUNT} = Amount of total players in the Network.
     full-message-format:
-    - "&8&m&l----------------------------------&r"
-    - " &eList of all servers on the Network:"
-    - ""
-    - "{SERVERS_ROWS}"
-    - ""
-    - " &7&oAnd &f&o{NOT_DISPLAYED_AMOUNT} &7&oservers not displayed.&r"
-    - " &6Total Players: &f{TOTAL_PLAYER_AMOUNT}"
-    - ""
-    - " &fTIP: &7Use &e/{LABEL} <server> &7to display a list of all players in the specified server."
-    - "&8&m&l----------------------------------"
+      - "&8&m&l----------------------------------&r"
+      - " &eList of all servers on the Network:"
+      - ""
+      - "{SERVERS_ROWS}"
+      - ""
+      - " &7&oAnd &f&o{NOT_DISPLAYED_AMOUNT} &7&oservers not displayed.&r"
+      - " &6Total Players: &f{TOTAL_PLAYER_AMOUNT}"
+      - ""
+      - " &fTIP: &7Use &e/{LABEL} <server> &7to display a list of all players in the specified server."
+      - "&8&m&l----------------------------------"
     # Message when no rows are available to display in the {SERVERS_ROW} format (configured previously).
     no-servers-format: " &cNo servers to display."
   server-list:
@@ -58,26 +58,26 @@ formats:
     # {PLAYERS_ROWS} = Rows that displays the players names that are in the server.
     # {PAGINATION_CONTROLLER} = Pagination controller (for previous and next page).
     full-message-format:
-    - "&8&m--------------------------------------&r"
-    - " &6Server Name: &f{SERVER_NAME}"
-    - " &6Players: &f{PLAYERS_COUNT}"
-    - " &eDisplaying page &f{PAGE} &6of &f{TOTAL_PAGES}"
-    - ""
-    - "{PLAYERS_ROWS}"
-    - "{PAGINATION_CONTROLLER}"
-    - "&8&m--------------------------------------"
+      - "&8&m--------------------------------------&r"
+      - " &6Server Name: &f{SERVER_NAME}"
+      - " &6Players: &f{PLAYERS_COUNT}"
+      - " &eDisplaying page &f{PAGE} &6of &f{TOTAL_PAGES}"
+      - ""
+      - "{PLAYERS_ROWS}"
+      - "{PAGINATION_CONTROLLER}"
+      - "&8&m--------------------------------------"
     # Message displayed when the executor tries to retrieve a page that are out of the index bounds.
     # Available Formats:
     # {TOTAL_PAGES} = Total number of pages.
     no-page-data-message:
-    - "&8&m--------------------------------------&r"
-    - " &cNo data to show in this page! Please try with a another page between &f1 &cand &f{TOTAL_PAGES}&c."
-    - "&8&m--------------------------------------"
+      - "&8&m--------------------------------------&r"
+      - " &cNo data to show in this page! Please try with a another page between &f1 &cand &f{TOTAL_PAGES}&c."
+      - "&8&m--------------------------------------"
     # Message displayed when the executor tries to list a server that not have players.
     no-players-message:
-    - "&8&m--------------------------------------&r"
-    - " &cThis server not have players at this moment."
-    - "&8&m--------------------------------------"
+      - "&8&m--------------------------------------&r"
+      - " &cThis server not have players at this moment."
+      - "&8&m--------------------------------------"
 behaviour:
   global-list:
     # Hide servers that not have players in the Enhanced List.
@@ -100,7 +100,7 @@ behaviour:
     players-per-page: 16
   # A list of servers names that you want to ignore/hide.
   blacklisted-servers:
-  - "Login"
+    - "Login"
   # Set as true to show server names in upper case
   global-list-uppercase-server-names: false
   # Set as true to show the server name in upper case (/glist <server>)
@@ -158,12 +158,14 @@ updates:
 # when you use the /glist command
 servers:
   groups:
-    bedwars:
-      - "bedwars1"
-      - "bedwars2"
-      - "bedwars3"
-      - "bedwars4"
-    lobbies:
-      - "lobby1"
-      - "lobby2"
-      - "lobby3"
+    - group-id: "bedwars"
+      servers:
+        - "bedwars1"
+        - "bedwars2"
+        - "bedwars3"
+        - "bedwars4"
+    - group-id: "lobby"
+      servers:
+        - "lobby1"
+        - "lobby2"
+        - "lobby3"
