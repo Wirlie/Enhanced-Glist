@@ -9,10 +9,16 @@ command:
     # Aliases of the List Command, for example, if you set "blist" and "bls" as aliases of
     # the List Command then you can use /blist and /bls to display the enhanced Bungee List.
     aliases:
-    - "blist"
-    - "bls"
+      - "blist"
+      - "bls"
 formats:
   global-list:
+    # Format for the -sp option
+    server-sp-option:
+      # The main format of the -sp option, this is displayed below of the server row
+      # when uses /glist -sp
+      main-format: '&a{SERVER_NAME}: &8[{PLAYERS_FORMAT}&8]'
+      players-format: '&f{PLAYER_NAME}&7, '
     # Available Formats:
     # {SERVER_NAME} = Replaced by the server name configured in the Config.yml of your BungeeCord Server.
     # {PLAYER_AMOUNT} = Amount of players connected to the server.
@@ -30,16 +36,16 @@ formats:
     # {LABEL} = Label or alias used to display the Enhanced List.
     # {TOTAL_PLAYER_AMOUNT} = Amount of total players in the Network.
     full-message-format:
-    - "&8&m&l----------------------------------&r"
-    - " &eList of all servers on the Network:"
-    - ""
-    - "{SERVERS_ROWS}"
-    - ""
-    - " &7&oAnd &f&o{NOT_DISPLAYED_AMOUNT} &7&oservers not displayed.&r"
-    - " &6Total Players: &f{TOTAL_PLAYER_AMOUNT}"
-    - ""
-    - " &fTIP: &7Use &e/{LABEL} <server> &7to display a list of all players in the specified server."
-    - "&8&m&l----------------------------------"
+      - "&8&m&l----------------------------------&r"
+      - " &eList of all servers on the Network:"
+      - ""
+      - "{SERVERS_ROWS}"
+      - ""
+      - " &7&oAnd &f&o{NOT_DISPLAYED_AMOUNT} &7&oservers not displayed.&r"
+      - " &6Total Players: &f{TOTAL_PLAYER_AMOUNT}"
+      - ""
+      - " &fTIP: &7Use &e/{LABEL} <server> &7to display a list of all players in the specified server."
+      - "&8&m&l----------------------------------"
     # Message when no rows are available to display in the {SERVERS_ROW} format (configured previously).
     no-servers-format: " &cNo servers to display."
   server-list:
@@ -52,26 +58,26 @@ formats:
     # {PLAYERS_ROWS} = Rows that displays the players names that are in the server.
     # {PAGINATION_CONTROLLER} = Pagination controller (for previous and next page).
     full-message-format:
-    - "&8&m--------------------------------------&r"
-    - " &6Server Name: &f{SERVER_NAME}"
-    - " &6Players: &f{PLAYERS_COUNT}"
-    - " &eDisplaying page &f{PAGE} &6of &f{TOTAL_PAGES}"
-    - ""
-    - "{PLAYERS_ROWS}"
-    - "{PAGINATION_CONTROLLER}"
-    - "&8&m--------------------------------------"
+      - "&8&m--------------------------------------&r"
+      - " &6Server Name: &f{SERVER_NAME}"
+      - " &6Players: &f{PLAYERS_COUNT}"
+      - " &eDisplaying page &f{PAGE} &6of &f{TOTAL_PAGES}"
+      - ""
+      - "{PLAYERS_ROWS}"
+      - "{PAGINATION_CONTROLLER}"
+      - "&8&m--------------------------------------"
     # Message displayed when the executor tries to retrieve a page that are out of the index bounds.
     # Available Formats:
     # {TOTAL_PAGES} = Total number of pages.
     no-page-data-message:
-    - "&8&m--------------------------------------&r"
-    - " &cNo data to show in this page! Please try with a another page between &f1 &cand &f{TOTAL_PAGES}&c."
-    - "&8&m--------------------------------------"
+      - "&8&m--------------------------------------&r"
+      - " &cNo data to show in this page! Please try with a another page between &f1 &cand &f{TOTAL_PAGES}&c."
+      - "&8&m--------------------------------------"
     # Message displayed when the executor tries to list a server that not have players.
     no-players-message:
-    - "&8&m--------------------------------------&r"
-    - " &cThis server not have players at this moment."
-    - "&8&m--------------------------------------"
+      - "&8&m--------------------------------------&r"
+      - " &cThis server not have players at this moment."
+      - "&8&m--------------------------------------"
 behaviour:
   global-list:
     # Hide servers that not have players in the Enhanced List.
@@ -94,11 +100,34 @@ behaviour:
     players-per-page: 16
   # A list of servers names that you want to ignore/hide.
   blacklisted-servers:
-  - "Login"
+    - "Login"
+  # Set as true to show server names in upper case
   global-list-uppercase-server-names: false
+  # Set as true to show the server name in upper case (/glist <server>)
   server-list-uppercase-server-name: false
+  # Configurations related to the Group System
+  # If enabled, plugin will show the respective prefix of each player
+  # using LuckPerms (if available), or the internal Group System (GroupsPrefix.yml)
+  groups-prefix:
+    # Set as true to enable prefixes
+    enable: true
+    use:
+      # Set as true if you want to use LuckPerms to get the prefix of a player
+      # Only applicable if LuckPerms is present in your BungeeCord server
+      luckperms: true
+      # Set as true to use the internal Group System of the plugin
+      # Configurable though the GroupsPrefix.yml configuration
+      internal-group-system: true
+    # Set the priority to use, for example, if you enable LuckPerms and internal Group System
+    # and you have set LuckPerms with a priority of 20 and the internal Group System with a
+    # priority of 1, if a certain player has a prefix through LuckPerms but also is applicable
+    # for a prefix through the internal Group System, then the LuckPerms prefix will be
+    # preferred and displayed as the current prefix of the player discarding the prefix of the
+    # internal Group System
+    priority:
+      luckperms: 20
+      internal-group-system: 1
 messages:
-  server-players: "{SERVER_NAME} players:"
   cannot-found-server: "&cThe specified server name {NAME} &ccannot be found in the Network."
   previous-page-hover-message: "&eClick here to go to the page &f#{PAGE_NUMBER}"
   next-page-hover-message: "&eClick here to go to the page &f#{PAGE_NUMBER}"
@@ -106,3 +135,37 @@ messages:
   next-page: "Next Page"
   no-previous-page: "&cNo previous page available."
   no-next-page: "&cNo next page available."
+  all-pages: "Todas las Páginas"
+updates:
+  # Set as true to check updates periodically
+  check-updates: true
+  # Notify configurations only have effect if you have set "check-updates" as true
+  notify:
+    # Set as true to receive notifications in-game when a new update is available
+    enable: true
+    # Delay in milliseconds before the update message will be send to the player that have the correct permission
+    delay-ms: 2500
+    # Permission required to show the notification
+    permission: "ebcl.update.notify"
+    # Message to use as notification
+    message:
+      - "&8&m-------------[&r &aEnhancedBungeeList &8&m]-------------"
+      - "&eA new update is available! Download:"
+      - "&bhttps://www.spigotmc.org/resources/enhancedbungeelist.53295/"
+      - "&8&m----------------------------------------------"
+# Configure server groups.
+# If you define a group with multiples servers, then all servers will be threaded as one server
+# when you use the /glist command
+servers:
+  groups:
+    - group-id: "bedwars"
+      servers:
+        - "bedwars1"
+        - "bedwars2"
+        - "bedwars3"
+        - "bedwars4"
+    - group-id: "lobby"
+      servers:
+        - "lobby1"
+        - "lobby2"
+        - "lobby3"
