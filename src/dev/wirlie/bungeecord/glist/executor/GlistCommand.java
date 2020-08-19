@@ -1,7 +1,9 @@
 package dev.wirlie.bungeecord.glist.executor;
 
+import dev.wirlie.bungeecord.glist.EnhancedBCL;
 import dev.wirlie.bungeecord.glist.TemporalPaginator;
 import dev.wirlie.bungeecord.glist.config.Config;
+import dev.wirlie.bungeecord.glist.hooks.GroupHook;
 import dev.wirlie.bungeecord.glist.util.TextUtil;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
@@ -22,9 +24,11 @@ public class GlistCommand extends Command implements TabExecutor {
 
 	private final NumberFormat format = NumberFormat.getNumberInstance();
 	private final Map<String, TemporalPaginator<String>> serversPaginators = new HashMap<>();
+	private final EnhancedBCL plugin;
 
-	public GlistCommand(String name, String permission, String... aliases) {
+	public GlistCommand(EnhancedBCL plugin, String name, String permission, String... aliases) {
 		super(name, permission, aliases);
+		this.plugin = plugin;
 		this.format.setMaximumFractionDigits(2);
 	}
 
@@ -170,12 +174,20 @@ public class GlistCommand extends Command implements TabExecutor {
 							//eliminar formato
 							int indexOf = playersFormat.indexOf("{PLAYER_NAME}");
 							if(indexOf != -1) {
-								playersString.append(playersFormat.substring(0, indexOf + "{PLAYER_NAME}".length()).replace("{PLAYER_NAME}", player.getName()));
+								String prefix = plugin.getPrefix(player);
+								String playerName = (prefix == null ? "" : prefix + " ") +  player.getName();
+
+								playersString.append(playersFormat.substring(0, indexOf + "{PLAYER_NAME}".length()).replace("{PLAYER_NAME}", playerName));
 							} else {
-								playersString.append(playersFormat.replace("{PLAYER_NAME}", player.getName()));
+								String prefix = plugin.getPrefix(player);
+								String playerName = (prefix == null ? "" : prefix + " ") +  player.getName();
+								playersString.append(playersFormat.replace("{PLAYER_NAME}", playerName));
 							}
 						} else {
-							playersString.append(playersFormat.replace("{PLAYER_NAME}", player.getName()));
+							String prefix = plugin.getPrefix(player);
+							String playerName = (prefix == null ? "" : prefix + " ") +  player.getName();
+
+							playersString.append(playersFormat.replace("{PLAYER_NAME}", playerName));
 						}
 					}
 
@@ -195,10 +207,32 @@ public class GlistCommand extends Command implements TabExecutor {
 			if (serverInfo == null) {
 				sender.sendMessage(TextUtil.fromLegacy(Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)));
 			} else {
-				TemporalPaginator<String> temporalPaginator = this.serversPaginators.computeIfAbsent(serverInfo.getName(), (k) -> new TemporalPaginator<>(serverInfo.getPlayers().stream().map(CommandSender::getName).collect(Collectors.toList()), Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get()));
+				TemporalPaginator<String> temporalPaginator = this.serversPaginators.computeIfAbsent(serverInfo.getName(), (k) -> new TemporalPaginator<>(serverInfo.getPlayers().stream().map(cs -> {
+					if(cs instanceof ProxiedPlayer) {
+						String prefix = plugin.getPrefix((ProxiedPlayer) cs);
+						if(prefix != null) {
+							return prefix + " " + cs.getName();
+						} else {
+							return cs.getName();
+						}
+					} else {
+						return cs.getName();
+					}
+				}).collect(Collectors.toList()), Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get()));
 
 				if (temporalPaginator.shouldUpdate(60000L)) {
-					temporalPaginator.update(serverInfo.getPlayers().stream().map(CommandSender::getName).collect(Collectors.toList()));
+					temporalPaginator.update(serverInfo.getPlayers().stream().map(cs -> {
+						if(cs instanceof ProxiedPlayer) {
+							String prefix = plugin.getPrefix((ProxiedPlayer) cs);
+							if(prefix != null) {
+								return prefix + " " + cs.getName();
+							} else {
+								return cs.getName();
+							}
+						} else {
+							return cs.getName();
+						}
+					}).collect(Collectors.toList()));
 				}
 
 				page = 1;
@@ -215,7 +249,9 @@ public class GlistCommand extends Command implements TabExecutor {
 					if (temporalPaginator.getTotalPages() > 0) {
 						sender.sendMessage(TextUtil.fromLegacy(Config.FORMATS__SERVER_LIST__NO_PAGE_DATA_MESSAGE.get().replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()))));
 					} else {
-						sender.sendMessage(TextUtil.fromLegacy(Config.FORMATS__SERVER_LIST__NO_PLAYERS_MESSAGE.get()));
+						for(String line : Config.FORMATS__SERVER_LIST__NO_PLAYERS_MESSAGE.get()) {
+							sender.sendMessage(TextUtil.fromLegacy(line));
+						}
 					}
 				} else {
 					String[] namesData = pageData.toArray(new String[0]);
