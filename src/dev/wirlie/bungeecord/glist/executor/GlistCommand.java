@@ -445,7 +445,11 @@ public class GlistCommand extends Command implements TabExecutor {
 			}).map(ServerInfo::getName).collect(Collectors.toList());
 
 			//add groups as suggestions
-			suggestions.addAll(plugin.getServerGroups().stream().map(ServerGroup::getId).collect(Collectors.toList()));
+			List<String> groupSuggestions = plugin.getServerGroups().stream().map(ServerGroup::getId).collect(Collectors.toList());
+			//remove blacklisted
+			groupSuggestions.removeIf(g -> blackListedServers.stream().anyMatch(ss -> ss.equalsIgnoreCase(g)));
+
+			suggestions.addAll(groupSuggestions);
 
 			if(args[0].isEmpty() || args[0].startsWith("-")) {
 				suggestions.add("-g");
