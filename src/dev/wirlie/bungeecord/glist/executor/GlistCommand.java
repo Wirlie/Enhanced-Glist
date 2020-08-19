@@ -179,18 +179,19 @@ public class GlistCommand extends Command implements TabExecutor {
 							int indexOf = playersFormat.indexOf("{PLAYER_NAME}");
 							if(indexOf != -1) {
 								String prefix = plugin.getPrefix(player);
-								String playerName = (prefix == null ? "" : prefix + " ") +  player.getName();
-
+								boolean isEmptyPrefix = prefix != null && ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty();
+								String playerName = (prefix == null ? "" : prefix + (isEmptyPrefix ? "" : " ")) +  player.getName();
 								playersString.append(playersFormat.substring(0, indexOf + "{PLAYER_NAME}".length()).replace("{PLAYER_NAME}", playerName));
 							} else {
 								String prefix = plugin.getPrefix(player);
-								String playerName = (prefix == null ? "" : prefix + " ") +  player.getName();
+								boolean isEmptyPrefix = prefix != null && ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty();
+								String playerName = (prefix == null ? "" : prefix + (isEmptyPrefix ? "" : " ")) +  player.getName();
 								playersString.append(playersFormat.replace("{PLAYER_NAME}", playerName));
 							}
 						} else {
 							String prefix = plugin.getPrefix(player);
-							String playerName = (prefix == null ? "" : prefix + " ") +  player.getName();
-
+							boolean isEmptyPrefix = prefix != null && ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty();
+							String playerName = (prefix == null ? "" : prefix + (isEmptyPrefix ? "" : " ")) +  player.getName();
 							playersString.append(playersFormat.replace("{PLAYER_NAME}", playerName));
 						}
 					}
@@ -212,12 +213,12 @@ public class GlistCommand extends Command implements TabExecutor {
 				sender.sendMessage(TextUtil.fromLegacy(Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)));
 			} else {
 				TemporalPaginator<String> temporalPaginator = this.serversPaginators.computeIfAbsent(serverInfo.getName(), (k) -> new TemporalPaginator<>(serverInfo.getPlayers().stream().map(cs -> {
-					if(cs instanceof ProxiedPlayer) {
-						String prefix = plugin.getPrefix((ProxiedPlayer) cs);
-						if(prefix != null) {
-							return prefix + " " + cs.getName();
+					String prefix = plugin.getPrefix(cs);
+					if(prefix != null) {
+						if(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty()) {
+							return prefix + cs.getName();
 						} else {
-							return cs.getName();
+							return prefix + " " + cs.getName();
 						}
 					} else {
 						return cs.getName();
@@ -226,12 +227,12 @@ public class GlistCommand extends Command implements TabExecutor {
 
 				if (temporalPaginator.shouldUpdate(60000L)) {
 					temporalPaginator.update(serverInfo.getPlayers().stream().map(cs -> {
-						if(cs instanceof ProxiedPlayer) {
-							String prefix = plugin.getPrefix((ProxiedPlayer) cs);
-							if(prefix != null) {
-								return prefix + " " + cs.getName();
+						String prefix = plugin.getPrefix(cs);
+						if(prefix != null) {
+							if(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty()) {
+								return prefix + cs.getName();
 							} else {
-								return cs.getName();
+								return prefix + " " + cs.getName();
 							}
 						} else {
 							return cs.getName();
