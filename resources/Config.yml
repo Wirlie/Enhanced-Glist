@@ -153,3 +153,17 @@ updates:
       - "&eA new update is available! Download:"
       - "&bhttps://www.spigotmc.org/resources/enhancedbungeelist.53295/"
       - "&8&m----------------------------------------------"
+# Configure server groups.
+# If you define a group with multiples servers, then all servers will be threaded as one server
+# when you use the /glist command
+servers:
+  groups:
+    bedwars:
+      - "bedwars1"
+      - "bedwars2"
+      - "bedwars3"
+      - "bedwars4"
+    lobbies:
+      - "lobby1"
+      - "lobby2"
+      - "lobby3"
