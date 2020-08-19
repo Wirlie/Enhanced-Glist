@@ -28,7 +28,6 @@ public class Config {
     public static final ConfigEntry<Boolean> BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES = new ConfigEntry<>("behaviour.global-list-uppercase-server-names");
     public static final ConfigEntry<Boolean> BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME = new ConfigEntry<>("behaviour.server-list-uppercase-server-name");
 
-    public static final ConfigEntry<String> MESSAGES__SERVER_PLAYERS = new ConfigEntry<>("messages.server-players");
     public static final ConfigEntry<String> MESSAGES__CANNOT_FOUND_SERVER = new ConfigEntry<>("messages.cannot-found-server");
     public static final ConfigEntry<String> MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE = new ConfigEntry<>("messages.previous-page-hover-message");
     public static final ConfigEntry<String> MESSAGES__NEXT_PAGE_HOVER_MESSAGE = new ConfigEntry<>("messages.next-page-hover-message");
@@ -36,6 +35,8 @@ public class Config {
     public static final ConfigEntry<String> MESSAGES__NEXT_PAGE = new ConfigEntry<>("messages.next-page");
     public static final ConfigEntry<String> MESSAGES__NO_PREVIOUS_PAGE = new ConfigEntry<>("messages.no-previous-page");
     public static final ConfigEntry<String> MESSAGES__NO_NEXT_PAGE = new ConfigEntry<>("messages.no-next-page");
+    public static final ConfigEntry<String> MESSAGES__ALL_PAGES = new ConfigEntry<>("messages.all-pages");
+
 
     public static final ConfigEntry<Boolean> UPDATES__CHECK_UPDATES = new ConfigEntry<>("updates.check-updates");
     public static final ConfigEntry<Boolean> UPDATES__NOTIFY__ENABLE = new ConfigEntry<>("updates.notify.enable");

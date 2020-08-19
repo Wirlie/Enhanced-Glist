@@ -104,7 +104,6 @@ behaviour:
   global-list-uppercase-server-names: false
   server-list-uppercase-server-name: false
 messages:
-  server-players: "{SERVER_NAME} players:"
   cannot-found-server: "&cThe specified server name {NAME} &ccannot be found in the Network."
   previous-page-hover-message: "&eClick here to go to the page &f#{PAGE_NUMBER}"
   next-page-hover-message: "&eClick here to go to the page &f#{PAGE_NUMBER}"
@@ -112,6 +111,7 @@ messages:
   next-page: "Next Page"
   no-previous-page: "&cNo previous page available."
   no-next-page: "&cNo next page available."
+  all-pages: "Todas las Páginas"
 updates:
   check-updates: true
   notify:
