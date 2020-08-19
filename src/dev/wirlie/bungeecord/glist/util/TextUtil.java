@@ -18,6 +18,8 @@ public class TextUtil {
          if (str != null) {
             String sanitized = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', str));
 
+            int realIndex = sanitized.length();
+
             if (sanitized.length() > columnSize - 2) {
                char[] chars = str.toCharArray();
 
@@ -53,9 +55,10 @@ public class TextUtil {
                }
 
                str = str.substring(0, absoluteIndex);
+               realIndex = strippedIndex;
             }
 
-            int fillSpaces = columnSize - str.length();
+            int fillSpaces = columnSize - realIndex;
             stringBuilder.append(ChatColor.DARK_AQUA.toString()).append("#").append(j).append(" ").append(columnColor.toString()).append(str);
 
             for (int i = 0; i < fillSpaces; ++i) {
