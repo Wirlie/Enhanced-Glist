@@ -220,6 +220,12 @@ public class GlistCommand extends Command implements TabExecutor {
 		} else {
 			String serverName = args[0];
 
+			//is blacklisted?
+			if(Config.BEHAVIOUR__SERVER_LIST__BLACKLISTED_SERVERS.get().stream().anyMatch(s -> s.equalsIgnoreCase(serverName))) {
+				sender.sendMessage(TextUtil.fromLegacy(Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)));
+				return;
+			}
+
 			ServerInfoProvider serverInfoPre = null;
 
 			//try with group first
@@ -427,12 +433,26 @@ public class GlistCommand extends Command implements TabExecutor {
 	public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
 
 		if(args.length == 1) {
-			List<String> suggestions = BungeeCord.getInstance().getServers().values().stream().filter(s -> s.getName().toLowerCase().contains(args[0].toLowerCase())).map(ServerInfo::getName).collect(Collectors.toList());
+			List<String> blackListedServers = Config.BEHAVIOUR__SERVER_LIST__BLACKLISTED_SERVERS.get();
+			List<String> suggestions = BungeeCord.getInstance().getServers().values().stream().filter(s -> {
+				//hide blacklisted
+				if(blackListedServers.stream().anyMatch(ss -> ss.equalsIgnoreCase(s.getName()))) {
+					return false;
+				}
+
+				if(s.getName().toLowerCase().contains(args[0].toLowerCase())) {
+					return true;
+				}
+
+				return false;
+			}).map(ServerInfo::getName).collect(Collectors.toList());
+
 			if(args[0].isEmpty() || args[0].startsWith("-")) {
 				suggestions.add("-g");
 				suggestions.add("-sp");
 				suggestions.add("-a");
 			}
+
 			return suggestions;
 		}
 
