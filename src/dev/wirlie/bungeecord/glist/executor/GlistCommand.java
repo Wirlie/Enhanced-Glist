@@ -435,17 +435,17 @@ public class GlistCommand extends Command implements TabExecutor {
 
 		if(args.length == 1) {
 			List<String> blackListedServers = Config.BEHAVIOUR__SERVER_LIST__BLACKLISTED_SERVERS.get();
-			List<String> suggestions = BungeeCord.getInstance().getServers().values().stream().filter(s -> {
+			Set<String> suggestions = BungeeCord.getInstance().getServers().values().stream().filter(s -> {
 				//hide blacklisted
 				if(blackListedServers.stream().anyMatch(ss -> ss.equalsIgnoreCase(s.getName()))) {
 					return false;
 				}
 
 				return s.getName().toLowerCase().contains(args[0].toLowerCase());
-			}).map(ServerInfo::getName).collect(Collectors.toList());
+			}).map(s -> s.getName().toLowerCase()).collect(Collectors.toSet());
 
 			//add groups as suggestions
-			List<String> groupSuggestions = plugin.getServerGroups().stream().map(ServerGroup::getId).collect(Collectors.toList());
+			List<String> groupSuggestions = plugin.getServerGroups().stream().map(s -> s.getId().toLowerCase()).collect(Collectors.toList());
 			//remove blacklisted
 			groupSuggestions.removeIf(g -> blackListedServers.stream().anyMatch(ss -> ss.equalsIgnoreCase(g)));
 
