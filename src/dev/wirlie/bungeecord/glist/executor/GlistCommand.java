@@ -4,6 +4,7 @@ import dev.wirlie.bungeecord.glist.EnhancedBCL;
 import dev.wirlie.bungeecord.glist.TemporalPaginator;
 import dev.wirlie.bungeecord.glist.config.Config;
 import dev.wirlie.bungeecord.glist.servers.BungeecordInfoProvider;
+import dev.wirlie.bungeecord.glist.servers.ServerGroup;
 import dev.wirlie.bungeecord.glist.servers.ServerInfoProvider;
 import dev.wirlie.bungeecord.glist.util.TextUtil;
 import net.md_5.bungee.BungeeCord;
@@ -442,6 +443,9 @@ public class GlistCommand extends Command implements TabExecutor {
 
 				return s.getName().toLowerCase().contains(args[0].toLowerCase());
 			}).map(ServerInfo::getName).collect(Collectors.toList());
+
+			//add groups as suggestions
+			suggestions.addAll(plugin.getServerGroups().stream().map(ServerGroup::getId).collect(Collectors.toList()));
 
 			if(args[0].isEmpty() || args[0].startsWith("-")) {
 				suggestions.add("-g");
