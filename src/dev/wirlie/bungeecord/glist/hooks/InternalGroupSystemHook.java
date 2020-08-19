@@ -21,7 +21,7 @@ public class InternalGroupSystemHook extends GroupHook {
 
     @Override
     public @Nullable String getPrefix(ProxiedPlayer player) {
-        return manager.getGroup(player).map(Group::getPrefix).orElse(null);
+        return manager.getGroup(player).map(g -> g.getPrefix() + g.getNameColor()).orElse(null);
     }
 
     @Override

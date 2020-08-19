@@ -190,9 +190,19 @@ public class EnhancedBCL extends Plugin {
 			String tryPrefix = hook.getPrefix(player);
 
 			if(tryPrefix != null) {
-				if(tryPrefix.endsWith(" ")) {
-					tryPrefix = tryPrefix.substring(0, tryPrefix.length() - 1);
+				String sanitizedPrefix = ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', tryPrefix));
+
+				if(sanitizedPrefix.endsWith(" ")) {
+					int lastSpace = tryPrefix.lastIndexOf(' ');
+					if(lastSpace == tryPrefix.length() - 1) {
+						tryPrefix = tryPrefix.substring(0, tryPrefix.length() - 1);
+					} else {
+						tryPrefix = tryPrefix.substring(0, lastSpace) + tryPrefix.substring(lastSpace + 1, tryPrefix.length());
+					}
+				} else if(tryPrefix.isEmpty()) {
+					continue;
 				}
+
 				return ChatColor.translateAlternateColorCodes('&', tryPrefix);
 			}
 		}
