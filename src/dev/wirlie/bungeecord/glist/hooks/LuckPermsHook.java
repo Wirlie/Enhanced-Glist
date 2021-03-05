@@ -28,6 +28,10 @@ public class LuckPermsHook extends GroupHook {
                     .getPrefix();
         }
 
+        if(prefix == null || prefix.equalsIgnoreCase("null")) {
+            prefix = "";
+        }
+
         return prefix;
     }
 
