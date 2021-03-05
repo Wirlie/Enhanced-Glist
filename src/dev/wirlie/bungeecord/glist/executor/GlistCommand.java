@@ -358,10 +358,11 @@ public class GlistCommand extends Command implements TabExecutor {
 		   })
 		   .limit(Config.BEHAVIOUR__GLOBAL_LIST__MAX_SERVERS_ROWS.get() < 1 ? Integer.MAX_VALUE : options.contains("-g") ? Integer.MAX_VALUE : Config.BEHAVIOUR__GLOBAL_LIST__MAX_SERVERS_ROWS.get()).collect(Collectors.toList());
 
-		StringBuilder rowsBuilder = new StringBuilder();
+		ComponentBuilder rowsBuilder = new ComponentBuilder("");
+
 		int totalPlayers = BungeeCord.getInstance().getPlayers().size();
 		if (servers.isEmpty()) {
-			rowsBuilder.append(Config.FORMATS__GLOBAL_LIST__NO_SERVERS_FORMAT.get());
+			rowsBuilder.append(TextUtil.fromLegacy(Config.FORMATS__GLOBAL_LIST__NO_SERVERS_FORMAT.get()));
 		} else {
 			int playerCount = (servers.get(0)).getPlayerCount();
 			Iterator<ServerInfoProvider> serversIterator = servers.iterator();
@@ -390,7 +391,17 @@ public class GlistCommand extends Command implements TabExecutor {
 							}
 						}
 
-						rowsBuilder.append(Config.FORMATS__GLOBAL_LIST__SERVER_ROW_FORMAT.get().replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYER_AMOUNT}", String.valueOf(serverInfo.getPlayers().size())).replace("{GRAPHIC_BAR}", graphicBarBuilder.toString()).replace("{PERCENT}", this.format.format(percent) + "%")).append("\n");
+						rowsBuilder
+						.event(
+							new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("").append(TextUtil.fromLegacy(Config.MESSAGES__CLICK_TO_SHOW_PLAYERS.get().replace("{SERVER_NAME}", serverInfo.getId()))).create())
+						)
+						.event(
+							new ClickEvent(Action.RUN_COMMAND, "/glist " + serverInfo.getId())
+						)
+						.append(
+							TextUtil.fromLegacy(Config.FORMATS__GLOBAL_LIST__SERVER_ROW_FORMAT.get().replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYER_AMOUNT}", String.valueOf(serverInfo.getPlayers().size())).replace("{GRAPHIC_BAR}", graphicBarBuilder.toString()).replace("{PERCENT}", this.format.format(percent) + "%"))
+						)
+						.append("\n", FormatRetention.NONE);
 					} while(!options.contains("-sp"));
 				} while(serverInfo.getPlayerCount() == 0);
 
@@ -424,7 +435,16 @@ public class GlistCommand extends Command implements TabExecutor {
 					}
 				}
 
-				rowsBuilder.append(mainFormat.replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYERS_FORMAT}", playersString.toString())).append("\n");
+				rowsBuilder
+				.event(
+					new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("").append(TextUtil.fromLegacy(Config.MESSAGES__CLICK_TO_SHOW_PLAYERS.get().replace("{SERVER_NAME}", serverInfo.getId()))).create())
+				)
+				.event(
+					new ClickEvent(Action.RUN_COMMAND, "/glist " + serverInfo.getId())
+				)
+				.append(
+					TextUtil.fromLegacy(mainFormat.replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYERS_FORMAT}", playersString.toString()))
+				).append("\n", FormatRetention.NONE);
 			}
 		}
 
@@ -432,7 +452,11 @@ public class GlistCommand extends Command implements TabExecutor {
 		List<String> fullMessageCopy = new ArrayList<>(Config.FORMATS__GLOBAL_LIST__FULL_MESSAGE_FORMAT.get());
 
 		for(String line : fullMessageCopy) {
-			sender.sendMessage(TextUtil.fromLegacy(ChatColor.translateAlternateColorCodes('&', line.replace("{SERVERS_ROWS}", rowsBuilder.toString()).replace("{NOT_DISPLAYED_AMOUNT}", String.valueOf(notDisplayedCount)).replace("{TOTAL_PLAYER_AMOUNT}", String.valueOf(totalPlayers)).replace("{LABEL}", this.getName()))));
+			if (line.contains("{SERVERS_ROWS}")) {
+				sender.sendMessage(rowsBuilder.create());
+			} else {
+				sender.sendMessage(TextUtil.fromLegacy(ChatColor.translateAlternateColorCodes('&', line.replace("{NOT_DISPLAYED_AMOUNT}", String.valueOf(notDisplayedCount)).replace("{TOTAL_PLAYER_AMOUNT}", String.valueOf(totalPlayers)).replace("{LABEL}", this.getName()))));
+			}
 		}
 	}
 

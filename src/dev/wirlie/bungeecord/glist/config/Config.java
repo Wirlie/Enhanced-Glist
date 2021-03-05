@@ -43,6 +43,7 @@ public class Config {
     public static final ConfigEntry<String> MESSAGES__NO_PREVIOUS_PAGE = new ConfigEntry<>("messages.no-previous-page");
     public static final ConfigEntry<String> MESSAGES__NO_NEXT_PAGE = new ConfigEntry<>("messages.no-next-page");
     public static final ConfigEntry<String> MESSAGES__ALL_PAGES = new ConfigEntry<>("messages.all-pages");
+    public static final ConfigEntry<String> MESSAGES__CLICK_TO_SHOW_PLAYERS = new ConfigEntry<>("messages.click-to-show-players");
 
     public static final ConfigEntry<Boolean> UPDATES__CHECK_UPDATES = new ConfigEntry<>("updates.check-updates");
     public static final ConfigEntry<Boolean> UPDATES__NOTIFY__ENABLE = new ConfigEntry<>("updates.notify.enable");

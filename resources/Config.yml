@@ -144,6 +144,7 @@ messages:
   no-previous-page: "&cNo previous page available."
   no-next-page: "&cNo next page available."
   all-pages: "Todas las Páginas"
+  click-to-show-players: "&e{SERVER_NAME}\n&fClick here to display the\nplayer list of this server."
 updates:
   # Set as true to check updates periodically
   check-updates: true
