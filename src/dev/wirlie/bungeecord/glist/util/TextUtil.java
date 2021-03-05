@@ -1,8 +1,11 @@
 package dev.wirlie.bungeecord.glist.util;
 
+import dev.wirlie.bungeecord.glist.config.Config;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+
+import java.util.List;
 
 public class TextUtil {
 
@@ -10,7 +13,7 @@ public class TextUtil {
       return TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', text));
    }
 
-   public static String makeRowsNew(int columns, int startIndex, ChatColor columnColor, String... data) {
+   public static String makeRowsNew(int columns, int startIndex, ChatColor columnColor, List<Pair<String, String>> dataPair) {
       int widthPerColumn = TextWidthUtil.lineMaxWidth / columns;
 
       StringBuilder finalLine = new StringBuilder();
@@ -19,8 +22,9 @@ public class TextUtil {
       boolean exceded = false;
       boolean first = true;
 
-      for(int i = (startIndex - 1); i < data.length; i++) {
-         String nextData = ChatColor.DARK_AQUA + "#" + (i + 1) + " " + columnColor + data[i];
+      for(int i = (startIndex - 1); i < dataPair.size(); i++) {
+         Pair<String, String> nextDataPair = dataPair.get(i);
+         String nextData = Config.FORMATS__SERVER_LIST__PLAYER_ROW_FORMAT.get().replace("{INDEX}", String.valueOf(i + 1)).replace("{PREFIX}", nextDataPair.getA()).replace("{PLAYER_NAME}", nextDataPair.getB());
 
          if(nextData.trim().isEmpty()) continue;
 

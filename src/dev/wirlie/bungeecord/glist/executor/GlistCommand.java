@@ -6,6 +6,7 @@ import dev.wirlie.bungeecord.glist.config.Config;
 import dev.wirlie.bungeecord.glist.servers.BungeecordInfoProvider;
 import dev.wirlie.bungeecord.glist.servers.ServerGroup;
 import dev.wirlie.bungeecord.glist.servers.ServerInfoProvider;
+import dev.wirlie.bungeecord.glist.util.Pair;
 import dev.wirlie.bungeecord.glist.util.TextUtil;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class GlistCommand extends Command implements TabExecutor {
 
 	private final NumberFormat format = NumberFormat.getNumberInstance();
-	private final Map<String, TemporalPaginator<String>> serversPaginators = new HashMap<>();
+	private final Map<String, TemporalPaginator<Pair<String, String>>> serversPaginators = new HashMap<>();
 	private final EnhancedBCL plugin;
 
 	public GlistCommand(EnhancedBCL plugin, String name, String permission, String... aliases) {
@@ -136,16 +137,16 @@ public class GlistCommand extends Command implements TabExecutor {
 			if (serverInfo == null) {
 				sender.sendMessage(TextUtil.fromLegacy(Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)));
 			} else {
-				TemporalPaginator<String> temporalPaginator = this.serversPaginators.computeIfAbsent(serverInfo.getId(), (k) -> new TemporalPaginator<>(serverInfo.getPlayers().stream().map(cs -> {
+				TemporalPaginator<Pair<String, String>> temporalPaginator = this.serversPaginators.computeIfAbsent(serverInfo.getId(), (k) -> new TemporalPaginator<>(serverInfo.getPlayers().stream().map(cs -> {
 					String prefix = plugin.getPrefix(cs);
 					if(prefix != null) {
 						if(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty()) {
-							return prefix + cs.getName();
+							return new Pair<>(prefix, cs.getName());
 						} else {
-							return prefix + " " + cs.getName();
+							return new Pair<>(prefix, cs.getName());
 						}
 					} else {
-						return cs.getName();
+						return new Pair<>("", cs.getName());
 					}
 				}).collect(Collectors.toList()), Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get()));
 
@@ -154,12 +155,12 @@ public class GlistCommand extends Command implements TabExecutor {
 						String prefix = plugin.getPrefix(cs);
 						if(prefix != null) {
 							if(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty()) {
-								return prefix + cs.getName();
+								return new Pair<>(prefix, cs.getName());
 							} else {
-								return prefix + " " + cs.getName();
+								return new Pair<>(prefix, cs.getName());
 							}
 						} else {
-							return cs.getName();
+							return new Pair<>("", cs.getName());
 						}
 					}).collect(Collectors.toList()));
 				}
@@ -173,7 +174,7 @@ public class GlistCommand extends Command implements TabExecutor {
 					}
 				}
 
-				List<String> pageData = options.contains("-g") ? temporalPaginator.getFullData() : temporalPaginator.getPage(page);
+				List<Pair<String, String>> pageData = options.contains("-g") ? temporalPaginator.getFullData() : temporalPaginator.getPage(page);
 
 				if (pageData.isEmpty()) {
 					if (temporalPaginator.getTotalPages() > 0) {
@@ -186,8 +187,7 @@ public class GlistCommand extends Command implements TabExecutor {
 						}
 					}
 				} else {
-					String[] namesData = pageData.toArray(new String[0]);
-					String message = String.join("\n", new ArrayList<>(Config.FORMATS__SERVER_LIST__FULL_MESSAGE_FORMAT.get())).replace("{PLAYERS_ROWS}", TextUtil.makeRowsNew(2, (page - 1) * Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get() + 1, ChatColor.GRAY, namesData)).replace("{SERVER_NAME}", Config.BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME.get() ? serverInfo.getDisplayName().toUpperCase() : serverInfo.getDisplayName()).replace("{PLAYERS_COUNT}", String.valueOf(temporalPaginator.dataSize())).replace("{PAGE}", options.contains("-g") ? Config.MESSAGES__ALL_PAGES.get() : String.valueOf(page)).replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()));
+					String message = String.join("\n", new ArrayList<>(Config.FORMATS__SERVER_LIST__FULL_MESSAGE_FORMAT.get())).replace("{PLAYERS_ROWS}", TextUtil.makeRowsNew(Config.FORMATS__SERVER_LIST__PLAYERS_PER_ROW.get(), (page - 1) * Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get() + 1, ChatColor.GRAY, pageData)).replace("{SERVER_NAME}", Config.BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME.get() ? serverInfo.getDisplayName().toUpperCase() : serverInfo.getDisplayName()).replace("{PLAYERS_COUNT}", String.valueOf(temporalPaginator.dataSize())).replace("{PAGE}", options.contains("-g") ? Config.MESSAGES__ALL_PAGES.get() : String.valueOf(page)).replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()));
 
 					if (options.contains("-g")) {
 						partsController = message.split("\\n");

@@ -66,6 +66,14 @@ formats:
       - "{PLAYERS_ROWS}"
       - "{PAGINATION_CONTROLLER}"
       - "&8&m--------------------------------------"
+    # Adjusts the format of the {PLAYERS_ROWS} placeholder.
+    # Available Placeholders:
+    # {INDEX} - The index of the result, por example: 1, 2, 3, 4, etc.
+    # {PREFIX} - Player prefix (if setting 'groups-prefix' is enabled).
+    # {PLAYER_NAME} - Player name.
+    player-row-format: "&3#{INDEX}&r {PREFIX} &f{PLAYER_NAME}"
+    # Define the amount of players per row, set it to 1 or 2 (recommended), if you set a higher value format will not be displayed correctly.
+    players-per-row: 2
     # Message displayed when the executor tries to retrieve a page that are out of the index bounds.
     # Available Formats:
     # {TOTAL_PAGES} = Total number of pages.
