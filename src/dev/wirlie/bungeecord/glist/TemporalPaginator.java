@@ -36,7 +36,7 @@ public class TemporalPaginator<T> {
 	public List<T> getPage(int page) {
 		if (this.totalPages != 0 && page >= 1 && page <= this.totalPages) {
 			int index = page - 1;
-			return this.data.stream().skip(index * this.pageSize).limit(this.pageSize).collect(Collectors.toList());
+			return this.data.stream().skip((long) index * this.pageSize).limit(this.pageSize).collect(Collectors.toList());
 		} else {
 			return new ArrayList<>();
 		}

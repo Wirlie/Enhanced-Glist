@@ -105,121 +105,11 @@ public class GlistCommand extends Command implements TabExecutor {
 			}
 		}
 
-		int page;
-		String[] partsController;
 		if (args.length == 0) {
-			List<ServerInfoProvider> allServers = new ArrayList<>();
-
-			//bungeecord servers
-			for(ServerInfo sv : BungeeCord.getInstance().getServers().values()) {
-				if(!plugin.isInGroup(sv)) {
-					allServers.add(new BungeecordInfoProvider(sv));
-				}
-			}
-
-			//groups servers
-			allServers.addAll(plugin.getServerGroups());
-
-			List<ServerInfoProvider> servers = allServers.stream()
-					.sorted((o,o1) -> Integer.compare(o1.getPlayerCount(), o.getPlayerCount()))
-					.filter((o) -> {
-						if(Config.BEHAVIOUR__SERVER_LIST__BLACKLISTED_SERVERS.get().contains(o.getId())) {
-							return false;
-						}
-
-						if(options.contains("-a")) {
-							if(o.getPlayerCount() > 0) {
-								return true;
-							}
-						}
-
-						if (options.contains("-g")) {
-							return true;
-						} else if (Config.BEHAVIOUR__GLOBAL_LIST__MIN_PLAYER_COUNT_TO_DISPLAY_SERVER.get() >= 1) {
-							return o.getPlayerCount() >= Config.BEHAVIOUR__GLOBAL_LIST__MIN_PLAYER_COUNT_TO_DISPLAY_SERVER.get();
-						} else {
-							return o.getPlayerCount() > 0 || o.getPlayerCount() == 0 && !Config.BEHAVIOUR__GLOBAL_LIST__HIDE_EMPTY_SERVERS.get();
-						}
-					})
-					.limit(Config.BEHAVIOUR__GLOBAL_LIST__MAX_SERVERS_ROWS.get() < 1 ? Integer.MAX_VALUE : options.contains("-g") ? Integer.MAX_VALUE : Config.BEHAVIOUR__GLOBAL_LIST__MAX_SERVERS_ROWS.get()).collect(Collectors.toList());
-
-			StringBuilder rowsBuilder = new StringBuilder();
-			int totalPlayers = BungeeCord.getInstance().getPlayers().size();
-			if (servers.isEmpty()) {
-				rowsBuilder.append(Config.FORMATS__GLOBAL_LIST__NO_SERVERS_FORMAT.get());
-			} else {
-				page = (servers.get(0)).getPlayerCount();
-				Iterator<ServerInfoProvider> serversIterator = servers.iterator();
-
-				mainWhile:
-				while(true) {
-					ServerInfoProvider serverInfo;
-					do {
-						do {
-							if (!serversIterator.hasNext()) {
-								break mainWhile;
-							}
-
-							serverInfo = serversIterator.next();
-							float percent = totalPlayers == 0 ? 0.0F : (serverInfo.getPlayerCount() * 100.0F / totalPlayers);
-							float percentGraphic = page == 0 ? 0.0F : (serverInfo.getPlayerCount() * 100F / page);
-							StringBuilder graphicBarBuilder = new StringBuilder();
-							float barPercent = 5.0F;
-							int totalBars = (int)(percentGraphic / barPercent);
-
-							for(int i = 0; i < 20; ++i) {
-								if (i < totalBars) {
-									graphicBarBuilder.append(Config.FORMATS__GLOBAL_LIST__GRAPHIC_BAR_COLOR.get()).append("|");
-								} else {
-									graphicBarBuilder.append(Config.FORMATS__GLOBAL_LIST__GRAPHIC_BACKGROUND_COLOR.get()).append("|");
-								}
-							}
-
-							rowsBuilder.append(Config.FORMATS__GLOBAL_LIST__SERVER_ROW_FORMAT.get().replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYER_AMOUNT}", String.valueOf(serverInfo.getPlayers().size())).replace("{GRAPHIC_BAR}", graphicBarBuilder.toString()).replace("{PERCENT}", this.format.format(percent) + "%")).append("\n");
-						} while(!options.contains("-sp"));
-					} while(serverInfo.getPlayerCount() == 0);
-
-					String mainFormat = Config.FORMATS__GLOBAL_LIST__SERVER_SP_OPTION__MAIN_FORMAT.get();
-					String playersFormat = Config.FORMATS__GLOBAL_LIST__SERVER_SP_OPTION__PLAYERS_FORMAT.get();
-
-					StringBuilder playersString = new StringBuilder();
-					List<ProxiedPlayer> players = new ArrayList<>(serverInfo.getPlayers());
-					for(int i = 0; i < players.size(); i++) {
-						ProxiedPlayer player = players.get(i);
-
-						if(i == players.size() - 1) {
-							//eliminar formato
-							int indexOf = playersFormat.indexOf("{PLAYER_NAME}");
-							if(indexOf != -1) {
-								String prefix = plugin.getPrefix(player);
-								boolean isEmptyPrefix = prefix != null && ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty();
-								String playerName = (prefix == null ? "" : prefix + (isEmptyPrefix ? "" : " ")) +  player.getName();
-								playersString.append(playersFormat.substring(0, indexOf + "{PLAYER_NAME}".length()).replace("{PLAYER_NAME}", playerName));
-							} else {
-								String prefix = plugin.getPrefix(player);
-								boolean isEmptyPrefix = prefix != null && ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty();
-								String playerName = (prefix == null ? "" : prefix + (isEmptyPrefix ? "" : " ")) +  player.getName();
-								playersString.append(playersFormat.replace("{PLAYER_NAME}", playerName));
-							}
-						} else {
-							String prefix = plugin.getPrefix(player);
-							boolean isEmptyPrefix = prefix != null && ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty();
-							String playerName = (prefix == null ? "" : prefix + (isEmptyPrefix ? "" : " ")) +  player.getName();
-							playersString.append(playersFormat.replace("{PLAYER_NAME}", playerName));
-						}
-					}
-
-					rowsBuilder.append(mainFormat.replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYERS_FORMAT}", playersString.toString())).append("\n");
-				}
-			}
-
-			page = BungeeCord.getInstance().getServers().size() - servers.size();
-			List<String> fullMessageCopy = new ArrayList<>(Config.FORMATS__GLOBAL_LIST__FULL_MESSAGE_FORMAT.get());
-
-			for(String line : fullMessageCopy) {
-				sender.sendMessage(TextUtil.fromLegacy(ChatColor.translateAlternateColorCodes('&', line.replace("{SERVERS_ROWS}", rowsBuilder.toString()).replace("{NOT_DISPLAYED_AMOUNT}", String.valueOf(page)).replace("{TOTAL_PLAYER_AMOUNT}", String.valueOf(totalPlayers)).replace("{LABEL}", this.getName()))));
-			}
+			printGlobal(sender, options);
 		} else {
+			int page;
+			String[] partsController;
 			String serverName = args[0];
 
 			//is blacklisted?
@@ -284,6 +174,7 @@ public class GlistCommand extends Command implements TabExecutor {
 				}
 
 				List<String> pageData = options.contains("-g") ? temporalPaginator.getFullData() : temporalPaginator.getPage(page);
+
 				if (pageData.isEmpty()) {
 					if (temporalPaginator.getTotalPages() > 0) {
 						for (String line : Config.FORMATS__SERVER_LIST__NO_PAGE_DATA_MESSAGE.get()) {
@@ -296,7 +187,7 @@ public class GlistCommand extends Command implements TabExecutor {
 					}
 				} else {
 					String[] namesData = pageData.toArray(new String[0]);
-					String message = String.join("\n", new ArrayList<>(Config.FORMATS__SERVER_LIST__FULL_MESSAGE_FORMAT.get())).replace("{PLAYERS_ROWS}", TextUtil.makeRows(2, 25, (page - 1) * Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get() + 1, ChatColor.GRAY, namesData)).replace("{SERVER_NAME}", Config.BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME.get() ? serverInfo.getDisplayName().toUpperCase() : serverInfo.getDisplayName()).replace("{PLAYERS_COUNT}", String.valueOf(temporalPaginator.dataSize())).replace("{PAGE}", options.contains("-g") ? Config.MESSAGES__ALL_PAGES.get() : String.valueOf(page)).replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()));
+					String message = String.join("\n", new ArrayList<>(Config.FORMATS__SERVER_LIST__FULL_MESSAGE_FORMAT.get())).replace("{PLAYERS_ROWS}", TextUtil.makeRowsNew(2, (page - 1) * Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get() + 1, ChatColor.GRAY, namesData)).replace("{SERVER_NAME}", Config.BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME.get() ? serverInfo.getDisplayName().toUpperCase() : serverInfo.getDisplayName()).replace("{PLAYERS_COUNT}", String.valueOf(temporalPaginator.dataSize())).replace("{PAGE}", options.contains("-g") ? Config.MESSAGES__ALL_PAGES.get() : String.valueOf(page)).replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()));
 
 					if (options.contains("-g")) {
 						partsController = message.split("\\n");
@@ -428,6 +319,120 @@ public class GlistCommand extends Command implements TabExecutor {
 					}
 				}
 			}
+		}
+	}
+
+	private void printGlobal(CommandSender sender, Set<String> options) {
+		List<ServerInfoProvider> allServers = new ArrayList<>();
+
+		//bungeecord servers
+		for(ServerInfo sv : BungeeCord.getInstance().getServers().values()) {
+			if(!plugin.isInGroup(sv)) {
+				allServers.add(new BungeecordInfoProvider(sv));
+			}
+		}
+
+		//groups servers
+		allServers.addAll(plugin.getServerGroups());
+
+		List<ServerInfoProvider> servers = allServers.stream()
+		   .sorted((o,o1) -> Integer.compare(o1.getPlayerCount(), o.getPlayerCount()))
+		   .filter((o) -> {
+			   if(Config.BEHAVIOUR__SERVER_LIST__BLACKLISTED_SERVERS.get().contains(o.getId())) {
+				   return false;
+			   }
+
+			   if(options.contains("-a")) {
+				   if(o.getPlayerCount() > 0) {
+					   return true;
+				   }
+			   }
+
+			   if (options.contains("-g")) {
+				   return true;
+			   } else if (Config.BEHAVIOUR__GLOBAL_LIST__MIN_PLAYER_COUNT_TO_DISPLAY_SERVER.get() >= 1) {
+				   return o.getPlayerCount() >= Config.BEHAVIOUR__GLOBAL_LIST__MIN_PLAYER_COUNT_TO_DISPLAY_SERVER.get();
+			   } else {
+				   return o.getPlayerCount() > 0 || o.getPlayerCount() == 0 && !Config.BEHAVIOUR__GLOBAL_LIST__HIDE_EMPTY_SERVERS.get();
+			   }
+		   })
+		   .limit(Config.BEHAVIOUR__GLOBAL_LIST__MAX_SERVERS_ROWS.get() < 1 ? Integer.MAX_VALUE : options.contains("-g") ? Integer.MAX_VALUE : Config.BEHAVIOUR__GLOBAL_LIST__MAX_SERVERS_ROWS.get()).collect(Collectors.toList());
+
+		StringBuilder rowsBuilder = new StringBuilder();
+		int totalPlayers = BungeeCord.getInstance().getPlayers().size();
+		if (servers.isEmpty()) {
+			rowsBuilder.append(Config.FORMATS__GLOBAL_LIST__NO_SERVERS_FORMAT.get());
+		} else {
+			int playerCount = (servers.get(0)).getPlayerCount();
+			Iterator<ServerInfoProvider> serversIterator = servers.iterator();
+
+			mainWhile:
+			while(true) {
+				ServerInfoProvider serverInfo;
+				do {
+					do {
+						if (!serversIterator.hasNext()) {
+							break mainWhile;
+						}
+
+						serverInfo = serversIterator.next();
+						float percent = totalPlayers == 0 ? 0.0F : (serverInfo.getPlayerCount() * 100.0F / totalPlayers);
+						float percentGraphic = playerCount == 0 ? 0.0F : (serverInfo.getPlayerCount() * 100F / playerCount);
+						StringBuilder graphicBarBuilder = new StringBuilder();
+						float barPercent = 5.0F;
+						int totalBars = (int)(percentGraphic / barPercent);
+
+						for(int i = 0; i < 20; ++i) {
+							if (i < totalBars) {
+								graphicBarBuilder.append(Config.FORMATS__GLOBAL_LIST__GRAPHIC_BAR_COLOR.get()).append("|");
+							} else {
+								graphicBarBuilder.append(Config.FORMATS__GLOBAL_LIST__GRAPHIC_BACKGROUND_COLOR.get()).append("|");
+							}
+						}
+
+						rowsBuilder.append(Config.FORMATS__GLOBAL_LIST__SERVER_ROW_FORMAT.get().replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYER_AMOUNT}", String.valueOf(serverInfo.getPlayers().size())).replace("{GRAPHIC_BAR}", graphicBarBuilder.toString()).replace("{PERCENT}", this.format.format(percent) + "%")).append("\n");
+					} while(!options.contains("-sp"));
+				} while(serverInfo.getPlayerCount() == 0);
+
+				String mainFormat = Config.FORMATS__GLOBAL_LIST__SERVER_SP_OPTION__MAIN_FORMAT.get();
+				String playersFormat = Config.FORMATS__GLOBAL_LIST__SERVER_SP_OPTION__PLAYERS_FORMAT.get();
+
+				StringBuilder playersString = new StringBuilder();
+				List<ProxiedPlayer> players = new ArrayList<>(serverInfo.getPlayers());
+				for(int i = 0; i < players.size(); i++) {
+					ProxiedPlayer player = players.get(i);
+
+					if(i == players.size() - 1) {
+						//eliminar formato
+						int indexOf = playersFormat.indexOf("{PLAYER_NAME}");
+						if(indexOf != -1) {
+							String prefix = plugin.getPrefix(player);
+							boolean isEmptyPrefix = prefix != null && ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty();
+							String playerName = (prefix == null ? "" : prefix + (isEmptyPrefix ? "" : " ")) +  player.getName();
+							playersString.append(playersFormat.substring(0, indexOf + "{PLAYER_NAME}".length()).replace("{PLAYER_NAME}", playerName));
+						} else {
+							String prefix = plugin.getPrefix(player);
+							boolean isEmptyPrefix = prefix != null && ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty();
+							String playerName = (prefix == null ? "" : prefix + (isEmptyPrefix ? "" : " ")) +  player.getName();
+							playersString.append(playersFormat.replace("{PLAYER_NAME}", playerName));
+						}
+					} else {
+						String prefix = plugin.getPrefix(player);
+						boolean isEmptyPrefix = prefix != null && ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty();
+						String playerName = (prefix == null ? "" : prefix + (isEmptyPrefix ? "" : " ")) +  player.getName();
+						playersString.append(playersFormat.replace("{PLAYER_NAME}", playerName));
+					}
+				}
+
+				rowsBuilder.append(mainFormat.replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYERS_FORMAT}", playersString.toString())).append("\n");
+			}
+		}
+
+		int notDisplayedCount = BungeeCord.getInstance().getServers().size() - servers.size();
+		List<String> fullMessageCopy = new ArrayList<>(Config.FORMATS__GLOBAL_LIST__FULL_MESSAGE_FORMAT.get());
+
+		for(String line : fullMessageCopy) {
+			sender.sendMessage(TextUtil.fromLegacy(ChatColor.translateAlternateColorCodes('&', line.replace("{SERVERS_ROWS}", rowsBuilder.toString()).replace("{NOT_DISPLAYED_AMOUNT}", String.valueOf(notDisplayedCount)).replace("{TOTAL_PLAYER_AMOUNT}", String.valueOf(totalPlayers)).replace("{LABEL}", this.getName()))));
 		}
 	}
 
