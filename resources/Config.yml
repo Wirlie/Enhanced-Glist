@@ -87,6 +87,13 @@ formats:
       - " &cThis server not have players at this moment."
       - "&8&m--------------------------------------"
 behaviour:
+  cache-time:
+    # 1. Multiples pages can be created when you use /glist <server> depending on the amount of players that the server have.
+    # 2. Plugin will cache pages for a certain time of seconds.
+    # 3. You can adjust the time of seconds to retain pages in the cache, if you set this value
+    # to a number less than 1, then no cache will be used and plugin will always try to generate
+    # new pages when you use /glist <server>
+    player-list-pages: 20
   global-list:
     # Hide servers that not have players in the Enhanced List.
     hide-empty-servers: true
@@ -135,6 +142,27 @@ behaviour:
     priority:
       luckperms: 20
       internal-group-system: 1
+  player-status:
+    vanish:
+      # If enabled, vanished users will be removed from the /glist <server> list.
+      # Note: you must install the Spigot version of EnhancedBungeeList in all of your servers
+      # otherwise this feature may not work properly.
+      # Supported plugins:
+      #   - Essentials
+      #   - SuperVanish/PremiumVanish
+      hide-vanished-users: true
+      # Players that have this permission will be able to see vanished users.
+      bypass-permission: "ebcl.bypass.vanish.hide"
+    afk:
+      # If enabled, a prefix will be added for afk players, so you can see what players
+      # are afk in your network.
+      # Note: you must install the Spigot version of EnhancedBungeeList in all of your servers
+      # otherwise this feature may not work properly.
+      # Supported plugins:
+      #   - Essentials
+      show-afk-state: true
+      # The prefix to display when a player is afk.
+      afk-prefix: "&eAFK &r"
 messages:
   cannot-found-server: "&cThe specified server name {NAME} &ccannot be found in the Network."
   previous-page-hover-message: "&eClick here to go to the page &f#{PAGE_NUMBER}"

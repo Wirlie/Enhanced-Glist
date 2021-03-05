@@ -22,6 +22,7 @@ public class Config {
     public static final ConfigEntry<String> FORMATS__GLOBAL_LIST__SERVER_SP_OPTION__MAIN_FORMAT = new ConfigEntry<>("formats.global-list.server-sp-option.main-format");
     public static final ConfigEntry<String> FORMATS__GLOBAL_LIST__SERVER_SP_OPTION__PLAYERS_FORMAT = new ConfigEntry<>("formats.global-list.server-sp-option.players-format");
 
+    public static final ConfigEntry<Integer> BEHAVIOUR__CACHE_TIME__PLAYER_LIST_PAGES = new ConfigEntry<>("behaviour.cache-time.player-list-pages");
     public static final ConfigEntry<Boolean> BEHAVIOUR__GLOBAL_LIST__HIDE_EMPTY_SERVERS = new ConfigEntry<>("behaviour.global-list.hide-empty-servers");
     public static final ConfigEntry<Integer> BEHAVIOUR__GLOBAL_LIST__MAX_SERVERS_ROWS = new ConfigEntry<>("behaviour.global-list.max-servers-rows");
     public static final ConfigEntry<Integer> BEHAVIOUR__GLOBAL_LIST__MIN_PLAYER_COUNT_TO_DISPLAY_SERVER = new ConfigEntry<>("behaviour.global-list.min-player-count-to-display-server");
@@ -34,6 +35,10 @@ public class Config {
     public static final ConfigEntry<Boolean> BEHAVIOUR__GROUPS_PREFIX__USE__INTERNAL_GROUP_SYSTEM = new ConfigEntry<>("behaviour.groups-prefix.use.internal-group-system");
     public static final ConfigEntry<Integer> BEHAVIOUR__GROUPS_PREFIX__PRIORITY__LUCKPERMS = new ConfigEntry<>("behaviour.groups-prefix.priority.luckperms");
     public static final ConfigEntry<Integer> BEHAVIOUR__GROUPS_PREFIX__PRIORITY__INTERNAL_GROUP_SYSTEM = new ConfigEntry<>("behaviour.groups-prefix.priority.internal-group-system");
+    public static final ConfigEntry<Boolean> BEHAVIOUR__PLAYER_STATUS__VANISH__HIDE_VANISHED_USERS = new ConfigEntry<>("behaviour.player-status.vanish.hide-vanished-users");
+    public static final ConfigEntry<String> BEHAVIOUR__PLAYER_STATUS__VANISH__BYPASS_PERMISSION = new ConfigEntry<>("behaviour.player-status.vanish.bypass-permission");
+    public static final ConfigEntry<Boolean> BEHAVIOUR__PLAYER_STATUS__AFK__SHOW_AFK_STATE = new ConfigEntry<>("behaviour.player-status.afk.show-afk-state");
+    public static final ConfigEntry<String> BEHAVIOUR__PLAYER_STATUS__AFK__AFK_PREFIX = new ConfigEntry<>("behaviour.player-status.afk.afk-prefix:");
 
     public static final ConfigEntry<String> MESSAGES__CANNOT_FOUND_SERVER = new ConfigEntry<>("messages.cannot-found-server");
     public static final ConfigEntry<String> MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE = new ConfigEntry<>("messages.previous-page-hover-message");

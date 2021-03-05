@@ -150,7 +150,7 @@ public class GlistCommand extends Command implements TabExecutor {
 					}
 				}).collect(Collectors.toList()), Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get()));
 
-				if (temporalPaginator.shouldUpdate(60000L)) {
+				if (temporalPaginator.shouldUpdate(Config.BEHAVIOUR__CACHE_TIME__PLAYER_LIST_PAGES.get() * 1000L)) {
 					temporalPaginator.update(serverInfo.getPlayers().stream().map(cs -> {
 						String prefix = plugin.getPrefix(cs);
 						if(prefix != null) {
