@@ -153,6 +153,8 @@ behaviour:
       hide-vanished-users: true
       # Players that have this permission will be able to see vanished users.
       bypass-permission: "ebcl.bypass.vanish.hide"
+      # The prefix to display when a players is in Vanish mode.
+      vanish-prefix: "&8(&bV&8) &r"
     afk:
       # If enabled, a prefix will be added for afk players, so you can see what players
       # are afk in your network.
@@ -162,7 +164,7 @@ behaviour:
       #   - Essentials
       show-afk-state: true
       # The prefix to display when a player is afk.
-      afk-prefix: "&eAFK &r"
+      afk-prefix: "&8(&eAFK&8) &r"
 messages:
   cannot-found-server: "&cThe specified server name {NAME} &ccannot be found in the Network."
   previous-page-hover-message: "&eClick here to go to the page &f#{PAGE_NUMBER}"
