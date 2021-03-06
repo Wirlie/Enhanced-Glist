@@ -9,7 +9,7 @@ import java.util.*;
 
 public class ActivityManager {
 
-    private final Map<UUID, Set<ActivityType>> activitiesByPlayer = new HashMap<>();
+    private final Map<UUID, Set<ActivityType>> activitiesByPlayer = Collections.synchronizedMap(new HashMap<>());
 
     public void addActivity(UUID player, ActivityType activityType) {
         Set<ActivityType> activities = activitiesByPlayer.computeIfAbsent(player, k -> new HashSet<>());

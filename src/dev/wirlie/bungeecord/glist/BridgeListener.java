@@ -55,6 +55,11 @@ public class BridgeListener implements Listener {
                     return;
                 }
 
+                if(pluginName.equalsIgnoreCase("PremiumVanish") || pluginName.equalsIgnoreCase("SuperVanish")) {
+                    if(plugin.isPremiumVanishHooked) {
+                        return;
+                    }
+                }
 
                 UUID playerID = UUID.fromString(in.readUTF());
                 boolean newState = in.readBoolean();

@@ -47,6 +47,8 @@ public class EnhancedBCL extends Plugin {
 
 	private final ActivityManager activityManager = new ActivityManager();
 
+	public boolean isPremiumVanishHooked = false;
+
 	public void onEnable() {
 		//declaration of commons variables
 		Logger logger = getLogger();
@@ -84,6 +86,14 @@ public class EnhancedBCL extends Plugin {
 
 		BungeeCord.getInstance().registerChannel("ebcl:bridge");
 		pm.registerListener(this, new BridgeListener(this));
+
+		if(pm.getPlugin("PremiumVanish") != null) {
+			isPremiumVanishHooked = true;
+			getLogger().info("Hooked into PremiumVanish!");
+			PremiumVanishListener listener = new PremiumVanishListener(this);
+			pm.registerListener(this, listener);
+			listener.initialHandle();
+		}
 
 		//request states from all servers...
 		for(ServerInfo server : BungeeCord.getInstance().getServers().values()) {
