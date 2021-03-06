@@ -2,11 +2,13 @@ package dev.wirlie.bungeecord.glist.executor;
 
 import dev.wirlie.bungeecord.glist.EnhancedBCL;
 import dev.wirlie.bungeecord.glist.TemporalPaginator;
+import dev.wirlie.bungeecord.glist.activity.ActivityType;
 import dev.wirlie.bungeecord.glist.config.Config;
 import dev.wirlie.bungeecord.glist.servers.BungeecordInfoProvider;
 import dev.wirlie.bungeecord.glist.servers.ServerGroup;
 import dev.wirlie.bungeecord.glist.servers.ServerInfoProvider;
 import dev.wirlie.bungeecord.glist.util.Pair;
+import dev.wirlie.bungeecord.glist.util.PlayerGlistEntry;
 import dev.wirlie.bungeecord.glist.util.TextUtil;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
@@ -27,7 +29,7 @@ import java.util.stream.Collectors;
 public class GlistCommand extends Command implements TabExecutor {
 
 	private final NumberFormat format = NumberFormat.getNumberInstance();
-	private final Map<String, TemporalPaginator<Pair<String, String>>> serversPaginators = new HashMap<>();
+	public static final Map<String, TemporalPaginator> serversPaginators = Collections.synchronizedMap(new HashMap<>());
 	private final EnhancedBCL plugin;
 
 	public GlistCommand(EnhancedBCL plugin, String name, String permission, String... aliases) {
@@ -37,7 +39,9 @@ public class GlistCommand extends Command implements TabExecutor {
 	}
 
 	public void reload() {
-		serversPaginators.clear();
+		synchronized (GlistCommand.serversPaginators) {
+			serversPaginators.clear();
+		}
 	}
 
 	public void execute(CommandSender sender, String[] args) {
@@ -137,31 +141,25 @@ public class GlistCommand extends Command implements TabExecutor {
 			if (serverInfo == null) {
 				sender.sendMessage(TextUtil.fromLegacy(Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)));
 			} else {
-				TemporalPaginator<Pair<String, String>> temporalPaginator = this.serversPaginators.computeIfAbsent(serverInfo.getId(), (k) -> new TemporalPaginator<>(serverInfo.getPlayers().stream().map(cs -> {
+				TemporalPaginator temporalPaginator = this.serversPaginators.computeIfAbsent(serverInfo.getId(), (k) -> new TemporalPaginator(serverInfo.getPlayers().stream().map(cs -> {
 					String prefix = plugin.getPrefix(cs);
-					if(prefix != null) {
-						if(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty()) {
-							return new Pair<>(prefix, cs.getName());
-						} else {
-							return new Pair<>(prefix, cs.getName());
-						}
-					} else {
-						return new Pair<>("", cs.getName());
+
+					if(prefix == null || prefix.equalsIgnoreCase("null")) {
+						prefix = "";
 					}
+
+					return new PlayerGlistEntry(cs, prefix, plugin.getActivityManager().getActivities(cs.getUniqueId()));
 				}).collect(Collectors.toList()), Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get()));
 
 				if (temporalPaginator.shouldUpdate(Config.BEHAVIOUR__CACHE_TIME__PLAYER_LIST_PAGES.get() * 1000L)) {
 					temporalPaginator.update(serverInfo.getPlayers().stream().map(cs -> {
 						String prefix = plugin.getPrefix(cs);
-						if(prefix != null) {
-							if(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', prefix)).isEmpty()) {
-								return new Pair<>(prefix, cs.getName());
-							} else {
-								return new Pair<>(prefix, cs.getName());
-							}
-						} else {
-							return new Pair<>("", cs.getName());
+
+						if(prefix == null || prefix.equalsIgnoreCase("null")) {
+							prefix = "";
 						}
+
+						return new PlayerGlistEntry(cs, prefix, plugin.getActivityManager().getActivities(cs.getUniqueId()));
 					}).collect(Collectors.toList()));
 				}
 
@@ -174,20 +172,24 @@ public class GlistCommand extends Command implements TabExecutor {
 					}
 				}
 
-				List<Pair<String, String>> pageData = options.contains("-g") ? temporalPaginator.getFullData() : temporalPaginator.getPage(page);
+				List<PlayerGlistEntry> pageData = options.contains("-g") ? (isPlayerExecutor ? temporalPaginator.getFullDataVisible((ProxiedPlayer) sender) : temporalPaginator.getFullData() ) : (isPlayerExecutor ? temporalPaginator.getVisiblePage(page, (ProxiedPlayer) sender) : temporalPaginator.getFullPage(page));
 
 				if (pageData.isEmpty()) {
-					if (temporalPaginator.getTotalPages() > 0) {
+					List<PlayerGlistEntry> data = isPlayerExecutor ? temporalPaginator.getFullDataVisible((ProxiedPlayer) sender) : temporalPaginator.getFullData();
+					int totalPages = temporalPaginator.resolveNumOfPages(data);
+					if (totalPages > 0) {
 						for (String line : Config.FORMATS__SERVER_LIST__NO_PAGE_DATA_MESSAGE.get()) {
-							sender.sendMessage(TextUtil.fromLegacy(line.replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()))));
+							sender.sendMessage(TextUtil.fromLegacy(line.replace("{TOTAL_PAGES}", String.valueOf(totalPages))));
 						}
-					}else {
+					} else {
 						for(String line : Config.FORMATS__SERVER_LIST__NO_PLAYERS_MESSAGE.get()) {
 							sender.sendMessage(TextUtil.fromLegacy(line));
 						}
 					}
 				} else {
-					String message = String.join("\n", new ArrayList<>(Config.FORMATS__SERVER_LIST__FULL_MESSAGE_FORMAT.get())).replace("{PLAYERS_ROWS}", TextUtil.makeRowsNew(Config.FORMATS__SERVER_LIST__PLAYERS_PER_ROW.get(), (page - 1) * Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get() + 1, ChatColor.GRAY, pageData)).replace("{SERVER_NAME}", Config.BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME.get() ? serverInfo.getDisplayName().toUpperCase() : serverInfo.getDisplayName()).replace("{PLAYERS_COUNT}", String.valueOf(temporalPaginator.dataSize())).replace("{PAGE}", options.contains("-g") ? Config.MESSAGES__ALL_PAGES.get() : String.valueOf(page)).replace("{TOTAL_PAGES}", String.valueOf(temporalPaginator.getTotalPages()));
+					List<PlayerGlistEntry> data = isPlayerExecutor ? temporalPaginator.getFullDataVisible((ProxiedPlayer) sender) : temporalPaginator.getFullData();
+					int totalPages = temporalPaginator.resolveNumOfPages(data);
+					String message = String.join("\n", new ArrayList<>(Config.FORMATS__SERVER_LIST__FULL_MESSAGE_FORMAT.get())).replace("{PLAYERS_ROWS}", TextUtil.makeRowsNew(Config.FORMATS__SERVER_LIST__PLAYERS_PER_ROW.get(), (page - 1) * Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get() + 1, pageData)).replace("{SERVER_NAME}", Config.BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME.get() ? serverInfo.getDisplayName().toUpperCase() : serverInfo.getDisplayName()).replace("{PLAYERS_COUNT}", String.valueOf(data.size())).replace("{PAGE}", options.contains("-g") ? Config.MESSAGES__ALL_PAGES.get() : String.valueOf(page)).replace("{TOTAL_PAGES}", String.valueOf(totalPages));
 
 					if (options.contains("-g")) {
 						partsController = message.split("\\n");
@@ -206,7 +208,7 @@ public class GlistCommand extends Command implements TabExecutor {
 						}
 
 						ComponentBuilder cb = null;
-						if (page > 1 && page < temporalPaginator.getTotalPages()) {
+						if (page > 1 && page < totalPages) {
 							cb = new ComponentBuilder("");
 
 							if (isPlayerExecutor) {
@@ -227,7 +229,7 @@ public class GlistCommand extends Command implements TabExecutor {
 								cb.append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1)).color(ChatColor.WHITE).append(" to go to the previous page.\n").color(ChatColor.GOLD).append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1)).color(ChatColor.WHITE).append(" to go to the next page.").color(ChatColor.GOLD);
 							}
 						} else if (page <= 1) {
-							if (page + 1 <= temporalPaginator.getTotalPages()) {
+							if (page + 1 <= totalPages) {
 								cb = new ComponentBuilder("");
 								if (isPlayerExecutor) {
 									cb.append("<<")
@@ -263,7 +265,7 @@ public class GlistCommand extends Command implements TabExecutor {
 										.append(">>")
 										.color(ChatColor.DARK_RED);
 							}
-						} else if (page >= temporalPaginator.getTotalPages()) {
+						} else if (page >= totalPages) {
 							if (isPlayerExecutor) {
 								cb = new ComponentBuilder("<<")
 										.color(ChatColor.WHITE)

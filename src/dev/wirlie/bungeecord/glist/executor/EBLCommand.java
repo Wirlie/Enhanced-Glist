@@ -21,6 +21,7 @@ public class EBLCommand extends Command {
       } else if (args[0].equalsIgnoreCase("reload")) {
          try {
             this.plugin.reloadConfig();
+            GlistCommand.serversPaginators.clear();
             sender.sendMessage(TextUtil.fromLegacy(" \n&7&m&l----------------------------&r\n &6Enhanced Bunge List &bv" + this.plugin.getDescription().getVersion() + "\n \n &aConfiguration reloaded!\n&7&m&l----------------------------&r\n "));
          } catch (IOException e) {
             e.printStackTrace();

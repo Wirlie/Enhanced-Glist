@@ -38,8 +38,9 @@ public class Config {
     public static final ConfigEntry<Boolean> BEHAVIOUR__PLAYER_STATUS__VANISH__HIDE_VANISHED_USERS = new ConfigEntry<>("behaviour.player-status.vanish.hide-vanished-users");
     public static final ConfigEntry<String> BEHAVIOUR__PLAYER_STATUS__VANISH__BYPASS_PERMISSION = new ConfigEntry<>("behaviour.player-status.vanish.bypass-permission");
     public static final ConfigEntry<String> BEHAVIOUR__PLAYER_STATUS__VANISH__VANISH_PREFIX = new ConfigEntry<>("behaviour.player-status.vanish.vanish-prefix");
+    public static final ConfigEntry<String> BEHAVIOUR__PLAYER_STATUS__VANISH__VANISH_PLUGIN = new ConfigEntry<>("behaviour.player-status.vanish.vanish-plugin");
     public static final ConfigEntry<Boolean> BEHAVIOUR__PLAYER_STATUS__AFK__SHOW_AFK_STATE = new ConfigEntry<>("behaviour.player-status.afk.show-afk-state");
-    public static final ConfigEntry<String> BEHAVIOUR__PLAYER_STATUS__AFK__AFK_PREFIX = new ConfigEntry<>("behaviour.player-status.afk.afk-prefix:");
+    public static final ConfigEntry<String> BEHAVIOUR__PLAYER_STATUS__AFK__AFK_PREFIX = new ConfigEntry<>("behaviour.player-status.afk.afk-prefix");
 
     public static final ConfigEntry<String> MESSAGES__CANNOT_FOUND_SERVER = new ConfigEntry<>("messages.cannot-found-server");
     public static final ConfigEntry<String> MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE = new ConfigEntry<>("messages.previous-page-hover-message");

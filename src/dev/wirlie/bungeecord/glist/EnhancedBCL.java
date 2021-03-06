@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import dev.wirlie.bungeecord.glist.activity.ActivityManager;
 import dev.wirlie.bungeecord.glist.config.Config;
 import dev.wirlie.bungeecord.glist.config.ConfigEntry;
 import dev.wirlie.bungeecord.glist.executor.GlistCommand;
@@ -44,6 +45,8 @@ public class EnhancedBCL extends Plugin {
 	private final List<GroupHook> groupHooks = new ArrayList<>();
 	private final List<ServerGroup> serverGroups = new ArrayList<>();
 
+	private final ActivityManager activityManager = new ActivityManager();
+
 	public void onEnable() {
 		//declaration of commons variables
 		Logger logger = getLogger();
@@ -77,6 +80,23 @@ public class EnhancedBCL extends Plugin {
 			updateChecker.getSpigotVersion(v -> {}, Throwable::printStackTrace);
 
 			pm.registerListener(this, new UpdateNotifyListener(this));
+		}
+
+		BungeeCord.getInstance().registerChannel("ebcl:bridge");
+		pm.registerListener(this, new BridgeListener(this));
+
+		//request states from all servers...
+		for(ServerInfo server : BungeeCord.getInstance().getServers().values()) {
+			try {
+				ByteArrayOutputStream bout = new ByteArrayOutputStream();
+				DataOutputStream out = new DataOutputStream(bout);
+				out.writeUTF("send_all_players_to_bungeecord");
+				out.close();
+				bout.close();
+				server.sendData("ebcl:bridge", bout.toByteArray(), false);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 
@@ -283,4 +303,9 @@ public class EnhancedBCL extends Plugin {
 	public boolean isInGroup(ServerInfo server) {
 		return serverGroups.stream().flatMap(sg -> sg.getServers().stream()).anyMatch(s -> s.getName().equalsIgnoreCase(server.getName()));
 	}
+
+	public ActivityManager getActivityManager() {
+		return activityManager;
+	}
+
 }

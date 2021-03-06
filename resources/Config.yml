@@ -52,9 +52,11 @@ formats:
     # Adjusts the format of the {PLAYERS_ROWS} placeholder.
     # Available Placeholders:
     # {INDEX} - The index of the result, por example: 1, 2, 3, 4, etc.
+    # {AFK_PREFIX} - Prefix to display when a player is AFK.
+    # {VANISH_PREFIX} - Prefix to display when a player is Vanished.
     # {PREFIX} - Player prefix (if setting 'groups-prefix' is enabled).
     # {PLAYER_NAME} - Player name.
-    player-row-format: "&3#{INDEX}&r {PREFIX} &f{PLAYER_NAME}"
+    player-row-format: "&3#{INDEX}&r {AFK_PREFIX}{VANISH_PREFIX}{PREFIX} &f{PLAYER_NAME}"
     # Define the amount of players per row, set it to 1 or 2 (recommended), if you set a higher value format will not be displayed correctly.
     players-per-row: 2
     # Message displayed when the executor uses the command /glist <server>
@@ -154,7 +156,11 @@ behaviour:
       # Players that have this permission will be able to see vanished users.
       bypass-permission: "ebcl.bypass.vanish.hide"
       # The prefix to display when a players is in Vanish mode.
-      vanish-prefix: "&8(&bV&8) &r"
+      vanish-prefix: "&8[&bV&8] &r"
+      # Define the vanish plugin to use, currently supported:
+      # - Essentials
+      # - SuperVanish/PremiumVanish
+      vanish-plugin: "SuperVanish"
     afk:
       # If enabled, a prefix will be added for afk players, so you can see what players
       # are afk in your network.
@@ -164,7 +170,7 @@ behaviour:
       #   - Essentials
       show-afk-state: true
       # The prefix to display when a player is afk.
-      afk-prefix: "&8(&eAFK&8) &r"
+      afk-prefix: "&8[&eAFK&8] &r"
 messages:
   cannot-found-server: "&cThe specified server name {NAME} &ccannot be found in the Network."
   previous-page-hover-message: "&eClick here to go to the page &f#{PAGE_NUMBER}"

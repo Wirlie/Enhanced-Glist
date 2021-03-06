@@ -1,5 +1,6 @@
 package dev.wirlie.bungeecord.glist.util;
 
+import dev.wirlie.bungeecord.glist.activity.ActivityType;
 import dev.wirlie.bungeecord.glist.config.Config;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -13,7 +14,7 @@ public class TextUtil {
       return TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', text));
    }
 
-   public static String makeRowsNew(int columns, int startIndex, ChatColor columnColor, List<Pair<String, String>> dataPair) {
+   public static String makeRowsNew(int columns, int startIndex, List<PlayerGlistEntry> dataPair) {
       int widthPerColumn = TextWidthUtil.lineMaxWidth / columns;
 
       StringBuilder finalLine = new StringBuilder();
@@ -22,9 +23,14 @@ public class TextUtil {
       boolean exceded = false;
       boolean first = true;
 
-      for(int i = (startIndex - 1); i < dataPair.size(); i++) {
-         Pair<String, String> nextDataPair = dataPair.get(i);
-         String nextData = Config.FORMATS__SERVER_LIST__PLAYER_ROW_FORMAT.get().replace("{INDEX}", String.valueOf(i + 1)).replace("{PREFIX}", nextDataPair.getA()).replace("{PLAYER_NAME}", nextDataPair.getB());
+      for(int i = 0; i < dataPair.size(); i++) {
+         PlayerGlistEntry nextDataPair = dataPair.get(i);
+         String nextData = Config.FORMATS__SERVER_LIST__PLAYER_ROW_FORMAT.get()
+                           .replace("{INDEX}", String.valueOf(startIndex + i))
+                           .replace("{PREFIX}", nextDataPair.getPrefix())
+                           .replace("{PLAYER_NAME}", nextDataPair.getPlayer().getName())
+                           .replace("{AFK_PREFIX}", (Config.BEHAVIOUR__PLAYER_STATUS__AFK__SHOW_AFK_STATE.get() && nextDataPair.getActivities().contains(ActivityType.AFK) ? Config.BEHAVIOUR__PLAYER_STATUS__AFK__AFK_PREFIX.get() : ""))
+                           .replace("{VANISH_PREFIX}", (nextDataPair.getActivities().contains(ActivityType.VANISH) ? Config.BEHAVIOUR__PLAYER_STATUS__VANISH__VANISH_PREFIX.get() : ""));
 
          if(nextData.trim().isEmpty()) continue;
 

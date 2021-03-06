@@ -4,3 +4,5 @@ version: 1.1
 main: dev.wirlie.bungeecord.glist.EnhancedBCL
 softdepends:
   - LuckPerms
+  - PremiumVanish
+  - SuperVanish
