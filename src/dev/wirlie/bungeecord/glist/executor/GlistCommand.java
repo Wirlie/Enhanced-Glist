@@ -144,7 +144,7 @@ public class GlistCommand extends Command implements TabExecutor {
 				TemporalPaginator temporalPaginator = this.serversPaginators.computeIfAbsent(serverInfo.getId(), (k) -> new TemporalPaginator(serverInfo.getPlayers().stream().map(cs -> {
 					String prefix = plugin.getPrefix(cs);
 
-					if(prefix == null || prefix.equalsIgnoreCase("null")) {
+					if(prefix == null || prefix.trim().equalsIgnoreCase("null")) {
 						prefix = "";
 					}
 
@@ -155,7 +155,7 @@ public class GlistCommand extends Command implements TabExecutor {
 					temporalPaginator.update(serverInfo.getPlayers().stream().map(cs -> {
 						String prefix = plugin.getPrefix(cs);
 
-						if(prefix == null || prefix.equalsIgnoreCase("null")) {
+						if(prefix == null || prefix.trim().equalsIgnoreCase("null")) {
 							prefix = "";
 						}
 

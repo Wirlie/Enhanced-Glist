@@ -27,7 +27,7 @@ public class TextUtil {
          PlayerGlistEntry nextDataPair = dataPair.get(i);
          String nextData = Config.FORMATS__SERVER_LIST__PLAYER_ROW_FORMAT.get()
                            .replace("{INDEX}", String.valueOf(startIndex + i))
-                           .replace("{PREFIX}", nextDataPair.getPrefix())
+                           .replace("{PREFIX}", nextDataPair.getPrefix() == null || nextDataPair.getPrefix().trim().equalsIgnoreCase("null") || nextDataPair.getPrefix().trim().toLowerCase().contains("null") ? "" : nextDataPair.getPrefix())
                            .replace("{PLAYER_NAME}", nextDataPair.getPlayer().getName())
                            .replace("{AFK_PREFIX}", (Config.BEHAVIOUR__PLAYER_STATUS__AFK__SHOW_AFK_STATE.get() && nextDataPair.getActivities().contains(ActivityType.AFK) ? Config.BEHAVIOUR__PLAYER_STATUS__AFK__AFK_PREFIX.get() : ""))
                            .replace("{VANISH_PREFIX}", (nextDataPair.getActivities().contains(ActivityType.VANISH) ? Config.BEHAVIOUR__PLAYER_STATUS__VANISH__VANISH_PREFIX.get() : ""));
