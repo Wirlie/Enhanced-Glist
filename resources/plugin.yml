@@ -1,6 +1,6 @@
 name: EnhancedBungeeListBridge
 author: Wirlie
-version: 1.2
+version: 1.2.1
 main: dev.wirlie.spigot.glist.EnhancedBCLBridge
 softdepend:
   - Essentials
