@@ -24,13 +24,18 @@ import dev.wirlie.bungeecord.glist.updater.UpdateNotifyListener;
 import dev.wirlie.bungeecord.glist.updater.UpdateChecker;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
+import net.md_5.bungee.api.scheduler.ScheduledTask;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
+import net.md_5.bungee.event.EventHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class EnhancedBCL extends Plugin {
@@ -48,6 +53,8 @@ public class EnhancedBCL extends Plugin {
 	private final ActivityManager activityManager = new ActivityManager();
 
 	public boolean isPremiumVanishHooked = false;
+
+	private ScheduledTask registerGlistTask;
 
 	public void onEnable() {
 		//declaration of commons variables
@@ -267,12 +274,21 @@ public class EnhancedBCL extends Plugin {
 		commandExecutor = new GlistCommand(this, label, permission, aliases);
 
 		if (firstRegister && label.equalsIgnoreCase("glist")) {
-			//TODO: Probably this can be removed if we declare the cmd_glist plugin as soft dependency, so cmd_glist should be loaded before EnhancedBungeeList...
-			//we need to wait some seconds so the original /glist can be replaced.
-			BungeeCord.getInstance().getScheduler().schedule(this, () -> {
+			//we need to wait some time so the original /glist can be replaced.
+			//if proxy have players we can consider that EBL was loaded using a plugin manager, so no waiting required to register the /glist command...
+			if(!ProxyServer.getInstance().getPlayers().isEmpty()) {
+				//immediately register
 				BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor);
-				getLogger().info("Command /glist registered...");
-			}, 3, TimeUnit.SECONDS);
+			} else {
+				//wait for the next player connection, or 30s if no player was connected
+				registerGlistTask = BungeeCord.getInstance().getScheduler().schedule(this, () -> {
+					registerGlistTask = null;
+					BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor);
+					getLogger().info("Command /glist registered...");
+				}, 30, TimeUnit.SECONDS);
+
+				ProxyServer.getInstance().getPluginManager().registerListener(this, new RegisterGlistListener());
+			}
 		} else {
 			//otherwise, custom commands should no clash to other commands (except if the user defines a command of other plugin)
 			BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor);
@@ -316,6 +332,23 @@ public class EnhancedBCL extends Plugin {
 
 	public ActivityManager getActivityManager() {
 		return activityManager;
+	}
+
+	private class RegisterGlistListener implements Listener {
+
+		@EventHandler
+		public void event(PostLoginEvent e) {
+			if(registerGlistTask != null) {
+				registerGlistTask.cancel();
+				registerGlistTask = null;
+
+				ProxyServer.getInstance().getPluginManager().unregisterListener(this);
+
+				BungeeCord.getInstance().getPluginManager().registerCommand(EnhancedBCL.this, commandExecutor);
+				getLogger().info("Command /glist registered...");
+			}
+		}
+
 	}
 
 }
