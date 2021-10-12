@@ -54,7 +54,10 @@ public class EnhancedBCL extends Plugin {
 
 	public boolean isPremiumVanishHooked = false;
 
-	private ScheduledTask registerGlistTask;
+	private ScheduledTask registerGlistCommandTask;
+	private final Object registerGlistCommandTaskSyncObject = new Object();
+
+	//TODO: Implement update check every X minutes
 	private UpdateChecker updateChecker;
 
 	public void onEnable() {
@@ -295,11 +298,15 @@ public class EnhancedBCL extends Plugin {
 				BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor);
 			} else {
 				//wait for the next player connection, or 30s if no player was connected
-				registerGlistTask = BungeeCord.getInstance().getScheduler().schedule(this, () -> {
-					registerGlistTask = null;
-					BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor);
-					getLogger().info("Command /glist registered...");
-				}, 30, TimeUnit.SECONDS);
+				synchronized (registerGlistCommandTaskSyncObject) {
+					registerGlistCommandTask = BungeeCord.getInstance().getScheduler().schedule(this, () -> {
+						synchronized (registerGlistCommandTaskSyncObject) {
+							registerGlistCommandTask = null;
+						}
+						BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor);
+						getLogger().info("Command /glist registered...");
+					}, 30, TimeUnit.SECONDS);
+				}
 
 				ProxyServer.getInstance().getPluginManager().registerListener(this, new RegisterGlistListener());
 			}
@@ -352,15 +359,17 @@ public class EnhancedBCL extends Plugin {
 
 		@EventHandler
 		public void event(PostLoginEvent e) {
-			if(registerGlistTask != null) {
-				registerGlistTask.cancel();
-				registerGlistTask = null;
+			synchronized (registerGlistCommandTaskSyncObject) {
+				if (registerGlistCommandTask != null) {
+					registerGlistCommandTask.cancel();
+					registerGlistCommandTask = null;
 
-				ProxyServer.getInstance().getPluginManager().unregisterListener(this);
-
-				BungeeCord.getInstance().getPluginManager().registerCommand(EnhancedBCL.this, commandExecutor);
-				getLogger().info("Command /glist registered...");
+					BungeeCord.getInstance().getPluginManager().registerCommand(EnhancedBCL.this, commandExecutor);
+					getLogger().info("Command /glist registered...");
+				}
 			}
+
+			ProxyServer.getInstance().getPluginManager().unregisterListener(this);
 		}
 
 	}
