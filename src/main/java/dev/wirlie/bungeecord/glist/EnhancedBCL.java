@@ -23,6 +23,7 @@ import dev.wirlie.bungeecord.glist.servers.ServerGroup;
 import dev.wirlie.bungeecord.glist.updater.UpdateNotifyListener;
 import dev.wirlie.bungeecord.glist.updater.UpdateChecker;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -63,6 +64,14 @@ public class EnhancedBCL extends Plugin {
 	private UpdateChecker updateChecker;
 
 	private BungeeAudiences adventure;
+
+	public final static LegacyComponentSerializer defaultLegacyDeserializer = LegacyComponentSerializer
+	.builder()
+	.hexCharacter('#')
+	.character('&')
+	.extractUrls()
+	.hexColors()
+	.build();
 
 	public @NotNull BungeeAudiences adventure() {
 		if(this.adventure == null) {

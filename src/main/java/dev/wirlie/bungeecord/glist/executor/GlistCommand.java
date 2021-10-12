@@ -10,6 +10,7 @@ import dev.wirlie.bungeecord.glist.servers.ServerInfoProvider;
 import dev.wirlie.bungeecord.glist.util.Pair;
 import dev.wirlie.bungeecord.glist.util.PlayerGlistEntry;
 import dev.wirlie.bungeecord.glist.util.TextUtil;
+import net.kyori.adventure.audience.Audience;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
@@ -46,6 +47,7 @@ public class GlistCommand extends Command implements TabExecutor {
 
 	public void execute(CommandSender sender, String[] args) {
 		boolean isPlayerExecutor = sender instanceof ProxiedPlayer;
+		Audience audience = plugin.adventure().sender(sender);
 		Set<String> options = new HashSet<>();
 
 		for(String arg : args) {
@@ -111,7 +113,7 @@ public class GlistCommand extends Command implements TabExecutor {
 		}
 
 		if (args.length == 0) {
-			printGlobal(sender, options);
+			printGlobal(audience, options);
 		} else {
 			int page;
 			String[] partsController;
@@ -119,7 +121,7 @@ public class GlistCommand extends Command implements TabExecutor {
 
 			//is blacklisted?
 			if(Config.BEHAVIOUR__SERVER_LIST__BLACKLISTED_SERVERS.get().stream().anyMatch(s -> s.equalsIgnoreCase(serverName))) {
-				sender.sendMessage(TextUtil.fromLegacy(Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)));
+				audience.sendMessage(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)));
 				return;
 			}
 
@@ -139,9 +141,9 @@ public class GlistCommand extends Command implements TabExecutor {
 			ServerInfoProvider serverInfo = serverInfoPre;
 
 			if (serverInfo == null) {
-				sender.sendMessage(TextUtil.fromLegacy(Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)));
+				audience.sendMessage(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)));
 			} else {
-				TemporalPaginator temporalPaginator = this.serversPaginators.computeIfAbsent(serverInfo.getId(), (k) -> new TemporalPaginator(serverInfo.getPlayers().stream().map(cs -> {
+				TemporalPaginator temporalPaginator = serversPaginators.computeIfAbsent(serverInfo.getId(), (k) -> new TemporalPaginator(serverInfo.getPlayers().stream().map(cs -> {
 					String prefix = plugin.getPrefix(cs);
 
 					if(prefix == null || prefix.trim().equalsIgnoreCase("null")) {
@@ -179,11 +181,11 @@ public class GlistCommand extends Command implements TabExecutor {
 					int totalPages = temporalPaginator.resolveNumOfPages(data);
 					if (totalPages > 0) {
 						for (String line : Config.FORMATS__SERVER_LIST__NO_PAGE_DATA_MESSAGE.get()) {
-							sender.sendMessage(TextUtil.fromLegacy(line.replace("{TOTAL_PAGES}", String.valueOf(totalPages))));
+							audience.sendMessage(EnhancedBCL.defaultLegacyDeserializer.deserialize(line.replace("{TOTAL_PAGES}", String.valueOf(totalPages))));
 						}
 					} else {
 						for(String line : Config.FORMATS__SERVER_LIST__NO_PLAYERS_MESSAGE.get()) {
-							sender.sendMessage(TextUtil.fromLegacy(line));
+							audience.sendMessage(EnhancedBCL.defaultLegacyDeserializer.deserialize(line));
 						}
 					}
 				} else {
@@ -196,7 +198,7 @@ public class GlistCommand extends Command implements TabExecutor {
 
 						for (String line : partsController) {
 							if (!line.contains("{PAGINATION_CONTROLLER}")) {
-								sender.sendMessage(TextUtil.fromLegacy(line));
+								audience.sendMessage(EnhancedBCL.defaultLegacyDeserializer.deserialize(line));
 							}
 						}
 					} else if (message.contains("{PAGINATION_CONTROLLER}")) {
@@ -311,20 +313,20 @@ public class GlistCommand extends Command implements TabExecutor {
 							}
 						}
 
-						sender.sendMessage(mainComponent);
+						audience.sendMessage(mainComponent);
 					} else {
 						if(message.endsWith("\n")) {
 							message = message.substring(0, message.length() - 2);
 						}
 
-						sender.sendMessage(TextUtil.fromLegacy(message));
+						audience.sendMessage(EnhancedBCL.defaultLegacyDeserializer.deserialize(message));
 					}
 				}
 			}
 		}
 	}
 
-	private void printGlobal(CommandSender sender, Set<String> options) {
+	private void printGlobal(Audience audience, Set<String> options) {
 		List<ServerInfoProvider> allServers = new ArrayList<>();
 
 		//bungeecord servers
@@ -461,10 +463,10 @@ public class GlistCommand extends Command implements TabExecutor {
 		for(String line : fullMessageCopy) {
 			if (line.contains("{SERVERS_ROWS}")) {
 			    for(BaseComponent[] message : componentsServerRow) {
-                    sender.sendMessage(message);
+                    audience.sendMessage(message);
                 }
 			} else {
-				sender.sendMessage(TextUtil.fromLegacy(ChatColor.translateAlternateColorCodes('&', line.replace("{NOT_DISPLAYED_AMOUNT}", String.valueOf(notDisplayedCount)).replace("{TOTAL_PLAYER_AMOUNT}", String.valueOf(totalPlayers)).replace("{LABEL}", this.getName()))));
+				audience.sendMessage(EnhancedBCL.defaultLegacyDeserializer.deserialize(ChatColor.translateAlternateColorCodes('&', line.replace("{NOT_DISPLAYED_AMOUNT}", String.valueOf(notDisplayedCount)).replace("{TOTAL_PLAYER_AMOUNT}", String.valueOf(totalPlayers)).replace("{LABEL}", this.getName()))));
 			}
 		}
 	}
