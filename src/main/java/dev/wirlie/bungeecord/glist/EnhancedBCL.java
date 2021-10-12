@@ -22,6 +22,7 @@ import dev.wirlie.bungeecord.glist.hooks.LuckPermsHook;
 import dev.wirlie.bungeecord.glist.servers.ServerGroup;
 import dev.wirlie.bungeecord.glist.updater.UpdateNotifyListener;
 import dev.wirlie.bungeecord.glist.updater.UpdateChecker;
+import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
@@ -36,6 +37,7 @@ import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
 import net.md_5.bungee.event.EventHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class EnhancedBCL extends Plugin {
@@ -60,7 +62,19 @@ public class EnhancedBCL extends Plugin {
 	//TODO: Implement update check every X minutes
 	private UpdateChecker updateChecker;
 
+	private BungeeAudiences adventure;
+
+	public @NotNull BungeeAudiences adventure() {
+		if(this.adventure == null) {
+			throw new IllegalStateException("Cannot retrieve audience provider while plugin is not enabled");
+		}
+
+		return this.adventure;
+	}
+
 	public void onEnable() {
+		this.adventure = BungeeAudiences.create(this);
+
 		//declaration of commons variables
 		Logger logger = getLogger();
 		PluginManager pm = BungeeCord.getInstance().getPluginManager();
@@ -131,6 +145,14 @@ public class EnhancedBCL extends Plugin {
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
+		}
+	}
+
+	@Override
+	public void onDisable() {
+		if(this.adventure != null) {
+			this.adventure.close();
+			this.adventure = null;
 		}
 	}
 
