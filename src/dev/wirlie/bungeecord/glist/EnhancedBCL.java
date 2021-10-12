@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -15,7 +16,6 @@ import dev.wirlie.bungeecord.glist.config.Config;
 import dev.wirlie.bungeecord.glist.config.ConfigEntry;
 import dev.wirlie.bungeecord.glist.executor.GlistCommand;
 import dev.wirlie.bungeecord.glist.executor.EBLCommand;
-import dev.wirlie.bungeecord.glist.groups.GroupManager;
 import dev.wirlie.bungeecord.glist.hooks.GroupHook;
 import dev.wirlie.bungeecord.glist.hooks.InternalGroupSystemHook;
 import dev.wirlie.bungeecord.glist.hooks.LuckPermsHook;
@@ -55,6 +55,7 @@ public class EnhancedBCL extends Plugin {
 	public boolean isPremiumVanishHooked = false;
 
 	private ScheduledTask registerGlistTask;
+	private UpdateChecker updateChecker;
 
 	public void onEnable() {
 		//declaration of commons variables
@@ -85,10 +86,23 @@ public class EnhancedBCL extends Plugin {
 		registerListExecutor(true);
 
 		if(Config.UPDATES__CHECK_UPDATES.get()) {
-			UpdateChecker updateChecker = new UpdateChecker(this);
-			updateChecker.getSpigotVersion(v -> {}, Throwable::printStackTrace);
+			updateChecker = new UpdateChecker(this);
+			updateChecker.checkForUpdates(
+				true,
+				version -> {
+					getLogger().info("-------------------------------------------");
+					getLogger().info("Remote version (SpigotMC): " + version);
+					getLogger().info("Current version (Plugin): " + getDescription().getVersion());
+					getLogger().info("-------------------------------------------");
 
-			pm.registerListener(this, new UpdateNotifyListener(this));
+					pm.registerListener(this, new UpdateNotifyListener(this));
+				},
+				ex -> {
+					getLogger().warning("-------------------------------------------");
+					getLogger().log(Level.WARNING, "Cannot check for updates due an internal error:", ex);
+					getLogger().warning("-------------------------------------------");
+				}
+			);
 		}
 
 		BungeeCord.getInstance().registerChannel("ebcl:bridge");

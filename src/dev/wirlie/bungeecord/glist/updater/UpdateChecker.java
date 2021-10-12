@@ -1,6 +1,7 @@
 package dev.wirlie.bungeecord.glist.updater;
 
 import dev.wirlie.bungeecord.glist.EnhancedBCL;
+import dev.wirlie.bungeecord.glist.util.Pair;
 import net.md_5.bungee.BungeeCord;
 
 import java.io.InputStream;
@@ -15,63 +16,38 @@ import java.util.logging.Level;
 public class UpdateChecker {
 
     private final EnhancedBCL plugin;
-    private String lastKnowVersion = null;
-    private boolean hasUpdate = false;
 
     public UpdateChecker(EnhancedBCL plugin) {
         this.plugin = plugin;
     }
 
-    public void hasUpdate(Consumer<Boolean> updateConsumer, Consumer<Throwable> exceptionConsumer) {
-        if(lastKnowVersion != null) {
-            updateConsumer.accept(hasUpdate);
-        } else {
-            //obtener
-            getSpigotVersion(version -> updateConsumer.accept(hasUpdate), ex -> {
-                if(ex != null) {
-                    exceptionConsumer.accept(ex);
-                }
-            });
-        }
-    }
-
-    public void getLastKnowVersion(Consumer<String> versionConsumer, Consumer<Throwable> exceptionConsumer) {
-        if(lastKnowVersion != null) {
-            versionConsumer.accept(lastKnowVersion);
-        } else {
-            //obtener
-            getSpigotVersion(versionConsumer, ex -> {
-                if(ex != null) {
-                    exceptionConsumer.accept(ex);
-                }
-            });
-        }
-    }
-
-    public void getSpigotVersion(Consumer<String> versionConsumer, Consumer<Throwable> exceptionConsumer) {
+    public void checkForUpdates(Boolean firstExecution, Consumer<Pair<String, Boolean>> versionConsumer, Consumer<Throwable> exceptionConsumer) {
         plugin.getLogger().info("Checking for updates...");
+
         BungeeCord.getInstance().getScheduler().runAsync(plugin, () -> {
             try (InputStream inputStream = new URL("https://api.spigotmc.org/legacy/update.php?resource=53295").openStream(); Scanner scanner = new Scanner(inputStream)) {
                 if (scanner.hasNext()) {
                     String version = scanner.next();
-                    lastKnowVersion = version;
-                    hasUpdate = determineIfUpdateAvailable();
 
-                    plugin.getLogger().info("-------------------------------------------");
-                    plugin.getLogger().info("Remote version (SpigotMC): " + version);
-                    plugin.getLogger().info("Current version (Plugin): " + plugin.getDescription().getVersion());
-                    plugin.getLogger().info("-------------------------------------------");
+                    boolean hasUpdate = determineIfUpdateAvailable(version);
 
-                    if(hasUpdate) {
+                    versionConsumer.accept(new Pair<>(version, hasUpdate));
+
+                    if (hasUpdate) {
+                        if (!firstExecution) {
+                            plugin.getLogger().info("-------------------------------------------");
+                        }
                         plugin.getLogger().warning("New update found!! Download the latest update from: ");
                         plugin.getLogger().warning("https://www.spigotmc.org/resources/enhancedbungeelist.53295/");
                     } else {
-                        plugin.getLogger().info("Plugin is up to date.");
+                        if (firstExecution) {
+                            plugin.getLogger().info("Plugin is up to date.");
+                        }
                     }
 
-                    plugin.getLogger().info("-------------------------------------------");
-
-                    versionConsumer.accept(version);
+                    if (firstExecution || hasUpdate) {
+                        plugin.getLogger().info("-------------------------------------------");
+                    }
                 }
             } catch (Throwable exception) {
                 exceptionConsumer.accept(exception);
@@ -79,10 +55,9 @@ public class UpdateChecker {
         });
     }
 
-    private boolean determineIfUpdateAvailable() {
+    private boolean determineIfUpdateAvailable(String remoteVersion) {
         try {
             String currentVersion = plugin.getDescription().getVersion();
-            String remoteVersion = lastKnowVersion;
 
             if(currentVersion.equals(remoteVersion)) {
                 return false;
@@ -123,7 +98,7 @@ public class UpdateChecker {
 
             return false;
         } catch (Exception ex) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to determine if there is a new update! Remote[" + lastKnowVersion + "], Plugin[" + plugin.getDescription().getVersion() + "]", ex);
+            plugin.getLogger().log(Level.SEVERE, "Failed to determine if there is a new update! Remote[" + remoteVersion + "], Plugin[" + plugin.getDescription().getVersion() + "]", ex);
             return false;
         }
     }

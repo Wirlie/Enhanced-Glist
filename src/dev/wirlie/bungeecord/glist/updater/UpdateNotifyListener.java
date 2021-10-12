@@ -22,26 +22,26 @@ public class UpdateNotifyListener implements Listener {
 
     @EventHandler
     public void event(PostLoginEvent e) {
-        ProxiedPlayer pp = e.getPlayer();
-        if(pp.isConnected()) {
-            if(Config.UPDATES__NOTIFY__ENABLE.get()) {
-                if(pp.hasPermission(Config.UPDATES__NOTIFY__PERMISSION.get())) {
-                    int delay = Config.UPDATES__NOTIFY__DELAY_MS.get();
+        ProxiedPlayer player = e.getPlayer();
 
-                    if(delay < 1) {
-                        delay = 1;
-                    }
+        if(Config.UPDATES__NOTIFY__ENABLE.get()) {
+            if(player.hasPermission(Config.UPDATES__NOTIFY__PERMISSION.get())) {
+                int delay = Config.UPDATES__NOTIFY__DELAY_MS.get();
 
-                    BungeeCord.getInstance().getScheduler().schedule(plugin, () -> {
-                        //notify
-                        List<String> rawMessages = Config.UPDATES__NOTIFY__MESSAGE.get();
-
-                        for(String line : rawMessages) {
-                            pp.sendMessage(TextUtil.fromLegacy(line));
-                        }
-                    }, delay, TimeUnit.MILLISECONDS);
+                if(delay < 1) {
+                    sendNotification(player);
+                } else {
+                    BungeeCord.getInstance().getScheduler().schedule(plugin, () -> sendNotification(player), delay, TimeUnit.MILLISECONDS);
                 }
             }
+        }
+    }
+
+    private void sendNotification(ProxiedPlayer player) {
+        List<String> rawMessages = Config.UPDATES__NOTIFY__MESSAGE.get();
+
+        for(String line : rawMessages) {
+            player.sendMessage(TextUtil.fromLegacy(line));
         }
     }
 
