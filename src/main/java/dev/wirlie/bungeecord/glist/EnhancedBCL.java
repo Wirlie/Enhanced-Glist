@@ -115,13 +115,15 @@ public class EnhancedBCL extends Plugin {
 			updateChecker = new UpdateChecker(this);
 			updateChecker.checkForUpdates(
 				true,
-				version -> {
+				result -> {
 					getLogger().info("-------------------------------------------");
-					getLogger().info("Remote version (SpigotMC): " + version);
+					getLogger().info("Remote version (SpigotMC): " + result.getA());
 					getLogger().info("Current version (Plugin): " + getDescription().getVersion());
 					getLogger().info("-------------------------------------------");
 
-					pm.registerListener(this, new UpdateNotifyListener(this));
+					if(result.getB()) {
+						pm.registerListener(this, new UpdateNotifyListener(this));
+					}
 				},
 				ex -> {
 					getLogger().warning("-------------------------------------------");
