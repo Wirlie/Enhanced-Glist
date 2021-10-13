@@ -2,21 +2,20 @@ package dev.wirlie.bungeecord.glist.executor;
 
 import dev.wirlie.bungeecord.glist.EnhancedBCL;
 import dev.wirlie.bungeecord.glist.TemporalPaginator;
-import dev.wirlie.bungeecord.glist.activity.ActivityType;
 import dev.wirlie.bungeecord.glist.config.Config;
 import dev.wirlie.bungeecord.glist.servers.BungeecordInfoProvider;
-import dev.wirlie.bungeecord.glist.servers.ServerGroup;
 import dev.wirlie.bungeecord.glist.servers.ServerInfoProvider;
-import dev.wirlie.bungeecord.glist.util.Pair;
 import dev.wirlie.bungeecord.glist.util.PlayerGlistEntry;
 import dev.wirlie.bungeecord.glist.util.TextUtil;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.chat.*;
-import net.md_5.bungee.api.chat.ClickEvent.Action;
-import net.md_5.bungee.api.chat.ComponentBuilder.FormatRetention;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -203,18 +202,29 @@ public class GlistCommand extends Command implements TabExecutor {
 						}
 					} else if (message.contains("{PAGINATION_CONTROLLER}")) {
 						partsController = message.split("\\{PAGINATION_CONTROLLER}");
-						BaseComponent mainComponent = new TextComponent();
+						TextComponent mainComponent = EnhancedBCL.defaultLegacyDeserializer.deserialize(partsController[0]);
 
-						for (BaseComponent bc : TextUtil.fromLegacy(partsController[0])) {
-							mainComponent.addExtra(bc);
-						}
-
-						ComponentBuilder cb = null;
+						TextComponent cb = null;
 						if (page > 1 && page < totalPages) {
-							cb = new ComponentBuilder("");
+							cb = Component.empty();
 
 							if (isPlayerExecutor) {
-								cb.append("<<")
+								cb = cb.append(
+									Component.text("<<", NamedTextColor.WHITE)
+										.clickEvent(ClickEvent.runCommand("/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1)))
+										.hoverEvent(HoverEvent.showText(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page - 1)) )))
+										.append(Component.text(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ", NamedTextColor.GOLD))
+								)
+								.append(Component.text("|", NamedTextColor.DARK_GRAY))
+								.append(
+									Component.text(" " + Config.MESSAGES__NEXT_PAGE.get() + " ", NamedTextColor.GOLD)
+										.clickEvent(ClickEvent.runCommand("/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1)))
+										.hoverEvent(HoverEvent.showText(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__NEXT_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page + 1)))))
+										.append(Component.text(">>", NamedTextColor.WHITE))
+								);
+
+								//TODO: REMOVE
+								/*cb.append("<<")
 										.color(ChatColor.WHITE)
 										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1)))
 										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page - 1)) )))
@@ -226,15 +236,40 @@ public class GlistCommand extends Command implements TabExecutor {
 										.color(ChatColor.GOLD)
 										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1)))
 										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NEXT_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page + 1)))))
-										.append(">>").color(ChatColor.WHITE);
+										.append(">>").color(ChatColor.WHITE);*/
 							} else {
-								cb.append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1)).color(ChatColor.WHITE).append(" to go to the previous page.\n").color(ChatColor.GOLD).append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1)).color(ChatColor.WHITE).append(" to go to the next page.").color(ChatColor.GOLD);
+								//TODO: MAKE TRANSLATABLE
+								cb = cb.append(
+									Component.text("Use ", NamedTextColor.GOLD)
+									.append(Component.text("/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1), NamedTextColor.WHITE))
+									.append(Component.text(" to go to the previous page.\n", NamedTextColor.GOLD))
+									.append(Component.text("Use ", NamedTextColor.GOLD))
+									.append(Component.text("/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1), NamedTextColor.WHITE))
+									.append(Component.text("to go to the next page.", NamedTextColor.GOLD))
+								);
+
+								//TODO: REMOVE
+								//cb.append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1)).color(ChatColor.WHITE).append(" to go to the previous page.\n").color(ChatColor.GOLD).append("Use ").color(ChatColor.GOLD).append("/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1)).color(ChatColor.WHITE).append(" to go to the next page.").color(ChatColor.GOLD);
 							}
 						} else if (page <= 1) {
 							if (page + 1 <= totalPages) {
-								cb = new ComponentBuilder("");
+								cb = Component.empty();
 								if (isPlayerExecutor) {
-									cb.append("<<")
+									cb = cb.append(
+										Component.text("<<", NamedTextColor.DARK_RED)
+											.hoverEvent(HoverEvent.showText(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__NO_PREVIOUS_PAGE.get())))
+											.append(Component.text(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ", NamedTextColor.RED))
+									)
+									.append(Component.text("|", NamedTextColor.DARK_GRAY))
+								 	.append(
+									 	Component.text(" " + Config.MESSAGES__NEXT_PAGE.get() + " ", NamedTextColor.GOLD)
+											.clickEvent(ClickEvent.runCommand("/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1)))
+											.hoverEvent(HoverEvent.showText(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__NEXT_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page + 1)))))
+											.append(Component.text(">>", NamedTextColor.WHITE))
+									);
+
+									//TODO: REMOVE
+									/*cb.append("<<")
 											.color(ChatColor.DARK_RED)
 											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NO_PREVIOUS_PAGE.get())))
 											.append(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ")
@@ -245,15 +280,30 @@ public class GlistCommand extends Command implements TabExecutor {
 											.color(ChatColor.GOLD)
 											.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1)))
 											.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NEXT_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page + 1)))))
-											.append(">>").color(ChatColor.WHITE);
+											.append(">>").color(ChatColor.WHITE);*/
 								} else {
-									cb.append("Use ").color(ChatColor.GOLD)
-											.append("/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1))
-											.color(ChatColor.WHITE)
-											.append(" to go to the next page.")
-											.color(ChatColor.GOLD);
+									cb = cb.append(
+										Component.text("Use ", NamedTextColor.GOLD)
+											.append(Component.text("/" + this.getName() + " " + serverInfo.getId() + " " + (page + 1), NamedTextColor.WHITE))
+											.append(Component.text(" to go to the next page.", NamedTextColor.GOLD))
+									);
 								}
 							} else if (isPlayerExecutor) {
+								cb = Component.empty()
+									 .append(
+									 	Component.text("<<", NamedTextColor.DARK_RED)
+										.hoverEvent(HoverEvent.showText(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__NO_PREVIOUS_PAGE.get())))
+										.append(Component.text(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ", NamedTextColor.RED))
+									 )
+									 .append(Component.text("|", NamedTextColor.DARK_GRAY))
+									 .append(
+									 	Component.text(" " + Config.MESSAGES__NEXT_PAGE.get() + " ", NamedTextColor.RED)
+										.hoverEvent(HoverEvent.showText(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__NO_NEXT_PAGE.get())))
+										.append(Component.text(">>", NamedTextColor.DARK_RED))
+									 );
+
+								//TODO: REMOVE
+								/*
 								cb = new ComponentBuilder("<<")
 										.color(ChatColor.DARK_RED)
 										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NO_PREVIOUS_PAGE.get())))
@@ -265,10 +315,25 @@ public class GlistCommand extends Command implements TabExecutor {
 										.color(ChatColor.RED)
 										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NO_NEXT_PAGE.get())))
 										.append(">>")
-										.color(ChatColor.DARK_RED);
+										.color(ChatColor.DARK_RED);*/
 							}
 						} else if (page >= totalPages) {
 							if (isPlayerExecutor) {
+								cb = Component.empty()
+									 .append(
+									 	Component.text("<<", NamedTextColor.WHITE)
+										.clickEvent(ClickEvent.runCommand("/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1)))
+										.hoverEvent(HoverEvent.showText(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", String.valueOf(page - 1)))))
+										.append(Component.text(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ", NamedTextColor.GOLD))
+									 )
+									 .append(Component.text("|", NamedTextColor.DARK_GRAY))
+									 .append(
+									 	Component.text(" " + Config.MESSAGES__NEXT_PAGE.get() + " ", NamedTextColor.RED)
+										.hoverEvent(HoverEvent.showText(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__NO_NEXT_PAGE.get())))
+										.append(Component.text(">>", NamedTextColor.DARK_RED))
+									 );
+								//TODO: REMOVE
+								/*
 								cb = new ComponentBuilder("<<")
 										.color(ChatColor.WHITE)
 										.event(new ClickEvent(Action.RUN_COMMAND, "/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1)))
@@ -281,36 +346,44 @@ public class GlistCommand extends Command implements TabExecutor {
 										.color(ChatColor.RED)
 										.event(new HoverEvent(net.md_5.bungee.api.chat.HoverEvent.Action.SHOW_TEXT, TextUtil.fromLegacy(Config.MESSAGES__NO_NEXT_PAGE.get())))
 										.append(">>")
-										.color(ChatColor.DARK_RED);
+										.color(ChatColor.DARK_RED);*/
 							} else {
+								cb = Component.text("Use ", NamedTextColor.GOLD)
+									 .append(Component.text("/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1), NamedTextColor.WHITE))
+									 .append(Component.text(" to go to the previous page.", NamedTextColor.GOLD));
+								//TODO: REMOVE
+								/*
 								cb = new ComponentBuilder("Use ")
 										.color(ChatColor.GOLD)
 										.append("/" + this.getName() + " " + serverInfo.getId() + " " + (page - 1))
 										.color(ChatColor.WHITE)
 										.append(" to go to the previous page.")
-										.color(ChatColor.GOLD);
+										.color(ChatColor.GOLD);*/
 							}
 						}
 
-						BaseComponent bc;
-						BaseComponent[] bcObject;
-						int j;
 						if (cb != null) {
-							bcObject = cb.create();
+							//TODO: REMOVE
+							/*TextComponent[] bcObject = cb.create();
 
-							for(j = 0; j < bcObject.length; ++j) {
-								bc = bcObject[j];
+							for(int j = 0; j < bcObject.length; ++j) {
+								TextComponent bc = bcObject[j];
 								mainComponent.addExtra(bc);
-							}
+							}*/
+
+							mainComponent = mainComponent.append(cb);
 						}
 
 						if (partsController.length > 1) {
-							bcObject = TextUtil.fromLegacy(partsController[1]);
+							//TODO: REMOVE
+							/*TextComponent[] bcObject = TextUtil.fromLegacy(partsController[1]);
 
-							for(j = 0; j < bcObject.length; ++j) {
-								bc = bcObject[j];
+							for(int j = 0; j < bcObject.length; ++j) {
+								TextComponent bc = bcObject[j];
 								mainComponent.addExtra(bc);
-							}
+							}*/
+
+							mainComponent = mainComponent.append(EnhancedBCL.defaultLegacyDeserializer.deserialize(partsController[1]));
 						}
 
 						audience.sendMessage(mainComponent);
@@ -362,11 +435,11 @@ public class GlistCommand extends Command implements TabExecutor {
 		   })
 		   .limit(Config.BEHAVIOUR__GLOBAL_LIST__MAX_SERVERS_ROWS.get() < 1 ? Integer.MAX_VALUE : options.contains("-g") ? Integer.MAX_VALUE : Config.BEHAVIOUR__GLOBAL_LIST__MAX_SERVERS_ROWS.get()).collect(Collectors.toList());
 
-		List<BaseComponent[]> componentsServerRow = new ArrayList<>();
+		List<TextComponent> componentsServerRow = new ArrayList<>();
 
 		int totalPlayers = BungeeCord.getInstance().getPlayers().size();
 		if (servers.isEmpty()) {
-            componentsServerRow.add(TextUtil.fromLegacy(Config.FORMATS__GLOBAL_LIST__NO_SERVERS_FORMAT.get()));
+            componentsServerRow.add(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.FORMATS__GLOBAL_LIST__NO_SERVERS_FORMAT.get()));
 		} else {
 			int playerCount = (servers.get(0)).getPlayerCount();
 			Iterator<ServerInfoProvider> serversIterator = servers.iterator();
@@ -395,6 +468,13 @@ public class GlistCommand extends Command implements TabExecutor {
 							}
 						}
 
+						componentsServerRow.add(
+							EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.FORMATS__GLOBAL_LIST__SERVER_ROW_FORMAT.get().replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYER_AMOUNT}", String.valueOf(serverInfo.getPlayers().size())).replace("{GRAPHIC_BAR}", graphicBarBuilder.toString()).replace("{PERCENT}", this.format.format(percent) + "%"))
+							.clickEvent(ClickEvent.runCommand("/glist " + serverInfo.getId()))
+							.hoverEvent(HoverEvent.showText(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__CLICK_TO_SHOW_PLAYERS.get().replace("{SERVER_NAME}", serverInfo.getId()))))
+						);
+						//TODO: REMOVE
+						/*
                         componentsServerRow.add(
                             new ComponentBuilder("")
                             .event(
@@ -407,7 +487,7 @@ public class GlistCommand extends Command implements TabExecutor {
                                 TextUtil.fromLegacy(Config.FORMATS__GLOBAL_LIST__SERVER_ROW_FORMAT.get().replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYER_AMOUNT}", String.valueOf(serverInfo.getPlayers().size())).replace("{GRAPHIC_BAR}", graphicBarBuilder.toString()).replace("{PERCENT}", this.format.format(percent) + "%"))
                             )
                             .create()
-                        );
+                        );*/
 					} while(!options.contains("-sp"));
 				} while(serverInfo.getPlayerCount() == 0);
 
@@ -440,7 +520,15 @@ public class GlistCommand extends Command implements TabExecutor {
 						playersString.append(playersFormat.replace("{PLAYER_NAME}", playerName));
 					}
 				}
+				
+				componentsServerRow.add(
+					EnhancedBCL.defaultLegacyDeserializer.deserialize(mainFormat.replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYERS_FORMAT}", playersString.toString()))
+					.hoverEvent(HoverEvent.showText(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__CLICK_TO_SHOW_PLAYERS.get().replace("{SERVER_NAME}", serverInfo.getId()))))
+					.clickEvent(ClickEvent.runCommand("/glist " + serverInfo.getId()))
+				);
 
+				//TODO: REMOVE
+				/*
                 componentsServerRow.add(
                     new ComponentBuilder("")
                     .event(
@@ -453,7 +541,7 @@ public class GlistCommand extends Command implements TabExecutor {
                         TextUtil.fromLegacy(mainFormat.replace("{SERVER_NAME}", Config.BEHAVIOUR__GLOBAL_LIST__UPPER_CASE_NAMES.get() ? serverInfo.getId().toUpperCase() : serverInfo.getId()).replace("{PLAYERS_FORMAT}", playersString.toString()))
                     )
                     .create()
-                );
+                );*/
 			}
 		}
 
@@ -462,7 +550,7 @@ public class GlistCommand extends Command implements TabExecutor {
 
 		for(String line : fullMessageCopy) {
 			if (line.contains("{SERVERS_ROWS}")) {
-			    for(BaseComponent[] message : componentsServerRow) {
+			    for(TextComponent message : componentsServerRow) {
                     audience.sendMessage(message);
                 }
 			} else {
