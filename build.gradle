@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.wirlie'
-version '1.0-SNAPSHOT'
+version '1.3'
 
 repositories {
     mavenLocal()
@@ -44,6 +44,7 @@ targetCompatibility = 1.8
 shadowJar {
 
     destinationDirectory = file("$rootDir/compiled")
+    archiveFileName = "${baseName}-${version}.${extension}"
 
     /*
         SpigotMC tiene la mala costumbre de buscar clases iguales en otros plugins
