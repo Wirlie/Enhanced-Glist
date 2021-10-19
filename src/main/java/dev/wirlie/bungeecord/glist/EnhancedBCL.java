@@ -43,12 +43,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class EnhancedBCL extends Plugin {
 
+	public static EnhancedBCL INSTANCE;
+
 	public static final List<ConfigEntry<?>> CONFIGURATIONS_REGISTRY = new ArrayList<>();
 
 	private Configuration config = null;
 	private ConfigurationProvider yamlProvider = null;
 	private File configFile = null;
-	private GlistCommand commandExecutor = null;
+	public static GlistCommand commandExecutor = null;
 
 	private final List<GroupHook> groupHooks = new ArrayList<>();
 	private final List<ServerGroup> serverGroups = new ArrayList<>();
@@ -57,8 +59,8 @@ public class EnhancedBCL extends Plugin {
 
 	public boolean isPremiumVanishHooked = false;
 
-	private ScheduledTask registerGlistCommandTask;
-	private final Object registerGlistCommandTaskSyncObject = new Object();
+	public static ScheduledTask registerGlistCommandTask;
+	public final static Object registerGlistCommandTaskSyncObject = new Object();
 
 	//TODO: Implement update check every X minutes
 	private UpdateChecker updateChecker;
@@ -82,6 +84,7 @@ public class EnhancedBCL extends Plugin {
 	}
 
 	public void onEnable() {
+		INSTANCE = this;
 		this.adventure = BungeeAudiences.create(this);
 
 		//declaration of commons variables
@@ -386,25 +389,6 @@ public class EnhancedBCL extends Plugin {
 
 	public ActivityManager getActivityManager() {
 		return activityManager;
-	}
-
-	private class RegisterGlistListener implements Listener {
-
-		@EventHandler
-		public void event(PostLoginEvent e) {
-			synchronized (registerGlistCommandTaskSyncObject) {
-				if (registerGlistCommandTask != null) {
-					registerGlistCommandTask.cancel();
-					registerGlistCommandTask = null;
-
-					BungeeCord.getInstance().getPluginManager().registerCommand(EnhancedBCL.this, commandExecutor);
-					getLogger().info("Command /glist registered...");
-				}
-			}
-
-			ProxyServer.getInstance().getPluginManager().unregisterListener(this);
-		}
-
 	}
 
 }
