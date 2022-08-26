@@ -10,7 +10,10 @@ group = "com.wirlie"
 version = "1.3.1"
 
 val localProperties = Properties().also {
-    it.load(project.rootProject.file("local.properties").inputStream())
+    val file = project.rootProject.file("local.properties")
+    if (file.exists()) {
+        it.load(project.rootProject.file("local.properties").inputStream())
+    }
 }
 
 repositories {
