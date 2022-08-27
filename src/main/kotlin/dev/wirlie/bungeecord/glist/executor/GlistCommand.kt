@@ -175,7 +175,6 @@ class GlistCommand(private val plugin: EnhancedBCL, name: String?, permission: S
                     ) else temporalPaginator.fullData
 
                     val totalPages = temporalPaginator.resolveNumOfPages(data)
-
                     var message =
                         java.lang.String.join("\n", ArrayList(Config.FORMATS__SERVER_LIST__FULL_MESSAGE_FORMAT.get()))
                             .replace(
