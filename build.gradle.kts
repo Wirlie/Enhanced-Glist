@@ -2,7 +2,6 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import java.util.Properties
 
 plugins {
-    java
     id("com.github.johnrengelman.shadow") version "5.2.0"
     kotlin("jvm") version "1.6.21"
 }
@@ -18,7 +17,6 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = "java")
     apply(plugin = "kotlin")
     apply(plugin = "com.github.johnrengelman.shadow")
 
