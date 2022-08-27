@@ -68,3 +68,7 @@ shadowJar {
     //API de Java
     //relocate 'com.fuzenmc.lib', 'com.wirlie.pvpup.external.fmlib'
 }
+
+tasks.withType(Delete.class) {
+    delete 'compiled'
+}
