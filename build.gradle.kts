@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     java
     id("com.github.johnrengelman.shadow") version "5.2.0"
+    kotlin("jvm") version "1.6.21"
 }
 
 group = "com.wirlie"
@@ -11,6 +12,7 @@ version = "1.3.1"
 
 allprojects {
     apply(plugin = "java")
+    apply(plugin = "kotlin")
     apply(plugin = "com.github.johnrengelman.shadow")
 
     val localProperties = Properties().also {
