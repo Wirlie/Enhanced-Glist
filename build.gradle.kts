@@ -51,3 +51,11 @@ subprojects {
         archiveClassifier.set("")
     }
 }
+
+// Clean, remove compiled folder
+tasks.withType<Delete> {
+    val folder = project.rootProject.file("compiled")
+    if(folder.exists()) {
+        folder.deleteRecursively()
+    }
+}
