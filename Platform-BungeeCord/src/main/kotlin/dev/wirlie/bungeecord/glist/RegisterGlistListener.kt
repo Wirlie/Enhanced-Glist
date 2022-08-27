@@ -10,14 +10,11 @@ class RegisterGlistListener : Listener {
 
     @EventHandler
     fun event(e: PostLoginEvent) {
-        synchronized(EnhancedBCL.registerGlistCommandTaskSyncObject) {
-            if (EnhancedBCL.registerGlistCommandTask != null) {
-                EnhancedBCL.registerGlistCommandTask!!.cancel()
-                EnhancedBCL.registerGlistCommandTask = null
-                BungeeCord.getInstance().getPluginManager()
-                    .registerCommand(EnhancedBCL.INSTANCE, EnhancedBCL.commandExecutor)
-                EnhancedBCL.INSTANCE.logger.info("Command /glist registered...")
-            }
+        if (EnhancedBCL.registerGlistCommandTask != null) {
+            EnhancedBCL.registerGlistCommandTask?.cancel()
+            EnhancedBCL.registerGlistCommandTask = null
+            BungeeCord.getInstance().getPluginManager().registerCommand(EnhancedBCL.INSTANCE, EnhancedBCL.commandExecutor)
+            EnhancedBCL.INSTANCE.logger.info("Command /glist registered...")
         }
         ProxyServer.getInstance().pluginManager.unregisterListener(this)
     }

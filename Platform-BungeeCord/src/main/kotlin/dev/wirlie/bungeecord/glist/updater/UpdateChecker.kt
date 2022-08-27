@@ -1,7 +1,6 @@
 package dev.wirlie.bungeecord.glist.updater
 
 import dev.wirlie.bungeecord.glist.EnhancedBCL
-import dev.wirlie.bungeecord.glist.util.Pair
 import net.md_5.bungee.BungeeCord
 import java.net.URL
 import java.util.*
@@ -17,7 +16,7 @@ class UpdateChecker(private val plugin: EnhancedBCL) {
     fun checkForUpdates(
         firstExecution: Boolean,
         versionConsumer: Consumer<Pair<String, Boolean>>,
-        exceptionConsumer: Consumer<Throwable?>
+        exceptionConsumer: Consumer<Throwable>
     ) {
         plugin.logger.info("Checking for updates...")
         

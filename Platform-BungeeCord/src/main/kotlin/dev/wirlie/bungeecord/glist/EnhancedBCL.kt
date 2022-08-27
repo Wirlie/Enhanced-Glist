@@ -11,7 +11,6 @@ import dev.wirlie.bungeecord.glist.hooks.LuckPermsHook
 import dev.wirlie.bungeecord.glist.servers.ServerGroup
 import dev.wirlie.bungeecord.glist.updater.UpdateChecker
 import dev.wirlie.bungeecord.glist.updater.UpdateNotifyListener
-import dev.wirlie.bungeecord.glist.util.Pair
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.md_5.bungee.BungeeCord
@@ -34,8 +33,7 @@ import java.util.stream.Collectors
 
 class EnhancedBCL : Plugin() {
     private lateinit var config: Configuration
-    var yamlProvider: ConfigurationProvider? = null
-        private set
+    lateinit var yamlProvider: ConfigurationProvider
 
     private lateinit var configFile: File
     private val groupHooks: MutableList<GroupHook> = ArrayList()
@@ -84,16 +82,16 @@ class EnhancedBCL : Plugin() {
             updateChecker = UpdateChecker(this)
             updateChecker!!.checkForUpdates(
                 true,
-                { result: Pair<String, Boolean> ->
+                { result ->
                     getLogger().info("-------------------------------------------")
-                    getLogger().info("Remote version (SpigotMC): " + result.a)
+                    getLogger().info("Remote version (SpigotMC): " + result.first)
                     getLogger().info("Current version (Plugin): " + description.version)
                     getLogger().info("-------------------------------------------")
-                    if (result.b) {
+                    if (result.second) {
                         pm.registerListener(this, UpdateNotifyListener(this))
                     }
                 }
-            ) { ex: Throwable? ->
+            ) { ex: Throwable ->
                 getLogger().warning("-------------------------------------------")
                 getLogger().log(Level.WARNING, "Cannot check for updates due an internal error:", ex)
                 getLogger().warning("-------------------------------------------")
@@ -139,41 +137,44 @@ class EnhancedBCL : Plugin() {
 
     @Throws(IOException::class)
     private fun prepareConfig() {
-        logger.info("Starting verification of " + CONFIGURATIONS_REGISTRY.size + " configurations...")
+        logger.info("Starting verification of ${CONFIGURATIONS_REGISTRY.size} configurations...")
 
         if (!configFile.exists()) {
             val parent = configFile.parentFile
             if (!parent.exists()) {
                 parent.mkdirs()
             }
+
             Files.copy(javaClass.getResourceAsStream("/Config.yml")!!, configFile.toPath())
+            return // At this point, we do not need to check the configuration.
         }
 
-        config = yamlProvider!!.load(InputStreamReader(FileInputStream(configFile), StandardCharsets.UTF_8))
-        val defaultConfiguration =
-            yamlProvider!!.load(InputStreamReader(javaClass.getResourceAsStream("/Config.yml")!!, StandardCharsets.UTF_8))
+        config = yamlProvider.load(InputStreamReader(FileInputStream(configFile), StandardCharsets.UTF_8))
+        val defaultConfiguration = yamlProvider.load(InputStreamReader(javaClass.getResourceAsStream("/Config.yml")!!, StandardCharsets.UTF_8))
 
         var shouldSave = false
-        for (pendingResolution in CONFIGURATIONS_REGISTRY) {
-            if (!config.contains(pendingResolution.key) || config.get(pendingResolution.key) == null) {
-                logger.warning("Missing configuration [" + pendingResolution.key + "], trying to get fallback value...")
+        for (configuration in CONFIGURATIONS_REGISTRY) {
+            if (!config.contains(configuration.key) || config.get(configuration.key) == null) {
+                logger.warning("Missing configuration [" + configuration.key + "], trying to get fallback value...")
 
                 //get fallback value
-                val fallbackValue = defaultConfiguration[pendingResolution.key]
-                    ?: throw IOException("Cannot get default value of [" + pendingResolution.key + "] from default Configuration...")
-                config.set(pendingResolution.key, fallbackValue)
-                pendingResolution.setValue(fallbackValue)
+                val fallbackValue = defaultConfiguration[configuration.key]?: throw IOException("Cannot get default value of [" + configuration.key + "] from default Configuration...")
+                config.set(configuration.key, fallbackValue)
+                configuration.setValue(fallbackValue)
+
                 shouldSave = true
             } else {
-                pendingResolution.setValue(config.get(pendingResolution.key))
+                configuration.setValue(config.get(configuration.key))
             }
         }
+
         if (shouldSave) {
             saveConfig()
         }
 
         //hooks
         groupHooks.clear()
+
         if (Config.BEHAVIOUR__GROUPS_PREFIX__ENABLE.get()) {
             if (Config.BEHAVIOUR__GROUPS_PREFIX__USE__LUCKPERMS.get() && BungeeCord.getInstance().getPluginManager()
                     .getPlugin("LuckPerms") != null
@@ -198,6 +199,7 @@ class EnhancedBCL : Plugin() {
 
         //server groups
         serverGroups.clear()
+
         for (configuration in Config.SERVERS__GROUPS.get()) {
             var id: String? = null
             var serversIds: List<String?>? = null
@@ -256,7 +258,7 @@ class EnhancedBCL : Plugin() {
     private fun saveConfig() {
         if (this::config.isInitialized) {
             try {
-                yamlProvider!!.save(config, OutputStreamWriter(FileOutputStream(configFile), StandardCharsets.UTF_8))
+                yamlProvider.save(config, OutputStreamWriter(FileOutputStream(configFile), StandardCharsets.UTF_8))
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -271,6 +273,7 @@ class EnhancedBCL : Plugin() {
         //read configuration
         val label = Config.COMMAND__GLIST__LABEL.get()
         logger.info("Loading /$label command ...")
+
         val permission = Config.COMMAND__GLIST__PERMISSION.get()
         val aliasesList = Config.COMMAND__GLIST__ALIASES.get()
         val aliases = aliasesList.toTypedArray()
@@ -284,18 +287,16 @@ class EnhancedBCL : Plugin() {
                 //immediately register
                 BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor)
             } else {
-                //wait for the next player connection, or 30s if no player was connected
-                synchronized(registerGlistCommandTaskSyncObject) {
-                    registerGlistCommandTask = BungeeCord.getInstance().scheduler.schedule(this, {
-                        synchronized(registerGlistCommandTaskSyncObject) { registerGlistCommandTask = null }
-                        BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor)
-                        logger.info("Command /glist registered...")
-                    }, 30, TimeUnit.SECONDS)
-                }
+                //wait for the next player connection, or 10s if no player was connected
+                registerGlistCommandTask = BungeeCord.getInstance().scheduler.schedule(this, {
+                    registerGlistCommandTask = null
+                    BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor)
+                    logger.info("Command /glist registered...")
+                }, 10, TimeUnit.SECONDS)
                 ProxyServer.getInstance().pluginManager.registerListener(this, RegisterGlistListener())
             }
         } else {
-            //otherwise, custom commands should no clash to other commands (except if the user defines a command of other plugin)
+            //otherwise, custom commands should not clash to other commands (except if the user defines a command of other plugin)
             BungeeCord.getInstance().getPluginManager().registerCommand(this, commandExecutor)
             logger.info("Command /$label registered...")
         }
@@ -331,8 +332,7 @@ class EnhancedBCL : Plugin() {
     }
 
     fun isInGroup(server: ServerInfo): Boolean {
-        return serverGroups.stream().flatMap { sg: ServerGroup -> sg.servers.stream() }
-            .anyMatch { s: ServerInfo -> s.name.equals(server.name, ignoreCase = true) }
+        return serverGroups.stream().flatMap { sg: ServerGroup -> sg.servers.stream() }.anyMatch { s: ServerInfo -> s.name.equals(server.name, ignoreCase = true) }
     }
 
     companion object {
@@ -340,7 +340,6 @@ class EnhancedBCL : Plugin() {
 		val CONFIGURATIONS_REGISTRY: MutableList<ConfigEntry<*>> = ArrayList()
         var commandExecutor: GlistCommand? = null
         var registerGlistCommandTask: ScheduledTask? = null
-        val registerGlistCommandTaskSyncObject = Any()
 		val defaultLegacyDeserializer = LegacyComponentSerializer
             .builder()
             .hexCharacter('#')

@@ -70,33 +70,23 @@ class GlistCommand(private val plugin: EnhancedBCL, name: String?, permission: S
             val serverName = arguments[0]
 
             //is blacklisted?
-            if (Config.BEHAVIOUR__SERVER_LIST__BLACKLISTED_SERVERS.get().stream()
-                    .anyMatch { s: String -> s.equals(serverName, ignoreCase = true) }
-            ) {
-                audience.sendMessage(
-                    EnhancedBCL.defaultLegacyDeserializer.deserialize(
-                        Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)
-                    )
-                )
+            if (Config.BEHAVIOUR__SERVER_LIST__BLACKLISTED_SERVERS.get().any { it.equals(serverName, ignoreCase = true) }) {
+                audience.sendMessage(EnhancedBCL.defaultLegacyDeserializer.deserialize(Config.MESSAGES__CANNOT_FOUND_SERVER.get().replace("{NAME}", serverName)))
                 return
             }
 
-            var serverInfoPre: ServerInfoProvider?
+            var serverInfo: ServerInfoProvider?
 
             //try with group first
-            serverInfoPre = plugin.getServerGroups().stream()
-                .filter { g: ServerGroup -> g.id.equals(serverName, ignoreCase = true) }
-                .findFirst().orElse(null)
+            serverInfo = plugin.getServerGroups().firstOrNull { it.id.equals(serverName, ignoreCase = true) }
 
-            if (serverInfoPre == null) {
+            if (serverInfo == null) {
                 //try with bungeecord
                 val bungeeServer = BungeeCord.getInstance().getServerInfo(serverName)
                 if (bungeeServer != null) {
-                    serverInfoPre = BungeecordInfoProvider(bungeeServer)
+                    serverInfo = BungeecordInfoProvider(bungeeServer)
                 }
             }
-
-            val serverInfo = serverInfoPre
 
             if (serverInfo == null) {
                 audience.sendMessage(
@@ -106,28 +96,12 @@ class GlistCommand(private val plugin: EnhancedBCL, name: String?, permission: S
                 )
             } else {
 
-                val temporalPaginator = serversPaginators.computeIfAbsent(serverInfo.id) { _: String? ->
-                    TemporalPaginator(serverInfo.players.stream().map { cs: ProxiedPlayer ->
-                        var prefix = plugin.getPrefix(cs)
-
-                        if (prefix == null || prefix.trim { it <= ' ' }.equals("null", ignoreCase = true)) {
-                            prefix = ""
-                        }
-
-                        PlayerGlistEntry(cs, prefix, plugin.activityManager.getActivities(cs.uniqueId))
-                    }.collect(Collectors.toList()), Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get())
+                val temporalPaginator = serversPaginators.computeIfAbsent(serverInfo.id) {
+                    TemporalPaginator(serverProviderToPlayerEntries(serverInfo), Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get())
                 }
 
                 if (temporalPaginator.shouldUpdate(Config.BEHAVIOUR__CACHE_TIME__PLAYER_LIST_PAGES.get() * 1000L)) {
-                    temporalPaginator.update(serverInfo.players.stream().map { cs: ProxiedPlayer ->
-                        var prefix = plugin.getPrefix(cs)
-
-                        if (prefix == null || prefix!!.trim { it <= ' ' }.equals("null", ignoreCase = true)) {
-                            prefix = ""
-                        }
-
-                        PlayerGlistEntry(cs, prefix!!, plugin.activityManager.getActivities(cs.uniqueId))
-                    }.collect(Collectors.toList()))
+                    temporalPaginator.update(serverProviderToPlayerEntries(serverInfo))
                 }
 
                 page = 1
@@ -139,29 +113,31 @@ class GlistCommand(private val plugin: EnhancedBCL, name: String?, permission: S
                     }
                 }
 
-                val pageData = if (options.contains("-g")) if (isPlayerExecutor) temporalPaginator.getFullDataVisible(
-                    (sender as ProxiedPlayer)
-                ) else temporalPaginator.fullData else if (isPlayerExecutor) temporalPaginator.getVisiblePage(
-                    page,
-                    (sender as ProxiedPlayer)
-                ) else temporalPaginator.getFullPage(page)
+                val pageData = if (options.contains("-g")) {
+                    if (isPlayerExecutor) {
+                        temporalPaginator.getFullDataVisible((sender as ProxiedPlayer))
+                    } else {
+                        temporalPaginator.fullData
+                    }
+                } else if (isPlayerExecutor) {
+                    temporalPaginator.getVisiblePage(page, (sender as ProxiedPlayer))
+                } else {
+                    temporalPaginator.getFullPage(page)
+                }
 
                 if (pageData.isEmpty()) {
-                    val data = if (isPlayerExecutor) temporalPaginator.getFullDataVisible(
-                        (sender as ProxiedPlayer)
-                    ) else temporalPaginator.fullData
+                    val data = if (isPlayerExecutor) {
+                        temporalPaginator.getFullDataVisible((sender as ProxiedPlayer))
+                    } else {
+                        temporalPaginator.fullData
+                    }
 
                     val totalPages = temporalPaginator.resolveNumOfPages(data)
 
                     if (totalPages > 0) {
                         for (line in Config.FORMATS__SERVER_LIST__NO_PAGE_DATA_MESSAGE.get()) {
                             audience.sendMessage(
-                                EnhancedBCL.defaultLegacyDeserializer.deserialize(
-                                    line.replace(
-                                        "{TOTAL_PAGES}",
-                                        totalPages.toString()
-                                    )
-                                )
+                                EnhancedBCL.defaultLegacyDeserializer.deserialize(line.replace("{TOTAL_PAGES}", totalPages.toString()))
                             )
                         }
                     } else {
@@ -177,21 +153,29 @@ class GlistCommand(private val plugin: EnhancedBCL, name: String?, permission: S
                     val totalPages = temporalPaginator.resolveNumOfPages(data)
                     var message =
                         java.lang.String.join("\n", ArrayList(Config.FORMATS__SERVER_LIST__FULL_MESSAGE_FORMAT.get()))
-                            .replace(
-                                "{PLAYERS_ROWS}", makeRowsNew(
+                            .replace("{PLAYERS_ROWS}",
+                                makeRowsNew(
                                     Config.FORMATS__SERVER_LIST__PLAYERS_PER_ROW.get(),
                                     (page - 1) * Config.BEHAVIOUR__SERVER_LIST__PLAYERS_PER_PAGE.get() + 1,
                                     pageData
                                 )
-                            ).replace(
-                            "{SERVER_NAME}",
-                            if (Config.BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME.get()) serverInfo.displayName.uppercase(
-                                Locale.getDefault()
-                            ) else serverInfo.displayName
-                        ).replace("{PLAYERS_COUNT}", data.size.toString()).replace(
-                            "{PAGE}",
-                            if (options.contains("-g")) Config.MESSAGES__ALL_PAGES.get() else page.toString()
-                        ).replace("{TOTAL_PAGES}", totalPages.toString())
+                            )
+                            .replace("{SERVER_NAME}",
+                                if (Config.BEHAVIOUR__SERVER_LIST__UPPER_CASE_NAME.get()) {
+                                    serverInfo.displayName.uppercase(Locale.getDefault())
+                                } else {
+                                    serverInfo.displayName
+                                }
+                            )
+                            .replace("{PLAYERS_COUNT}", data.size.toString())
+                            .replace("{PAGE}",
+                                if (options.contains("-g")) {
+                                    Config.MESSAGES__ALL_PAGES.get()
+                                } else {
+                                    page.toString()
+                                }
+                            )
+                            .replace("{TOTAL_PAGES}", totalPages.toString())
                     if (options.contains("-g")) {
                         partsController = message.split("\\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
@@ -201,34 +185,28 @@ class GlistCommand(private val plugin: EnhancedBCL, name: String?, permission: S
                             }
                         }
                     } else if (message.contains("{PAGINATION_CONTROLLER}")) {
-                        partsController =
-                            message.split("\\{PAGINATION_CONTROLLER}".toRegex()).dropLastWhile { it.isEmpty() }
-                                .toTypedArray()
-                        var mainComponent = EnhancedBCL.defaultLegacyDeserializer.deserialize(partsController[0])
+                        partsController = message.split("\\{PAGINATION_CONTROLLER}".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
+                        var mainComponent = EnhancedBCL.defaultLegacyDeserializer.deserialize(partsController[0])
                         var cb: TextComponent? = null
 
                         if (page in 2 until totalPages) {
                             cb = Component.empty()
                             cb = if (isPlayerExecutor) {
                                 cb.append(
-                                    Component.text("<<", NamedTextColor.WHITE)
-                                        .clickEvent(ClickEvent.runCommand("/" + name + " " + serverInfo.id + " " + (page - 1)))
-                                        .hoverEvent(
-                                            HoverEvent.showText(
-                                                EnhancedBCL.defaultLegacyDeserializer.deserialize(
-                                                    Config.MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE.get()
-                                                        .replace("{PAGE_NUMBER}", (page - 1).toString())
+                                        Component.text("<<", NamedTextColor.WHITE)
+                                            .clickEvent(ClickEvent.runCommand("/" + name + " " + serverInfo.id + " " + (page - 1)))
+                                            .hoverEvent(
+                                                HoverEvent.showText(
+                                                    EnhancedBCL.defaultLegacyDeserializer.deserialize(
+                                                        Config.MESSAGES__PREVIOUS_PAGE_HOVER_MESSAGE.get().replace("{PAGE_NUMBER}", (page - 1).toString())
+                                                    )
                                                 )
                                             )
-                                        )
-                                        .append(
-                                            Component.text(
-                                                " " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ",
-                                                NamedTextColor.GOLD
+                                            .append(
+                                                Component.text(" " + Config.MESSAGES__PREVIOUS_PAGE.get() + " ", NamedTextColor.GOLD)
                                             )
-                                        )
-                                )
+                                    )
                                     .append(Component.text("|", NamedTextColor.DARK_GRAY))
                                     .append(
                                         Component.text(
@@ -741,6 +719,18 @@ class GlistCommand(private val plugin: EnhancedBCL, name: String?, permission: S
             return sortedSuggestions
         }
         return emptyList()
+    }
+
+    private fun serverProviderToPlayerEntries(serverInfo: ServerInfoProvider): List<PlayerGlistEntry> {
+        return serverInfo.players.map { cs: ProxiedPlayer ->
+            var prefix = plugin.getPrefix(cs)
+
+            if (prefix == null || prefix.trim().equals("null", ignoreCase = true)) {
+                prefix = ""
+            }
+
+            PlayerGlistEntry(cs, prefix, plugin.activityManager.getActivities(cs.uniqueId))
+        }.toList()
     }
 
     companion object {
