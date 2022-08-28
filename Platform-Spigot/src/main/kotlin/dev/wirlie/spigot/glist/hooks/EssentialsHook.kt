@@ -1,7 +1,7 @@
 package dev.wirlie.spigot.glist.hooks
 
 import com.earth2me.essentials.Essentials
-import dev.wirlie.spigot.glist.EnhancedBCLBridge
+import dev.wirlie.spigot.glist.EnhancedGlistSpigot
 import net.ess3.api.IUser
 import net.ess3.api.events.AfkStatusChangeEvent
 import net.ess3.api.events.VanishStatusChangeEvent
@@ -14,7 +14,7 @@ import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
-class EssentialsHook(private val bridge: EnhancedBCLBridge, essentialsPlugin: Plugin) : AbstractHook, Listener {
+class EssentialsHook(private val bridge: EnhancedGlistSpigot, essentialsPlugin: Plugin) : AbstractHook, Listener {
     private val essentials: Essentials
 
     init {
@@ -65,7 +65,7 @@ class EssentialsHook(private val bridge: EnhancedBCLBridge, essentialsPlugin: Pl
         sendStateToBridge(player, StateNotificationType.VANISH, essentialsPlayer.isVanished)
     }
 
-    override fun registerListeners(bridge: EnhancedBCLBridge) {
+    override fun registerListeners(bridge: EnhancedGlistSpigot) {
         Bukkit.getPluginManager().registerEvents(this, bridge)
     }
 

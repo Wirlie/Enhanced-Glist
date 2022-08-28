@@ -6,7 +6,7 @@ import java.io.ByteArrayInputStream
 import java.io.DataInputStream
 import java.io.IOException
 
-class BridgeListener(private val bridge: EnhancedBCLBridge) : PluginMessageListener {
+class BridgeListener(private val bridge: EnhancedGlistSpigot) : PluginMessageListener {
     override fun onPluginMessageReceived(s: String, player: Player, data: ByteArray) {
         if (s == "ebcl:bridge") {
             try {

@@ -6,7 +6,7 @@ import dev.wirlie.spigot.glist.hooks.SuperVanishHook
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
-class EnhancedBCLBridge : JavaPlugin() {
+class EnhancedGlistSpigot : JavaPlugin() {
     private val hooks: MutableList<AbstractHook> = ArrayList()
 
     override fun onEnable() {
