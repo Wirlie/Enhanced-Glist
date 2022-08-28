@@ -1,6 +1,6 @@
 package dev.wirlie.spigot.glist.hooks
 
-import dev.wirlie.spigot.glist.EnhancedBCLBridge
+import dev.wirlie.spigot.glist.EnhancedGlistSpigot
 import org.bukkit.entity.Player
 
 interface AbstractHook {
@@ -11,6 +11,6 @@ interface AbstractHook {
 
     fun sendPlayerToBridge(player: Player)
 
-    fun registerListeners(bridge: EnhancedBCLBridge)
+    fun registerListeners(bridge: EnhancedGlistSpigot)
 
 }

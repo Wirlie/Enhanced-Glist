@@ -11,3 +11,8 @@ dependencies {
     compileOnly("org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT")
     compileOnly("com.github.LeonMangler:PremiumVanish:6.2.6-4")
 }
+
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    destinationDirectory.set(file("$rootDir/compiled"))
+    archiveClassifier.set("")
+}

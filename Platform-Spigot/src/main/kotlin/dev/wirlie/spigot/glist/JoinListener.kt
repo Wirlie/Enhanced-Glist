@@ -8,7 +8,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.function.Consumer
 
-class JoinListener(private val bridge: EnhancedBCLBridge) : Listener {
+class JoinListener(private val bridge: EnhancedGlistSpigot) : Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     fun event(e: PlayerJoinEvent) {
         object : BukkitRunnable() {

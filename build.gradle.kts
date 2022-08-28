@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     id("com.github.johnrengelman.shadow") version "5.2.0"
     kotlin("jvm") version "1.6.21"
+    kotlin("kapt") version "1.6.21"
 }
 
 repositories {
@@ -13,11 +14,12 @@ repositories {
 
 allprojects {
     group = "com.wirlie"
-    version = "1.4"
+    version = "2.0.0"
 }
 
 subprojects {
     apply(plugin = "kotlin")
+    apply(plugin = "kotlin-kapt")
     apply(plugin = "com.github.johnrengelman.shadow")
 
     val localProperties = Properties().also {
@@ -44,11 +46,6 @@ subprojects {
         options.encoding = "UTF-8"
         sourceCompatibility = "1.8"
         targetCompatibility = "1.8"
-    }
-
-    tasks.withType<ShadowJar> {
-        destinationDirectory.set(file("$rootDir/compiled"))
-        archiveClassifier.set("")
     }
 }
 

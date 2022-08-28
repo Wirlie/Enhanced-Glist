@@ -3,7 +3,7 @@ package dev.wirlie.spigot.glist.hooks
 import de.myzelyam.api.vanish.PostPlayerHideEvent
 import de.myzelyam.api.vanish.PostPlayerShowEvent
 import de.myzelyam.api.vanish.VanishAPI
-import dev.wirlie.spigot.glist.EnhancedBCLBridge
+import dev.wirlie.spigot.glist.EnhancedGlistSpigot
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -12,7 +12,7 @@ import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
 import java.io.IOException
 
-class SuperVanishHook(private val bridge: EnhancedBCLBridge) : AbstractHook, Listener {
+class SuperVanishHook(private val bridge: EnhancedGlistSpigot) : AbstractHook, Listener {
     override fun sendStateToBridge(player: Player, type: StateNotificationType, newValue: Boolean) {
         if (type == StateNotificationType.VANISH) {
             try {
@@ -43,7 +43,7 @@ class SuperVanishHook(private val bridge: EnhancedBCLBridge) : AbstractHook, Lis
         sendStateToBridge(player, StateNotificationType.VANISH, VanishAPI.isInvisible(player))
     }
 
-    override fun registerListeners(bridge: EnhancedBCLBridge) {
+    override fun registerListeners(bridge: EnhancedGlistSpigot) {
         Bukkit.getPluginManager().registerEvents(this, bridge)
     }
 
