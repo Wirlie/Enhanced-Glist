@@ -20,9 +20,17 @@ dependencies {
     implementation("net.kyori:adventure-platform-bungeecord:4.1.2")
 
     implementation(project(":EnhancedGlist-Common"))
+
+    // Configurate - Sponge
+    implementation("org.spongepowered:configurate-yaml:4.1.2")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     destinationDirectory.set(file("$rootDir/compiled"))
     archiveClassifier.set("")
+
+    // Relocations for Configurate - Sponge
+    relocate("org.spongepowered.configurate", "dev.wirlie.shaded.org.spongepowered.configurate")
+    relocate("org.yaml.snakeyaml", "dev.wirlie.shaded.org.yaml.snakeyaml")
+    relocate("io.leangen.geantyref", "dev.wirlie.shaded.io.leangen.geantyref")
 }

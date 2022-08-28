@@ -15,4 +15,7 @@ dependencies {
     compileOnly("net.luckperms:api:5.4")
     compileOnly("com.github.LeonMangler:PremiumVanish:6.2.6-4")
     implementation("net.kyori:adventure-api:4.11.0")
+
+    // Configurate - Sponge
+    implementation("org.spongepowered:configurate-yaml:4.1.2")
 }
