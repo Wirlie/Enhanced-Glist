@@ -30,7 +30,7 @@ glist:
       # Controller displayed when player can only go to the next page
       next-only: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller>"
   servers-format:
-    template: "<aqua><server-name></aqua> <gold><player-amount></gold> <bars> <dark_gray>[<gold><percent></gold>]"
+    template: " <gray>•</gray> <aqua><server-name></aqua> <gold><player-amount></gold> <bars> <dark_gray>[<gold><percent></gold>]"
     bars:
       # When there is no players in server
       empty: "<dark_gray>||||||||||||||||||||</dark_gray>"
