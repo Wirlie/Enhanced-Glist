@@ -41,7 +41,8 @@ class TranslationMessages {
 
                 for((index, server) in servers.withIndex()) {
                     val playerAmount = server.getPlayers().size
-                    val percent = playerAmount * 100.0 / platform.getConnectedPlayersAmount()
+                    val totalPlayers = platform.getConnectedPlayersAmount()
+                    val percent = if(totalPlayers == 0) 0.0 else playerAmount * 100.0 / platform.getConnectedPlayersAmount()
                     var barsToUse = "<dark_gray>???????????????</dark_gray>"
 
                     for(entry in bars.entries) {
