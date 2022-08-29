@@ -18,9 +18,11 @@ glist:
     next-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
     next-page-hover-no-next-page: "<red>No next page available."
     previous-page-phrase: "Previous Page"
-    previous-page-controller: "« <previous-page-phrase>"
+    previous-page-controller: "<aqua>« <previous-page-phrase></aqua>"
+    previous-page-controller-disabled: "<dark_aqua>« <previous-page-phrase></dark_aqua>"
     next-page-phrase: "Next Page"
-    next-page-controller: "<next-page-phrase> »"
+    next-page-controller: "<aqua><next-page-phrase> »</aqua>"
+    next-page-controller-disabled: "<dark_aqua><next-page-phrase> »</dark_aqua>"
     format:
       # Controller displayed when player can go to the previous page or to the next page
       previous-and-next: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller>"

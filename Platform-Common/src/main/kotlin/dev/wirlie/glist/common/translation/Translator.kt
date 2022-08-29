@@ -81,9 +81,13 @@ class Translator(
 
             var previousPageController = ""
 
+            var previousPageControllerDisabled = ""
+
             var nextPagePhrase = ""
 
             var nextPageController = ""
+
+            var nextPageControllerDisabled = ""
 
             var format = Format()
 
