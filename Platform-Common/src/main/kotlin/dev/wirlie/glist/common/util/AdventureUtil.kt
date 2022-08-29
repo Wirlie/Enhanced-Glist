@@ -17,7 +17,7 @@ object AdventureUtil {
         resolvers.add(
             TagResolver.resolver(
                 "prefix",
-                Tag.inserting(Platform.pluginPrefix)
+                Tag.selfClosingInserting(Platform.pluginPrefix)
             )
         )
 
