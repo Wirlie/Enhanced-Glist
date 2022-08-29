@@ -30,4 +30,5 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("org.spongepowered.configurate", "dev.wirlie.shaded.org.spongepowered.configurate")
     relocate("org.yaml.snakeyaml", "dev.wirlie.shaded.org.yaml.snakeyaml")
     relocate("io.leangen.geantyref", "dev.wirlie.shaded.io.leangen.geantyref")
+    relocate("kotlin", "dev.wirlie.shaded.kotlin")
 }
