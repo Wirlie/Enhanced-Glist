@@ -38,7 +38,12 @@ open class Pageable<T>(
         if(pageNumber >= totalPages) throw IndexOutOfBoundsException("Page number cannot be equals or greater than total number of pages.")
 
         val start = pageSize * pageNumber
-        val end = start + pageSize
+        var end = start + pageSize
+
+        if(end > data.size) {
+           end = data.size
+        }
+
         val elements = data.subList(start, end).toList()
 
         return Page(pageNumber, totalPages, elements)
