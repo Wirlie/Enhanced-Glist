@@ -14,9 +14,9 @@ class GlistExecutor(
 
     override fun execute(invocation: SimpleCommand.Invocation) {
         if(invocation.source() is Player) {
-            platformCommand.tryExecution(platform.toPlatformExecutorPlayer(invocation.source() as Player))
+            platformCommand.tryExecution(platform.toPlatformExecutorPlayer(invocation.source() as Player), invocation.arguments())
         } else {
-            platformCommand.tryExecution(platform.toPlatformExecutorConsole(invocation.source() as ConsoleCommandSource))
+            platformCommand.tryExecution(platform.toPlatformExecutorConsole(invocation.source() as ConsoleCommandSource), invocation.arguments())
         }
     }
 

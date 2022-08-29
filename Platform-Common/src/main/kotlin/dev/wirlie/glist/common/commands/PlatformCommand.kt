@@ -8,6 +8,6 @@ abstract class PlatformCommand<S>(
     val permission: String
 ) {
 
-    abstract fun tryExecution(executor: PlatformExecutor<S>)
+    abstract fun tryExecution(executor: PlatformExecutor<S>, args: Array<String>)
 
 }

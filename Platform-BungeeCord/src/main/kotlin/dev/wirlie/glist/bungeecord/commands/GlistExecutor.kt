@@ -19,9 +19,9 @@ class GlistExecutor(
 
     override fun execute(sender: CommandSender, args: Array<String>) {
         if(sender is ProxiedPlayer) {
-            platformCommand.tryExecution(platform.toPlatformExecutorPlayer(sender))
+            platformCommand.tryExecution(platform.toPlatformExecutorPlayer(sender), args)
         } else {
-            platformCommand.tryExecution(platform.toPlatformExecutorConsole(sender as ConsoleCommandSender))
+            platformCommand.tryExecution(platform.toPlatformExecutorConsole(sender as ConsoleCommandSender), args)
         }
     }
 

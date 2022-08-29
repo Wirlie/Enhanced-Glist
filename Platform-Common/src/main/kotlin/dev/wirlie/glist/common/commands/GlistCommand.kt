@@ -15,7 +15,7 @@ class GlistCommand<S>(
     permission
 ) {
 
-    override fun tryExecution(executor: PlatformExecutor<S>) {
+    override fun tryExecution(executor: PlatformExecutor<S>, args: Array<String>) {
         executor.asAudience().sendMessage(Component.text("EXECUTED!"))
     }
 
