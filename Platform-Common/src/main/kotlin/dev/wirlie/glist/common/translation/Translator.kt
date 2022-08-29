@@ -62,7 +62,43 @@ class Translator(
 
         var noServersToDisplay: String = ""
 
+        var pageController: PageController = PageController()
+
         var serversFormat = ServersFormat()
+
+        @ConfigSerializable
+        class PageController {
+
+            var previousPageHoverMessage = ""
+
+            var previousPageHoverNoPreviousPage = ""
+
+            var nextPageHoverMessage = ""
+
+            var nextPageHoverNoNextPage = ""
+
+            var previousPagePhrase = ""
+
+            var previousPageController = ""
+
+            var nextPagePhrase = ""
+
+            var nextPageController = ""
+
+            var format = Format()
+
+            @ConfigSerializable
+            class Format {
+
+                var previousAndNext = ""
+
+                var previousOnly = ""
+
+                var nextOnly = ""
+
+            }
+
+        }
 
         @ConfigSerializable
         class ServersFormat {
