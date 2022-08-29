@@ -9,8 +9,25 @@ glist:
     - " <gold>Total Players:</gold> <white><players-amount></white>"
     - " "
     - " <white>TIP:</white> <gray>Use <yellow>/<slist-label> [server]</yellow> to display a list of all players in the specified server."
+    - "<page-controller>"
     - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
   no-servers-to-display: "<prefix> <red>No servers to display."
+  page-controller:
+    previous-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
+    previous-page-hover-no-previous-page: "<red>No previous page available."
+    next-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
+    next-page-hover-no-next-page: "<red>No next page available."
+    previous-page-phrase: "Previous Page"
+    previous-page-controller: "« <previous-page-phrase>"
+    next-page-phrase: "Next Page"
+    next-page-controller: "<next-page-phrase> »"
+    format:
+      # Controller displayed when player can go to the previous page or to the next page
+      previous-and-next: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller>"
+      # Controller displayed when player can only go to the previous page
+      previous-only: "<previous-page-controller>"
+      # Controller displayed when player can only go to the next page
+      next-only: "<next-page-controller>"
   servers-format:
     template: "<aqua><server-name></aqua> <gold><player-amount></gold> <bars> <dark_gray>[<gold><percent></gold>]"
     bars:
@@ -62,7 +79,7 @@ slist:
     previous-page-controller: "« <previous-page-phrase>"
     next-page-phrase: "Next Page"
     next-page-controller: "<next-page-phrase> »"
-    page-controller:
+    format:
       # Controller displayed when player can go to the previous page or to the next page
       previous-and-next: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller>"
       # Controller displayed when player can only go to the previous page
