@@ -1,19 +1,24 @@
 package dev.wirlie.glist.bungeecord.platform
 
 import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.platform.PlatformPlayer
+import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
+import net.md_5.bungee.command.ConsoleCommandSender
 
-class BungeePlatform: Platform<ServerInfo, ProxiedPlayer>() {
+class BungeePlatform: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>() {
 
-    override fun toPlatform(server: ServerInfo): PlatformServer<ServerInfo, ProxiedPlayer> {
+    override fun toPlatformServer(server: ServerInfo): PlatformServer<ServerInfo> {
         return BungeePlatformServer(server)
     }
 
-    override fun toPlatform(player: ProxiedPlayer): PlatformPlayer<ServerInfo, ProxiedPlayer> {
-        return BungeePlatformPlayer(player)
+    override fun toPlatformExecutorPlayer(executor: ProxiedPlayer): PlatformExecutor<ServerInfo> {
+        return BungeePlayerPlatformExecutor(executor)
+    }
+
+    override fun toPlatformExecutorConsole(executor: ConsoleCommandSender): PlatformExecutor<ServerInfo> {
+        return BungeeConsolePlatformExecutor()
     }
 
 }

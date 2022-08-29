@@ -10,7 +10,7 @@ import java.io.File
 import java.nio.file.Files
 
 class PlatformConfiguration(
-    val platform: Platform<*, *>
+    val platform: Platform<*, *, *>
 ) {
 
     private lateinit var configurationFile: File

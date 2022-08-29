@@ -1,22 +1,23 @@
-package dev.wirlie.glist.common.implementation.pageable
+package dev.wirlie.glist.common.display
 
+import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.pageable.Page
 import dev.wirlie.glist.common.pageable.PageDisplay
-import dev.wirlie.glist.common.platform.PlatformPlayer
 import dev.wirlie.glist.common.platform.PlatformServer
 import net.kyori.adventure.audience.Audience
 
-class ServersListDisplay<P, S>(
+class ServersListDisplay<S>(
+    val platform: Platform<S, *, *>,
     audience: Audience,
     initialPageSize: Int,
-    initialData: MutableList<PlatformServer<P, S>> = mutableListOf()
-): PageDisplay<PlatformServer<P, S>>(
+    initialData: MutableList<PlatformServer<S>> = mutableListOf()
+): PageDisplay<PlatformServer<S>>(
     audience,
     initialPageSize,
     initialData
 ) {
 
-    override fun showPage(page: Page<PlatformServer<P, S>>) {
+    override fun showPage(page: Page<PlatformServer<S>>) {
 
     }
 

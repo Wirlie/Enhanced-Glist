@@ -1,13 +1,12 @@
 package dev.wirlie.glist.bungeecord.platform
 
-import dev.wirlie.glist.common.platform.PlatformPlayer
+import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 import net.md_5.bungee.api.config.ServerInfo
-import net.md_5.bungee.api.connection.ProxiedPlayer
 
 class BungeePlatformServer(
     server: ServerInfo
-): PlatformServer<ServerInfo, ProxiedPlayer>(
+): PlatformServer<ServerInfo>(
     server
 ) {
 
@@ -15,8 +14,8 @@ class BungeePlatformServer(
         return server.name
     }
 
-    override fun getPlayers(): List<PlatformPlayer<ServerInfo, ProxiedPlayer>> {
-        return server.players.map { BungeePlatformPlayer(it) }
+    override fun getPlayers(): List<PlatformExecutor<ServerInfo>> {
+        return server.players.map { BungeePlayerPlatformExecutor(it) }
     }
 
 }
