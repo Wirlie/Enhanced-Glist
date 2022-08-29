@@ -7,7 +7,10 @@ abstract class PlatformCommandManager<S>(
     val platform: Platform<S, *, *>
 ) {
 
-    val glistCommand: GlistCommand<S> = platform.configuration.getSection(CommandsSection::class.java).run {
+    lateinit var glistCommand: GlistCommand<S>
+
+    fun setup() {
+        glistCommand = platform.configuration.getSection(CommandsSection::class.java).run {
             if(this == null) {
                 throw IllegalStateException("Corrupted configuration? Cannot find 'commands' section.")
             }
@@ -19,6 +22,7 @@ abstract class PlatformCommandManager<S>(
                 this.glist.permission
             )
         }
+    }
 
     abstract fun registerCommands()
 

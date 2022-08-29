@@ -26,6 +26,7 @@ abstract class Platform<S, P, C> {
     ) {
         configuration.setup()
         platformCommandManager = commandManager
+        platformCommandManager.setup()
         platformCommandManager.registerCommands()
     }
 
