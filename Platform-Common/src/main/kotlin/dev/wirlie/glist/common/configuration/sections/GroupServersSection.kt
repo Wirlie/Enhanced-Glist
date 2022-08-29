@@ -28,7 +28,7 @@ class GroupServersSection: ConfigHandler() {
                     })
                 }
             } else {
-                println("UNEXPECTED KEY TYPE: $key | ${key?.javaClass}")
+                throw IllegalArgumentException("Unexpected key type, key=$key, type=${key::class.java}")
             }
         }
     }
