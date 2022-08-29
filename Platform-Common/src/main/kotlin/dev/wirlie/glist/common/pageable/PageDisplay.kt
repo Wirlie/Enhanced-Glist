@@ -1,6 +1,7 @@
 package dev.wirlie.glist.common.pageable
 
 import net.kyori.adventure.audience.Audience
+import kotlin.math.max
 
 abstract class PageDisplay<T>(
     val audience: Audience,
@@ -11,26 +12,34 @@ abstract class PageDisplay<T>(
     initialData
 ) {
 
-    abstract fun showPage(page: Page<T>)
+    abstract fun buildPageDisplay(page: Page<T>)
 
     fun showNextPage(): Boolean {
         val nextPage = tryNextPage() ?: return false
-        showPage(nextPage)
+        buildPageDisplay(nextPage)
         return true
     }
 
     fun showPreviousPage(): Boolean {
         val previousPage = tryPreviousPage() ?: return false
-        showPage(previousPage)
+        buildPageDisplay(previousPage)
         return true
     }
 
     fun showCurrentPage() {
-        showPage(getPage(currentPage))
+        buildPageDisplay(getPage(currentPage))
     }
 
     fun showPage(pageNumber: Int) {
-        showPage(getPage(pageNumber))
+        currentPage = if(pageNumber < 0) {
+            0
+        } else if(pageNumber >= totalPages) {
+            max(0, totalPages - 1)
+        } else {
+            pageNumber
+        }
+
+        buildPageDisplay(getPage(currentPage))
     }
 
 }
