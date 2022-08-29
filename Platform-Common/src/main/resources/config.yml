@@ -13,7 +13,7 @@ commands:
 
 general:
   # Prefix for chat messages
-  prefix: "<bold><aqua>EnhancedGlist </aqua></bold>"
+  prefix: "<bold><aqua>EGlist ></aqua></bold><reset>"
   # Supported languages: en (english), es (spanish)
   language: 'en'
   # Players per row (/slist)

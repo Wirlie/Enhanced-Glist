@@ -7,7 +7,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 @ConfigRootPath("general")
 class GeneralSection {
 
-    var prefix: String = "<bold><aqua>EnhancedGlist ></aqua></bold><reset>"
+    var prefix: String = "<bold><aqua>EGlist ></aqua></bold><reset>"
 
     var language: String = "en"
 
