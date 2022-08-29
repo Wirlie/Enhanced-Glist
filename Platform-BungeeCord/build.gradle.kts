@@ -21,6 +21,9 @@ dependencies {
 
     implementation(project(":EnhancedGlist-Common"))
 
+    // Caffeine for Cache
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
+
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
 }
