@@ -17,7 +17,7 @@ class ServerPlayersDisplay<S>(
     initialData
 ) {
 
-    override fun showPage(page: Page<PlatformExecutor<S>>) {
+    override fun buildPageDisplay(page: Page<PlatformExecutor<S>>) {
 
     }
 

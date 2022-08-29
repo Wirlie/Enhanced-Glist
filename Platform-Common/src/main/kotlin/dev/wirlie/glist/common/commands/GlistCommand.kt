@@ -27,7 +27,7 @@ class GlistCommand<S>(
         val display = getDisplayFor(executor)
         val audience = executor.asAudience()
 
-        if(display.data.isEmpty() || true) {
+        if(display.data.isEmpty()) {
             audience.sendMessage(
                 AdventureUtil.parseMiniMessage(
                     platform.translatorManager.getTranslator().getGlistMessages().noServersToDisplay
@@ -50,7 +50,7 @@ class GlistCommand<S>(
             page = 0
         }
 
-
+        display.showPage(page)
     }
 
     private fun getDisplayFor(executor: PlatformExecutor<S>): ServersListDisplay<S> {

@@ -24,4 +24,8 @@ object AdventureUtil {
         return miniMessage.deserialize(text, *resolvers.toTypedArray())
     }
 
+    fun groupListToString(list: List<String>): String {
+        return list.joinToString("<newline>")
+    }
+
 }

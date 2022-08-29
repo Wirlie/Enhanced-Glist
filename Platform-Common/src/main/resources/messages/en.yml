@@ -1,22 +1,21 @@
 glist:
   main-message:
     - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
-    - " <yellow>List of all servers on the Network:</yellow>"
-    - " <yellow>Page <white><page-number></white> of <white><total-pages></white>"
+    - " <yellow>List of all servers on the Network</yellow>"
+    - " <yellow>Page <white><page-number></white> of <white><total-pages></white> <gray>•</gray> <yellow>Online Players:</yellow> <white><players-amount></white>"
     - " "
     - "<servers>"
     - " "
-    - " <gold>Total Players:</gold> <white><players-amount></white>"
+    - " <page-controller>"
     - " "
     - " <white>TIP:</white> <gray>Use <yellow>/<slist-label> [server]</yellow> to display a list of all players in the specified server."
-    - "<page-controller>"
     - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
   no-servers-to-display: "<prefix> <red>No servers to display."
   page-controller:
     previous-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
-    previous-page-hover-no-previous-page: "<red>No previous page available."
+    previous-page-hover-message-no-previous-page: "<red>No previous page available."
     next-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
-    next-page-hover-no-next-page: "<red>No next page available."
+    next-page-hover-message-no-next-page: "<red>No next page available."
     previous-page-phrase: "Previous Page"
     previous-page-controller: "<aqua>« <previous-page-phrase></aqua>"
     previous-page-controller-disabled: "<dark_aqua>« <previous-page-phrase></dark_aqua>"
@@ -27,9 +26,9 @@ glist:
       # Controller displayed when player can go to the previous page or to the next page
       previous-and-next: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller>"
       # Controller displayed when player can only go to the previous page
-      previous-only: "<previous-page-controller>"
+      previous-only: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
       # Controller displayed when player can only go to the next page
-      next-only: "<next-page-controller>"
+      next-only: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller>"
   servers-format:
     template: "<aqua><server-name></aqua> <gold><player-amount></gold> <bars> <dark_gray>[<gold><percent></gold>]"
     bars:
@@ -74,20 +73,22 @@ slist:
   cannot-find-server: "<prefix> <red>Server <white><server-name></white> not found."
   page-controller:
     previous-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
-    previous-page-hover-no-previous-page: "<red>No previous page available."
+    previous-page-hover-message-no-previous-page: "<red>No previous page available."
     next-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
-    next-page-hover-no-next-page: "<red>No next page available."
+    next-page-hover-message-no-next-page: "<red>No next page available."
     previous-page-phrase: "Previous Page"
-    previous-page-controller: "« <previous-page-phrase>"
+    previous-page-controller: "<aqua>« <previous-page-phrase></aqua>"
+    previous-page-controller-disabled: "<dark_aqua>« <previous-page-phrase></dark_aqua>"
     next-page-phrase: "Next Page"
-    next-page-controller: "<next-page-phrase> »"
+    next-page-controller: "<aqua><next-page-phrase> »</aqua>"
+    next-page-controller-disabled: "<dark_aqua><next-page-phrase> »</dark_aqua>"
     format:
       # Controller displayed when player can go to the previous page or to the next page
       previous-and-next: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller>"
       # Controller displayed when player can only go to the previous page
-      previous-only: "<previous-page-controller>"
+      previous-only: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
       # Controller displayed when player can only go to the next page
-      next-only: "<next-page-controller>"
+      next-only: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller>"
   all-pages: "All Pages"
   click-to-show-players-hover-message: "<yellow><server-name></yellow><newline><white>Click here to display the<newline>player list of this server."
   console:

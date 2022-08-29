@@ -46,7 +46,7 @@ open class Pageable<T>(
 
         val elements = data.subList(start, end).toList()
 
-        return Page(pageNumber, totalPages, elements)
+        return Page(pageNumber, totalPages, elements, pageNumber > 0, pageNumber < totalPages - 1)
     }
 
 }
