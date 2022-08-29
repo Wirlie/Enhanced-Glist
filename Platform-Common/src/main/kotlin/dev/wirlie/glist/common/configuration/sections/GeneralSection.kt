@@ -7,6 +7,10 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 @ConfigRootPath("general")
 class GeneralSection {
 
+    var prefix: String = "<bold><aqua>EnhancedGlist ></aqua></bold><reset>"
+
+    var language: String = "en"
+
     var playersPerRow = 2
 
     var playersPerPage = 16
@@ -15,7 +19,7 @@ class GeneralSection {
 
     var hideEmptyServers = true
 
-    var maxServersToDisplay = 20
+    var serversPerPage = 8
 
     var minPlayersRequiredToDisplayServer = 1
 

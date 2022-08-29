@@ -12,6 +12,10 @@ commands:
     aliases: []
 
 general:
+  # Prefix for chat messages
+  prefix: "<bold><aqua>EnhancedGlist </aqua></bold>"
+  # Supported languages: en (english), es (spanish)
+  language: 'en'
   # Players per row (/slist)
   players-per-row: 2
   # Players to display per page (/slist)
@@ -26,9 +30,8 @@ general:
       time: 20
   # If empty servers should be hidden (when server has no players connected)
   hide-empty-servers: true
-  # Number of servers to display by default (/glist)
-  # Set this to a reasonable amount to prevent a large message in chat.
-  max-servers-to-display: 20
+  # Number of servers to display on each page (/glist)
+  servers-per-page: 8
   # The number of players required to display a server (/glist), set 0 to always display empty servers.
   min-players-required-to-display-server: 1
   # If server names should be displayed as uppercase (/glist and /slist)

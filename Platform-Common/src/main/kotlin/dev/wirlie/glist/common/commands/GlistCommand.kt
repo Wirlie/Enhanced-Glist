@@ -1,8 +1,12 @@
 package dev.wirlie.glist.common.commands
 
+import com.github.benmanes.caffeine.cache.Caffeine
 import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.configuration.sections.GeneralSection
+import dev.wirlie.glist.common.display.ServersListDisplay
 import dev.wirlie.glist.common.platform.PlatformExecutor
-import net.kyori.adventure.text.Component
+import dev.wirlie.glist.common.util.AdventureUtil
+import java.util.concurrent.TimeUnit
 
 class GlistCommand<S>(
     val platform: Platform<S, *, *>,
@@ -15,8 +19,58 @@ class GlistCommand<S>(
     permission
 ) {
 
+    private val cache = Caffeine.newBuilder()
+        .expireAfterAccess(5, TimeUnit.MINUTES)
+        .build<String, ServersListDisplay<S>>()
+
     override fun tryExecution(executor: PlatformExecutor<S>, args: Array<String>) {
-        executor.asAudience().sendMessage(Component.text("EXECUTED!"))
+        val display = getDisplayFor(executor)
+        val audience = executor.asAudience()
+
+        if(display.data.isEmpty() || true) {
+            audience.sendMessage(
+                AdventureUtil.parseMiniMessage(
+                    platform.translatorManager.getTranslator().getGlistMessages().noServersToDisplay
+                )
+            )
+            return
+        }
+
+        var page = if(args.isEmpty()) {
+            0
+        } else {
+            (args[0].toIntOrNull() ?: 1) - 1
+        }
+
+        if(page >= display.totalPages) {
+            page = display.totalPages - 1
+        }
+
+        if(page < 0) {
+            page = 0
+        }
+
+
+    }
+
+    private fun getDisplayFor(executor: PlatformExecutor<S>): ServersListDisplay<S> {
+        val key = if (executor.isConsole()) "console" else "player-${executor.getUUID()}"
+        val current = cache.getIfPresent(key)
+
+        if(current != null) {
+            return current
+        }
+
+        val newDisplay = ServersListDisplay(
+            platform,
+            executor.asAudience(),
+            platform.configuration.getSection(GeneralSection::class.java)?.serversPerPage ?: 8,
+            platform.getAllServers().toMutableList()
+        )
+
+        cache.put(key, newDisplay)
+
+        return newDisplay
     }
 
 }

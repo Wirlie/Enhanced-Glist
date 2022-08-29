@@ -1,0 +1,81 @@
+glist:
+  main-message:
+    - "<dark-gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark-gray>"
+    - " <yellow>List of all servers on the Network:</yellow>"
+    - ""
+    - "<servers>"
+    - " <not-displayed:'0# |1#<newline><italic><gray>And <white><servers-not-displayed-amount></white> hidden servers.</gray></italic>'>"
+    - " <gold>Total Players:</gold> <white><players-amount></white>"
+    - ""
+    - " <white>TIP:</white> <gray>Use <yellow>/{LABEL} [server]</yellow> to display a list of all players in the specified server."
+    - "<dark-gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark-gray>"
+  no-servers-to-display: "<prefix> <red>No servers to display."
+  servers-format:
+    template: "<aqua><server-name></aqua> <gold><player-amount></gold> <bars> <dark-gray>[<gold><percent></gold>]"
+    bars:
+      # When there is no players in server
+      empty: "<dark-gray>||||||||||||||||||||</dark-gray>"
+      # Range based on percent (server players * 100 / total players in Network)
+      # 01..05 means 1% to 5%
+      # 06..10 means 6% to 10%
+      # and so on
+      01..05: "<aqua>|</aqua><dark-gray>|||||||||||||||||||</dark-gray>"
+      06..10: "<aqua>||</aqua><dark-gray>||||||||||||||||||</dark-gray>"
+      11..15: "<aqua>|||</aqua><dark-gray>|||||||||||||||||</dark-gray>"
+      16..20: "<aqua>||||</aqua><dark-gray>||||||||||||||||</dark-gray>"
+      21..25: "<aqua>|||||</aqua><dark-gray>|||||||||||||||</dark-gray>"
+      26..30: "<aqua>||||||</aqua><dark-gray>||||||||||||||</dark-gray>"
+      31..35: "<aqua>|||||||</aqua><dark-gray>|||||||||||||</dark-gray>"
+      36..40: "<aqua>||||||||</aqua><dark-gray>||||||||||||</dark-gray>"
+      41..45: "<aqua>|||||||||</aqua><dark-gray>|||||||||||</dark-gray>"
+      46..50: "<aqua>||||||||||</aqua><dark-gray>||||||||||</dark-gray>"
+      51..55: "<aqua>|||||||||||</aqua><dark-gray>|||||||||</dark-gray>"
+      56..60: "<aqua>||||||||||||</aqua><dark-gray>||||||||</dark-gray>"
+      61..65: "<aqua>|||||||||||||</aqua><dark-gray>|||||||</dark-gray>"
+      66..70: "<aqua>||||||||||||||</aqua><dark-gray>||||||</dark-gray>"
+      71..75: "<aqua>|||||||||||||||</aqua><dark-gray>|||||</dark-gray>"
+      76..80: "<aqua>||||||||||||||||</aqua><dark-gray>||||</dark-gray>"
+      81..85: "<aqua>|||||||||||||||||</aqua><dark-gray>|||</dark-gray>"
+      86..90: "<aqua>||||||||||||||||||</aqua><dark-gray>||</dark-gray>"
+      91..95: "<aqua>|||||||||||||||||||</aqua><dark-gray>|</dark-gray>"
+      96..100: "<aqua>||||||||||||||||||||</aqua>"
+slist:
+  main-message:
+    - "<dark-gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark-gray>"
+    - " <gold>Server Name:</gold> <white><server-name></white>"
+    - " <gold>Players:</gold> <white><players-count></white>"
+    - " <yellow>Displaying page <white><page-number></white> of <white><total-pages></white>"
+    - ""
+    - "<players>"
+    - "<page-controller>"
+    - "<dark-gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark-gray>"
+  page-not-found: "<prefix> <red>No data to display in this page! Try with a another page between <white>1</white> and <white><total-pages></white>."
+  server-no-players: "<prefix> <red>This server does not have online players at this moment."
+  cannot-find-server: "<prefix> <red>Server <white><server-name></white> not found."
+  page-controller:
+    previous-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
+    previous-page-hover-no-previous-page: "<red>No previous page available."
+    next-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
+    next-page-hover-no-next-page: "<red>No next page available."
+    previous-page-phrase: "Previous Page"
+    previous-page-controller: "« <previous-page-phrase>"
+    next-page-phrase: "Next Page"
+    next-page-controller: "<next-page-phrase> »"
+    page-controller:
+      # Controller displayed when player can go to the previous page or to the next page
+      previous-and-next: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller>"
+      # Controller displayed when player can only go to the previous page
+      previous-only: "<previous-page-controller>"
+      # Controller displayed when player can only go to the next page
+      next-only: "<next-page-controller>"
+  all-pages: "All Pages"
+  click-to-show-players-hover-message: "<yellow><server-name></yellow><newline><white>Click here to display the<newline>player list of this server."
+  console:
+    previous-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the previous page."
+    next-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the next page."
+updater:
+  notify-message:
+    - "<dark-gray><strikethrough><bold>-------------[</bold></strikethrough></dark-gray> <green>EnhancedBungeeList</green> <dark-gray><strikethrough><bold>]-------------</bold></strikethrough></dark-gray>"
+    - "<yellow>A new update is available! Download:"
+    - "<aqua>https://www.spigotmc.org/resources/enhancedbungeelist.53295/"
+    - "<dark-gray><strikethrough><bold>----------------------------------------------"

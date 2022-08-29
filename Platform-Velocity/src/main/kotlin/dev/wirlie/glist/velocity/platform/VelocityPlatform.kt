@@ -24,4 +24,8 @@ class VelocityPlatform(
         return VelocityConsolePlatformExecutor(server.consoleCommandSource)
     }
 
+    override fun getAllServers(): List<PlatformServer<RegisteredServer>> {
+        return server.allServers.map { VelocityPlatformServer(it) }
+    }
+
 }

@@ -1,9 +1,13 @@
 package dev.wirlie.glist.common
 
 import dev.wirlie.glist.common.configuration.PlatformConfiguration
+import dev.wirlie.glist.common.configuration.sections.GeneralSection
+import dev.wirlie.glist.common.extensions.miniMessage
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
+import dev.wirlie.glist.common.translation.TranslatorManager
 import net.kyori.adventure.audience.Audience
+import net.kyori.adventure.text.Component
 import java.io.File
 
 abstract class Platform<S, P, C> {
@@ -11,6 +15,7 @@ abstract class Platform<S, P, C> {
     lateinit var pluginFolder: File
     lateinit var logger: PlatformLogger
 
+    lateinit var translatorManager: TranslatorManager
     lateinit var platformCommandManager: PlatformCommandManager<S>
 
     var console: Audience = Audience.empty()
@@ -25,6 +30,8 @@ abstract class Platform<S, P, C> {
         commandManager: PlatformCommandManager<S>
     ) {
         configuration.setup()
+        pluginPrefix = configuration.getSection(GeneralSection::class.java)?.prefix?.miniMessage()?: Component.empty()
+        translatorManager = TranslatorManager(this)
         platformCommandManager = commandManager
         platformCommandManager.setup()
         platformCommandManager.registerCommands()
@@ -43,5 +50,13 @@ abstract class Platform<S, P, C> {
     abstract fun toPlatformExecutorPlayer(executor: P): PlatformExecutor<S>
 
     abstract fun toPlatformExecutorConsole(executor: C): PlatformExecutor<S>
+
+    abstract fun getAllServers(): List<PlatformServer<S>>
+
+    companion object {
+
+        var pluginPrefix: Component = Component.empty()
+
+    }
 
 }
