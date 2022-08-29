@@ -1,16 +1,13 @@
 package dev.wirlie.glist.common.translation
 
 import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.platform.PlatformServer
-import dev.wirlie.glist.common.util.AdventureUtil
+import dev.wirlie.glist.common.configurate.IntRangeSerializer
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.ClickEvent
-import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.format.NamedTextColor
-import net.kyori.adventure.text.minimessage.tag.Tag
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.spongepowered.configurate.ConfigurationNode
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
+import org.spongepowered.configurate.ConfigurationOptions
+import org.spongepowered.configurate.objectmapping.ObjectMapper
+import org.spongepowered.configurate.serialize.TypeSerializerCollection
 import org.spongepowered.configurate.yaml.NodeStyle
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 import java.io.File
@@ -33,11 +30,20 @@ class Translator(
             saveDefaultFile()
         }
 
+        val customFactory: ObjectMapper.Factory = ObjectMapper.factoryBuilder().build()
+
         yamlLoader = YamlConfigurationLoader.builder()
             .path(file.toPath())
+            .defaultOptions { opts: ConfigurationOptions ->
+                opts.serializers { build: TypeSerializerCollection.Builder ->
+                    build.registerAnnotatedObjects(customFactory)
+                    build.register(IntRange::class.java, IntRangeSerializer())
+                }
+            }
             .nodeStyle(NodeStyle.BLOCK)
             .indent(2)
             .build()
+
         yamlConfiguration = yamlLoader.load()
 
         translationMessages = yamlConfiguration.get(TranslationMessages::class.java)!!

@@ -1,11 +1,13 @@
 package dev.wirlie.glist.common.translation
 
+import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.platform.PlatformServer
 import dev.wirlie.glist.common.util.AdventureUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.event.HoverEvent
 import net.kyori.adventure.text.minimessage.tag.Tag
+import net.kyori.adventure.text.minimessage.tag.resolver.Formatter
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
@@ -31,13 +33,31 @@ class TranslationMessages {
 
             var template: String = ""
 
-            var bars: Map<String, ConfigurationNode> = mutableMapOf()
+            var bars: Map<IntRange, ConfigurationNode> = mutableMapOf()
 
-            fun buildServersComponent(servers: List<PlatformServer<*>>): Component {
+            fun buildServersComponent(platform: Platform<*, *, *>, servers: List<PlatformServer<*>>): Component {
 
                 var component = Component.empty()
 
                 for((index, server) in servers.withIndex()) {
+                    val playerAmount = server.getPlayers().size
+                    val percent = playerAmount * 100.0 / platform.getConnectedPlayersAmount()
+                    var barsToUse = "<dark_gray>???????????????</dark_gray>"
+
+                    for(entry in bars.entries) {
+                        if(playerAmount == 0 || percent.toInt() == 0) {
+                            if (entry.key.contains(0)) {
+                                barsToUse = entry.value.string!!
+                                break
+                            }
+                        } else {
+                            if(entry.key.contains(percent.toInt())) {
+                                barsToUse = entry.value.string!!
+                                break
+                            }
+                        }
+                    }
+
                     component = component
                         .append(
                             AdventureUtil.parseMiniMessage(
@@ -48,8 +68,19 @@ class TranslationMessages {
                                 ),
                                 TagResolver.resolver(
                                     "player-amount",
-                                    Tag.selfClosingInserting(Component.text(server.getPlayers().size))
-                                )
+                                    Tag.selfClosingInserting(Component.text(playerAmount))
+                                ),
+                                TagResolver.resolver(
+                                    Formatter.number("percent", percent)
+                                ),
+                                TagResolver.resolver(
+                                    "bars",
+                                    Tag.selfClosingInserting(
+                                        AdventureUtil.parseMiniMessage(
+                                            barsToUse
+                                        )
+                                    )
+                                ),
                             )
                         )
                         .run {
@@ -102,6 +133,8 @@ class TranslationMessages {
 
             var nextOnly = ""
 
+            var disabled = ""
+
         }
 
         fun buildController(hasPrevious: Boolean, hasNext: Boolean, previousCommand: String, nextCommand: String, pageNumber: Int): Component {
@@ -109,8 +142,10 @@ class TranslationMessages {
                 buildPreviousAndNextController(previousCommand, nextCommand, pageNumber)
             } else if(hasPrevious) {
                 buildPreviousOnlyController(previousCommand, pageNumber)
-            } else {
+            } else if(hasNext) {
                 buildNextOnlyController(nextCommand, pageNumber)
+            } else {
+                buildDisabledController()
             }
         }
 
@@ -135,6 +170,14 @@ class TranslationMessages {
                 format.nextOnly,
                 TagResolver.resolver("previous-page-controller-disabled", Tag.selfClosingInserting(buildPreviousControllerDisabled())),
                 TagResolver.resolver("next-page-controller", Tag.selfClosingInserting(buildNextControllerEnabled(nextCommand, pageNumber))),
+            )
+        }
+
+        private fun buildDisabledController(): Component {
+            return AdventureUtil.parseMiniMessage(
+                format.disabled,
+                TagResolver.resolver("previous-page-controller-disabled", Tag.selfClosingInserting(buildPreviousControllerDisabled())),
+                TagResolver.resolver("next-page-controller-disabled", Tag.selfClosingInserting(buildNextControllerDisabled())),
             )
         }
 
@@ -184,7 +227,7 @@ class TranslationMessages {
         private fun buildNextControllerDisabled(): Component {
             return AdventureUtil.parseMiniMessage(
                 nextPageControllerDisabled,
-                TagResolver.resolver("next-page-phrase", Tag.selfClosingInserting(Component.text(previousPagePhrase)))
+                TagResolver.resolver("next-page-phrase", Tag.selfClosingInserting(Component.text(nextPagePhrase)))
             ).hoverEvent(
                 HoverEvent.showText(
                     AdventureUtil.parseMiniMessage(nextPageHoverMessageNoNextPage)

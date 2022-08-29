@@ -48,7 +48,7 @@ class ServersListDisplay<S>(
             TagResolver.resolver(
                 "servers",
                 Tag.selfClosingInserting(
-                    serversFormat.buildServersComponent(page.items)
+                    serversFormat.buildServersComponent(platform, page.items)
                 )
             ),
             TagResolver.resolver(
