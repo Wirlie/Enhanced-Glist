@@ -26,6 +26,7 @@ class ServersListDisplay<S>(
         val glistMessages = platform.translatorManager.getTranslator().getGlistMessages()
         val pageControllerMessages = glistMessages.pageController
         val glistLabel = platform.configuration.getSection(CommandsSection::class.java)?.glist?.label ?: "glist"
+        val slistLabel = platform.configuration.getSection(CommandsSection::class.java)?.slist?.label ?: "slist"
 
         val mainMessage = AdventureUtil.parseMiniMessage(
             AdventureUtil.groupListToString(
@@ -36,6 +37,12 @@ class ServersListDisplay<S>(
             ),
             TagResolver.resolver(
                 "total-pages", Tag.selfClosingInserting(Component.text("${page.totalPages}"))
+            ),
+            TagResolver.resolver(
+                "players-amount", Tag.selfClosingInserting(Component.text("${platform.getConnectedPlayersAmount()}"))
+            ),
+            TagResolver.resolver(
+                "slist-label", Tag.selfClosingInserting(Component.text(slistLabel))
             ),
             TagResolver.resolver(
                 "page-controller",

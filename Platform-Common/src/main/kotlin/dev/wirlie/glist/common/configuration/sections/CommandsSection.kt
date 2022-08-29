@@ -9,8 +9,20 @@ class CommandsSection {
 
     var glist: GlistSection = GlistSection()
 
+    var slist: SlistSection = SlistSection()
+
     @ConfigSerializable
     class GlistSection {
+
+        var label: String = "glist"
+
+        var permission: String = "egl.commands.glist"
+
+        var aliases: Array<String> = arrayOf()
+    }
+
+    @ConfigSerializable
+    class SlistSection {
 
         var label: String = "glist"
 

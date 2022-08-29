@@ -10,6 +10,13 @@ commands:
     permission: "egl.commands.glist"
     # Optional, define aliases for /glist command
     aliases: []
+  slist:
+    # Label to use for /slist command
+    label: "slist"
+    # Permission required to execute /slist command
+    permission: "egl.commands.slist"
+    # Optional, define aliases for /slist command
+    aliases: [ ]
 
 general:
   # Prefix for chat messages

@@ -54,6 +54,8 @@ abstract class Platform<S, P, C> {
 
     abstract fun getAllServers(): List<PlatformServer<S>>
 
+    abstract fun getConnectedPlayersAmount(): Int
+
     companion object {
 
         var pluginPrefix: Component = Component.empty()

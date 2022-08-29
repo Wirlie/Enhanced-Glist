@@ -28,4 +28,8 @@ class VelocityPlatform(
         return server.allServers.map { VelocityPlatformServer(it) }
     }
 
+    override fun getConnectedPlayersAmount(): Int {
+        return server.allPlayers.size
+    }
+
 }
