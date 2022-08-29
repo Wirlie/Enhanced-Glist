@@ -23,8 +23,9 @@ class ServersListDisplay<S>(
 ) {
 
     override fun buildPageDisplay(page: Page<PlatformServer<S>>) {
-        val glistMessages = platform.translatorManager.getTranslator().getGlistMessages()
+        val glistMessages = platform.translatorManager.getTranslator().getMessages().glist
         val pageControllerMessages = glistMessages.pageController
+        val serversFormat = glistMessages.serversFormat
         val glistLabel = platform.configuration.getSection(CommandsSection::class.java)?.glist?.label ?: "glist"
         val slistLabel = platform.configuration.getSection(CommandsSection::class.java)?.slist?.label ?: "slist"
 
@@ -43,6 +44,12 @@ class ServersListDisplay<S>(
             ),
             TagResolver.resolver(
                 "slist-label", Tag.selfClosingInserting(Component.text(slistLabel))
+            ),
+            TagResolver.resolver(
+                "servers",
+                Tag.selfClosingInserting(
+                    serversFormat.buildServersComponent(page.items)
+                )
             ),
             TagResolver.resolver(
                 "page-controller",

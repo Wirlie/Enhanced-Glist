@@ -30,7 +30,7 @@ class GlistCommand<S>(
         if(display.data.isEmpty()) {
             audience.sendMessage(
                 AdventureUtil.parseMiniMessage(
-                    platform.translatorManager.getTranslator().getGlistMessages().noServersToDisplay
+                    platform.translatorManager.getTranslator().getMessages().glist.noServersToDisplay
                 )
             )
             return
