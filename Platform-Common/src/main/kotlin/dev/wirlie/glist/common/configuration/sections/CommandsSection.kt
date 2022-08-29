@@ -24,9 +24,9 @@ class CommandsSection {
     @ConfigSerializable
     class SlistSection {
 
-        var label: String = "glist"
+        var label: String = "slist"
 
-        var permission: String = "egl.commands.glist"
+        var permission: String = "egl.commands.slist"
 
         var aliases: Array<String> = arrayOf()
     }
