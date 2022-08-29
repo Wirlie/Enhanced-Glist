@@ -32,6 +32,7 @@ abstract class Platform<S, P, C> {
         configuration.setup()
         pluginPrefix = configuration.getSection(GeneralSection::class.java)?.prefix?.miniMessage()?: Component.empty()
         translatorManager = TranslatorManager(this)
+        translatorManager.setup()
         platformCommandManager = commandManager
         platformCommandManager.setup()
         platformCommandManager.registerCommands()

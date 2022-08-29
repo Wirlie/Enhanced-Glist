@@ -10,6 +10,10 @@ class TranslatorManager(
     private var code: String = platform.configuration.getSection(GeneralSection::class.java)?.language?: "en"
     private var translator: Translator? = null
 
+    fun setup() {
+        getTranslator()
+    }
+
     fun getTranslator(): Translator {
         if(translator != null) {
             return translator!!
