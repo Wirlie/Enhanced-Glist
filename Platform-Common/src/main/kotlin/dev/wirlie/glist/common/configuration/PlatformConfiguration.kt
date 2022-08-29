@@ -69,12 +69,10 @@ class PlatformConfiguration(
         }
 
         return if(ConfigHandler::class.java.isAssignableFrom(clazz)) {
-            println("IS ASSIGNABLE")
             val instance = clazz.getDeclaredConstructor().newInstance()
             (instance as ConfigHandler).handle(yamlConfiguration.node(rootPath))
             instance
         } else {
-            println("NOT ASSIGNABLE")
             yamlConfiguration.node(rootPath).get(clazz)
         }
     }
