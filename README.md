@@ -21,10 +21,13 @@ Supporting my work:
 # Issues
 Please feel free to open a [Issue](https://github.com/Wirlie/Enhanced-Glist/issues) if:
 * You want to report a Bug.
-* You have a suggestion or feedback.
 
 Do not open a [Issue](https://github.com/Wirlie/Enhanced-Glist/issues) if:
-* You need support, use the [Discussion Section](https://www.spigotmc.org/threads/enhanced-glist-bungeecord-velocity.303250/) instead.
+* You need support, use the [Discussion Section](https://github.com/Wirlie/Enhanced-Glist/discussions) instead.
+* You have a suggestion or feedback, use the [Discussion Section](https://github.com/Wirlie/Enhanced-Glist/discussions) instead.
+
+# Support
+* https://github.com/Wirlie/Enhanced-Glist/discussions
 
 # Contributing
 If this plugin has helped you in any way, and you would like to return something back 
