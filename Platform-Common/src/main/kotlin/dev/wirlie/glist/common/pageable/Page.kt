@@ -1,6 +1,6 @@
 /*
  * Enhanced Glist - Plugin that enhances /glist command
- * Copyright (C) 2022  Josue Acevedo
+ * Copyright (C) 2022 Josue Acevedo and the Enhanced Glist contributors
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
