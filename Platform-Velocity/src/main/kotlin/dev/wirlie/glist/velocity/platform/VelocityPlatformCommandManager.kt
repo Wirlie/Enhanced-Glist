@@ -27,6 +27,7 @@ import com.velocitypowered.api.proxy.server.RegisteredServer
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.PlatformCommandManager
 import dev.wirlie.glist.velocity.commands.GlistExecutor
+import dev.wirlie.glist.velocity.commands.SlistExecutor
 
 class VelocityPlatformCommandManager(
     private val platformInstance: Platform<RegisteredServer, Player, ConsoleCommandSource>,
@@ -36,11 +37,21 @@ class VelocityPlatformCommandManager(
 ) {
 
     override fun registerCommands() {
-        val meta = commandManager.metaBuilder(glistCommand.name)
-            .aliases(*glistCommand.aliases.toTypedArray())
-            .build()
+        commandManager.register(
+            commandManager
+                .metaBuilder(glistCommand.name)
+                .aliases(*glistCommand.aliases.toTypedArray())
+                .build(),
+            GlistExecutor(platformInstance, glistCommand)
+        )
 
-        commandManager.register(meta, GlistExecutor(platformInstance, glistCommand))
+        commandManager.register(
+            commandManager
+                .metaBuilder(slistCommand.name)
+                .aliases(*slistCommand.aliases.toTypedArray())
+                .build(),
+            SlistExecutor(platformInstance, slistCommand)
+        )
     }
 
 }

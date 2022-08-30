@@ -21,6 +21,7 @@
 package dev.wirlie.glist.common
 
 import dev.wirlie.glist.common.commands.GlistCommand
+import dev.wirlie.glist.common.commands.SlistCommand
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
 
 abstract class PlatformCommandManager<S>(
@@ -28,6 +29,7 @@ abstract class PlatformCommandManager<S>(
 ) {
 
     lateinit var glistCommand: GlistCommand<S>
+    lateinit var slistCommand: SlistCommand<S>
 
     fun setup() {
         glistCommand = platform.configuration.getSection(CommandsSection::class.java).run {
@@ -40,6 +42,19 @@ abstract class PlatformCommandManager<S>(
                 this.glist.label,
                 this.glist.aliases.toMutableList(),
                 this.glist.permission
+            )
+        }
+
+        slistCommand = platform.configuration.getSection(CommandsSection::class.java).run {
+            if(this == null) {
+                throw IllegalStateException("Corrupted configuration? Cannot find 'commands' section.")
+            }
+
+            SlistCommand(
+                platform,
+                this.slist.label,
+                this.slist.aliases.toMutableList(),
+                this.slist.permission
             )
         }
     }

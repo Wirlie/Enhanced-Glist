@@ -18,29 +18,31 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.bungeecord.platform
+package dev.wirlie.glist.bungeecord.commands
 
-import dev.wirlie.glist.bungeecord.EnhancedGlistBungeeCord
-import dev.wirlie.glist.bungeecord.commands.GlistExecutor
-import dev.wirlie.glist.bungeecord.commands.SlistExecutor
 import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.PlatformCommandManager
+import dev.wirlie.glist.common.commands.PlatformCommand
+import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
-import net.md_5.bungee.api.plugin.PluginManager
+import net.md_5.bungee.api.plugin.Command
 import net.md_5.bungee.command.ConsoleCommandSender
 
-class BungeePlatformCommandManager(
-    private val platformInstance: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>,
-    private val pluginManager: PluginManager,
-    private val plugin: EnhancedGlistBungeeCord
-): PlatformCommandManager<ServerInfo>(
-    platformInstance
+class SlistExecutor(
+    private val platform: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>,
+    private val platformCommand: PlatformCommand<ServerInfo>
+): Command(
+    platformCommand.name,
+    platformCommand.permission,
+    *platformCommand.aliases.toTypedArray()
 ) {
 
-    override fun registerCommands() {
-        pluginManager.registerCommand(plugin, GlistExecutor(platformInstance, glistCommand))
-        pluginManager.registerCommand(plugin, SlistExecutor(platformInstance, slistCommand))
+    override fun execute(sender: CommandSender, args: Array<String>) {
+        if(sender is ProxiedPlayer) {
+            platformCommand.tryExecution(platform.toPlatformExecutorPlayer(sender), args)
+        } else {
+            platformCommand.tryExecution(platform.toPlatformExecutorConsole(sender as ConsoleCommandSender), args)
+        }
     }
 
 }
