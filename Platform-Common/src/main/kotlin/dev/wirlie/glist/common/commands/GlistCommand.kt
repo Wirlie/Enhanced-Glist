@@ -85,7 +85,7 @@ class GlistCommand<S>(
         val newDisplay = ServersListDisplay(
             platform,
             executor.asAudience(),
-            platform.configuration.getSection(GeneralSection::class.java)?.serversPerPage ?: 5,
+            platform.configuration.getSection(GeneralSection::class.java).serversPerPage,
             platform.getAllServers().sortedWith(compareByDescending<PlatformServer<S>> { it.getPlayers().size }.thenBy { it.getName() }).toMutableList()
         )
 

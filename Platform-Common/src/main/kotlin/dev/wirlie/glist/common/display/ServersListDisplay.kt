@@ -46,8 +46,8 @@ class ServersListDisplay<S>(
         val glistMessages = platform.translatorManager.getTranslator().getMessages().glist
         val pageControllerMessages = glistMessages.pageController
         val serversFormat = glistMessages.serversFormat
-        val glistLabel = platform.configuration.getSection(CommandsSection::class.java)?.glist?.label ?: "glist"
-        val slistLabel = platform.configuration.getSection(CommandsSection::class.java)?.slist?.label ?: "slist"
+        val glistLabel = platform.configuration.getSection(CommandsSection::class.java).glist.label
+        val slistLabel = platform.configuration.getSection(CommandsSection::class.java).slist.label
 
         val mainMessage = AdventureUtil.parseMiniMessage(
             AdventureUtil.groupListToString(

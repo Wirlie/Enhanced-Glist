@@ -33,10 +33,6 @@ abstract class PlatformCommandManager<S>(
 
     fun setup() {
         glistCommand = platform.configuration.getSection(CommandsSection::class.java).run {
-            if(this == null) {
-                throw IllegalStateException("Corrupted configuration? Cannot find 'commands' section.")
-            }
-
             GlistCommand(
                 platform,
                 this.glist.label,
@@ -46,10 +42,6 @@ abstract class PlatformCommandManager<S>(
         }
 
         slistCommand = platform.configuration.getSection(CommandsSection::class.java).run {
-            if(this == null) {
-                throw IllegalStateException("Corrupted configuration? Cannot find 'commands' section.")
-            }
-
             SlistCommand(
                 platform,
                 this.slist.label,

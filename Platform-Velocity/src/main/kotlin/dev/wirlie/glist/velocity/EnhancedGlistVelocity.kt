@@ -67,10 +67,6 @@ class EnhancedGlistVelocity {
         platform.pluginFolder = pluginDirectory.toFile()
         platform.console = server.consoleCommandSource
         platform.setup(VelocityPlatformCommandManager(platform, commandManager))
-
-        // Test
-        val section = platform.configuration.getSection(GroupServersSection::class.java)
-        platform.logger.error(Component.text("TEST: ${section?.servers?.joinToString(", ") { sv -> "${sv.serverName}|${sv.byName.size}|${sv.byPattern.size}" }}"))
     }
 
     @Subscribe

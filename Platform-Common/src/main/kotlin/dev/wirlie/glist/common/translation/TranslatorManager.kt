@@ -27,7 +27,7 @@ class TranslatorManager(
     val platform: Platform<*, *, *>
 ) {
 
-    private var code: String = platform.configuration.getSection(GeneralSection::class.java)?.language?: "en"
+    private var code: String = platform.configuration.getSection(GeneralSection::class.java).language
     private var translator: Translator? = null
 
     fun setup() {
