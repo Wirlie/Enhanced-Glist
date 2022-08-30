@@ -43,7 +43,7 @@ import java.nio.file.Path
     name = "EnhancedGlist",
     version = "2.0.0",
     url = "https://www.spigotmc.org/resources/enhancedbungeelist.53295/",
-    description = "Enhanced Glist/ is a high-configurable plugin that enhances /glist command.",
+    description = "Enhanced Glist is a high-configurable plugin that enhances /glist command.",
     authors = ["Wirlie"],
     dependencies = [Dependency(id = "luckperms", optional = true)]
 )
