@@ -23,7 +23,6 @@ package dev.wirlie.glist.common.configuration
 import dev.wirlie.glist.common.Platform
 import net.kyori.adventure.text.Component
 import org.spongepowered.configurate.ConfigurationNode
-import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.yaml.NodeStyle
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader
 import java.io.File
@@ -78,7 +77,7 @@ class PlatformConfiguration(
         yaml.save(yamlConfiguration)
     }
 
-    fun <T> getSection(clazz: Class<T>): T? {
+    fun <T> getSection(clazz: Class<T>): T {
         val rootAnnotation = clazz.annotations.firstOrNull { it is ConfigRootPath } as ConfigRootPath? ?:
             throw IllegalArgumentException("Class is not annotated with @ConfigRootPath")
 
@@ -93,7 +92,8 @@ class PlatformConfiguration(
             (instance as ConfigHandler).handle(yamlConfiguration.node(rootPath))
             instance
         } else {
-            yamlConfiguration.node(rootPath).get(clazz)
+            // If configurate cannot get ConfigurationNode, use a new instance instead to work with default values
+            yamlConfiguration.node(rootPath).get(clazz) ?: clazz.getDeclaredConstructor().newInstance()
         }
     }
 
