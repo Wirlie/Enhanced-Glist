@@ -27,7 +27,7 @@ import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.display.ServerPlayersDisplay
 import dev.wirlie.glist.common.platform.PlatformExecutor
-import dev.wirlie.glist.common.platform.PlatformServer
+import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.tag.Tag
@@ -83,7 +83,7 @@ class SlistCommand<S>(
             return
         }
 
-        val server = platform.getServerByName(args[0])
+        val server = platform.getServerGrouped(args[0])
 
         if(server == null) {
             // Server not found
@@ -121,7 +121,7 @@ class SlistCommand<S>(
         display.showPage(page)
     }
 
-    private fun getDisplayFor(executor: PlatformExecutor<S>, server: PlatformServer<S>): ServerPlayersDisplay<S> {
+    private fun getDisplayFor(executor: PlatformExecutor<S>, server: PlatformServerGroup<S>): ServerPlayersDisplay<S> {
 
         fun makeDisplay(): ServerPlayersDisplay<S> {
             return ServerPlayersDisplay(
