@@ -97,14 +97,27 @@ glist:
       99..100: "<aqua>||||||||||||||||||||||||||||||||||||||||||||||||||</aqua>"
 slist:
   main-message:
-    - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
-    - " <gold>Server Name:</gold> <white><server-name></white>"
-    - " <gold>Players:</gold> <white><players-count></white>"
-    - " <yellow>Displaying page <white><page-number></white> of <white><total-pages></white>"
-    - " "
-    - "<players>"
-    - "<page-controller>"
-    - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
+    # Message when you use /slist <server> (server without group)
+    server:
+      - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
+      - " <gold>Server Name:</gold> <white><server-name></white>"
+      - " <gold>Players:</gold> <white><players-count> player(s)</white>"
+      - " <yellow>Displaying page <white><page-number></white> of <white><total-pages></white>"
+      - " "
+      - "<players>"
+      - "<page-controller>"
+      - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
+    # Message when you use /slist <group-name> (grouped servers)
+    group:
+      - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
+      - " <gold>Group Name:</gold> <white><group-name></white>"
+      - " <gold>Servers:</gold> <white><server-count> server(s)</white>"
+      - " <gold>Players:</gold> <white><players-count> player(s)</white>"
+      - " <yellow>Displaying page <white><page-number></white> of <white><total-pages></white>"
+      - " "
+      - "<players>"
+      - "<page-controller>"
+      - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
   page-not-found: "<prefix> <red>No data to display in this page! Try with a another page between <white>1</white> and <white><total-pages></white>."
   server-no-players: "<prefix> <red>This server does not have online players at this moment."
   cannot-find-server: "<prefix> <red>Server <white><server-name></white> not found."

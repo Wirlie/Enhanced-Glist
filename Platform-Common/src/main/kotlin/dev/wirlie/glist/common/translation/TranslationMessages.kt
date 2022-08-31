@@ -125,7 +125,7 @@ class TranslationMessages {
     @ConfigSerializable
     class SlistMessages {
 
-        var mainMessage: MutableList<String> = mutableListOf()
+        var mainMessage = MainMessage()
 
         var pageNotFound = ""
 
@@ -140,6 +140,15 @@ class TranslationMessages {
         var allPages = ""
 
         var clickToShowPlayersHoverMessage = ""
+
+        @ConfigSerializable
+        class MainMessage {
+
+            val server = mutableListOf<String>()
+
+            val group = mutableListOf<String>()
+
+        }
 
     }
 
