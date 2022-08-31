@@ -37,10 +37,12 @@ class TranslationMessages {
 
     var glist: GlistMessages = GlistMessages()
 
+    var slist: SlistMessages = SlistMessages()
+
     @ConfigSerializable
     class GlistMessages {
 
-        var mainMessage: List<String> = mutableListOf()
+        var mainMessage: MutableList<String> = mutableListOf()
 
         var noServersToDisplay: String = ""
 
@@ -121,6 +123,27 @@ class TranslationMessages {
     }
 
     @ConfigSerializable
+    class SlistMessages {
+
+        var mainMessage: MutableList<String> = mutableListOf()
+
+        var pageNotFound = ""
+
+        var serverNoPlayers = ""
+
+        var cannotFindServer = ""
+
+        var usage = ""
+
+        var pageController = PageController()
+
+        var allPages = ""
+
+        var clickToShowPlayersHoverMessage = ""
+
+    }
+
+    @ConfigSerializable
     class PageController {
 
         var previousPageHoverMessage = ""
@@ -145,6 +168,8 @@ class TranslationMessages {
 
         var format = Format()
 
+        var console = ConsoleMessages()
+
         @ConfigSerializable
         class Format {
 
@@ -155,6 +180,15 @@ class TranslationMessages {
             var nextOnly = ""
 
             var disabled = ""
+
+        }
+
+        @ConfigSerializable
+        class ConsoleMessages {
+
+            var previousPage = ""
+
+            var nextPage = ""
 
         }
 

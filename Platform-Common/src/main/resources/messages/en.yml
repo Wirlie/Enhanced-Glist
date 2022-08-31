@@ -31,6 +31,9 @@ glist:
       next-only: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller>"
       # Controller displayed when player cannot go the previous page and cannot go to the next page
       disabled: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
+    console:
+      previous-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the previous page."
+      next-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the next page."
   servers-format:
     template: " <gray>•</gray> <green><server-name></green> <gray>-</gray> <yellow><player-amount></yellow> <bars> <dark_gray>[<gold><percent:'0.00'>%</gold>]"
     bars:
@@ -104,6 +107,7 @@ slist:
   page-not-found: "<prefix> <red>No data to display in this page! Try with a another page between <white>1</white> and <white><total-pages></white>."
   server-no-players: "<prefix> <red>This server does not have online players at this moment."
   cannot-find-server: "<prefix> <red>Server <white><server-name></white> not found."
+  usage: "<prefix> <red>Usage:</red> <white>/<slist-label></white> <aqua><server></aqua> <green>[page]</green>"
   page-controller:
     previous-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
     previous-page-hover-message-no-previous-page: "<red>No previous page available."
@@ -122,11 +126,11 @@ slist:
       previous-only: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
       # Controller displayed when player can only go to the next page
       next-only: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller>"
+    console:
+      previous-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the previous page."
+      next-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the next page."
   all-pages: "All Pages"
   click-to-show-players-hover-message: "<yellow><server-name></yellow><newline><white>Click here to display the<newline>player list of this server."
-  console:
-    previous-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the previous page."
-    next-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the next page."
 updater:
   notify-message:
     - "<dark_gray><strikethrough><bold>-------------[</bold></strikethrough></dark_gray> <green>EnhancedBungeeList</green> <dark_gray><strikethrough><bold>]-------------</bold></strikethrough></dark_gray>"
