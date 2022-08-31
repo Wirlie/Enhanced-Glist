@@ -46,6 +46,10 @@ class BungeePlatform: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>(
         return ProxyServer.getInstance().servers.values.map { BungeePlatformServer(it) }
     }
 
+    override fun getServerByName(name: String): PlatformServer<ServerInfo>? {
+        return ProxyServer.getInstance().getServerInfo(name)?.run { BungeePlatformServer(this) }
+    }
+
     override fun getConnectedPlayersAmount(): Int {
         return ProxyServer.getInstance().players.size
     }

@@ -74,6 +74,8 @@ abstract class Platform<S, P, C> {
 
     abstract fun getAllServers(): List<PlatformServer<S>>
 
+    abstract fun getServerByName(name: String): PlatformServer<S>?
+
     abstract fun getConnectedPlayersAmount(): Int
 
     companion object {

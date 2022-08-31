@@ -11,6 +11,7 @@ glist:
     - " <white>TIP:</white> <gray>Use <yellow>/<slist-label> [server]</yellow> to display a list of all players in the specified server."
     - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
   no-servers-to-display: "<prefix> <red>No servers to display."
+  click-to-show-players-hover-message: "<yellow><server-name></yellow><newline><white>Click here to display the<newline>player list of this server."
   page-controller:
     previous-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
     previous-page-hover-message-no-previous-page: "<red>No previous page available."
@@ -129,8 +130,6 @@ slist:
     console:
       previous-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the previous page."
       next-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the next page."
-  all-pages: "All Pages"
-  click-to-show-players-hover-message: "<yellow><server-name></yellow><newline><white>Click here to display the<newline>player list of this server."
 updater:
   notify-message:
     - "<dark_gray><strikethrough><bold>-------------[</bold></strikethrough></dark_gray> <green>EnhancedBungeeList</green> <dark_gray><strikethrough><bold>]-------------</bold></strikethrough></dark_gray>"

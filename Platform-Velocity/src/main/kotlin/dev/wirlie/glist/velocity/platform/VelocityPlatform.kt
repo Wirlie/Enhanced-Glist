@@ -48,6 +48,10 @@ class VelocityPlatform(
         return server.allServers.map { VelocityPlatformServer(it) }
     }
 
+    override fun getServerByName(name: String): PlatformServer<RegisteredServer>? {
+        return server.getServer(name).orElse(null)?.run { VelocityPlatformServer(this) }
+    }
+
     override fun getConnectedPlayersAmount(): Int {
         return server.allPlayers.size
     }

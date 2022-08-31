@@ -25,6 +25,7 @@ import dev.wirlie.glist.common.pageable.Page
 import dev.wirlie.glist.common.pageable.PageDisplay
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import net.kyori.adventure.audience.Audience
+import net.kyori.adventure.text.Component
 
 class ServerPlayersDisplay<S>(
     val platform: Platform<S, *, *>,
@@ -38,7 +39,9 @@ class ServerPlayersDisplay<S>(
 ) {
 
     override fun buildPageDisplay(page: Page<PlatformExecutor<S>>) {
-
+        for(item in page.items) {
+            audience.sendMessage(Component.text(item.getName()))
+        }
     }
 
 }
