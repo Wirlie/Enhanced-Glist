@@ -21,7 +21,7 @@
 package dev.wirlie.glist.common.translation
 
 import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.platform.PlatformServer
+import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
@@ -57,7 +57,7 @@ class TranslationMessages {
 
             var bars: Map<IntRange, ConfigurationNode> = mutableMapOf()
 
-            fun buildServersComponent(platform: Platform<*, *, *>, servers: List<PlatformServer<*>>): Component {
+            fun buildServersComponent(platform: Platform<*, *, *>, servers: List<PlatformServerGroup<*>>): Component {
 
                 var component = Component.empty()
 
@@ -87,7 +87,7 @@ class TranslationMessages {
                                 template,
                                 TagResolver.resolver(
                                     "server-name",
-                                    Tag.selfClosingInserting(Component.text(server.getName()))
+                                    Tag.selfClosingInserting(Component.text(server.name))
                                 ),
                                 TagResolver.resolver(
                                     "player-amount",

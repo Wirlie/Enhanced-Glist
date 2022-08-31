@@ -26,6 +26,7 @@ import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.display.ServersListDisplay
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
+import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
 import java.util.concurrent.TimeUnit
 
@@ -86,7 +87,7 @@ class GlistCommand<S>(
             platform,
             executor.asAudience(),
             platform.configuration.getSection(GeneralSection::class.java).serversPerPage,
-            platform.getAllServers().sortedWith(compareByDescending<PlatformServer<S>> { it.getPlayers().size }.thenBy { it.getName() }).toMutableList()
+            platform.getAllServersGrouped().sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayers().size }.thenBy { it.name }).toMutableList()
         )
 
         cache.put(key, newDisplay)

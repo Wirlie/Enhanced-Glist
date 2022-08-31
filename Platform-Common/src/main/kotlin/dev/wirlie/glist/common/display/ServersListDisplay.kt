@@ -24,7 +24,7 @@ import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.pageable.Page
 import dev.wirlie.glist.common.pageable.PageDisplay
-import dev.wirlie.glist.common.platform.PlatformServer
+import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
@@ -35,14 +35,14 @@ class ServersListDisplay<S>(
     val platform: Platform<S, *, *>,
     audience: Audience,
     initialPageSize: Int,
-    initialData: MutableList<PlatformServer<S>> = mutableListOf()
-): PageDisplay<PlatformServer<S>>(
+    initialData: MutableList<PlatformServerGroup<S>> = mutableListOf()
+): PageDisplay<PlatformServerGroup<S>>(
     audience,
     initialPageSize,
     initialData
 ) {
 
-    override fun buildPageDisplay(page: Page<PlatformServer<S>>) {
+    override fun buildPageDisplay(page: Page<PlatformServerGroup<S>>) {
         val glistMessages = platform.translatorManager.getTranslator().getMessages().glist
         val pageControllerMessages = glistMessages.pageController
         val serversFormat = glistMessages.serversFormat
