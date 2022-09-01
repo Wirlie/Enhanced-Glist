@@ -148,6 +148,19 @@ class TranslationMessages {
 
             val group = mutableListOf<String>()
 
+            val format = FormatSection()
+
+            @ConfigSerializable
+            class FormatSection {
+
+                val players = ""
+
+                val afkStatus = ""
+
+                val vanishStatus = ""
+
+            }
+
         }
 
     }

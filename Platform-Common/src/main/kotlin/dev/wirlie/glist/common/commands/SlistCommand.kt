@@ -126,9 +126,9 @@ class SlistCommand<S>(
         fun makeDisplay(): ServerPlayersDisplay<S> {
             return ServerPlayersDisplay(
                 platform,
+                server,
                 executor.asAudience(),
-                platform.configuration.getSection(GeneralSection::class.java).playersPerPage,
-                server.getPlayers().toMutableList()
+                platform.configuration.getSection(GeneralSection::class.java).playersPerPage
             )
         }
 
@@ -140,10 +140,12 @@ class SlistCommand<S>(
         val key = if (executor.isConsole()) "console" else "player-${executor.getUUID()}"
         val current = cache!!.getIfPresent(key)
 
-        if(current != null) {
+        if(current != null && current.serverGroup == server) {
+            // Cache exists
             return current
         }
 
+        // Cache not exists, or exists for another server...
         val newDisplay = makeDisplay()
         cache!!.put(key, newDisplay)
 

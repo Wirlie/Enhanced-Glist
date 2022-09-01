@@ -105,6 +105,7 @@ slist:
       - " <yellow>Displaying page <white><page-number></white> of <white><total-pages></white>"
       - " "
       - "<players>"
+      - " "
       - "<page-controller>"
       - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
     # Message when you use /slist <group-name> (grouped servers)
@@ -116,8 +117,13 @@ slist:
       - " <yellow>Displaying page <white><page-number></white> of <white><total-pages></white>"
       - " "
       - "<players>"
+      - " "
       - "<page-controller>"
       - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
+    format:
+      players: "<player-prefix> <white><player-name></white> <afk-status><vanish-status>"
+      afk-status: "<yellow><bold>AFK</bold></yellow>"
+      vanish-status: "<gray>[<aqua>V</aqua>]</gray>"
   page-not-found: "<prefix> <red>No data to display in this page! Try with a another page between <white>1</white> and <white><total-pages></white>."
   server-no-players: "<prefix> <red>This server does not have online players at this moment."
   cannot-find-server: "<prefix> <red>Server <white><server-name></white> not found."
@@ -140,6 +146,8 @@ slist:
       previous-only: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
       # Controller displayed when player can only go to the next page
       next-only: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller>"
+      # Controller displayed when player cannot go the previous page and cannot go to the next page
+      disabled: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
     console:
       previous-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the previous page."
       next-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the next page."

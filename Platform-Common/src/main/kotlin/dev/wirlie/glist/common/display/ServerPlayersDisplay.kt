@@ -21,27 +21,75 @@
 package dev.wirlie.glist.common.display
 
 import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.pageable.Page
 import dev.wirlie.glist.common.pageable.PageDisplay
 import dev.wirlie.glist.common.platform.PlatformExecutor
+import dev.wirlie.glist.common.platform.PlatformServerGroup
+import dev.wirlie.glist.common.util.AdventureUtil
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.minimessage.tag.Tag
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 
 class ServerPlayersDisplay<S>(
     val platform: Platform<S, *, *>,
+    val serverGroup: PlatformServerGroup<S>,
     audience: Audience,
-    initialPageSize: Int,
-    initialData: MutableList<PlatformExecutor<S>> = mutableListOf()
+    initialPageSize: Int
 ): PageDisplay<PlatformExecutor<S>>(
     audience,
     initialPageSize,
-    initialData
+    serverGroup.getPlayers().toMutableList()
 ) {
 
     override fun buildPageDisplay(page: Page<PlatformExecutor<S>>) {
-        for(item in page.items) {
-            audience.sendMessage(Component.text(item.getName()))
+        val slistMessages = platform.translatorManager.getTranslator().getMessages().slist
+        val slistLabel = platform.configuration.getSection(CommandsSection::class.java).slist.label
+
+        val messageToUse = if(serverGroup.byConfiguration) {
+            slistMessages.mainMessage.group
+        } else {
+            slistMessages.mainMessage.server
         }
+
+        val pageControllerMessages = slistMessages.pageController
+
+        audience.sendMessage(
+            AdventureUtil.parseMiniMessage(
+                AdventureUtil.groupListToString(messageToUse),
+                TagResolver.resolver(
+                    "group-name", Tag.selfClosingInserting(Component.text(serverGroup.name))
+                ),
+                TagResolver.resolver(
+                    "server-name", Tag.selfClosingInserting(Component.text(serverGroup.name))
+                ),
+                TagResolver.resolver(
+                    "server-count", Tag.selfClosingInserting(Component.text("${serverGroup.getServers().size}"))
+                ),
+                TagResolver.resolver(
+                    "players-count", Tag.selfClosingInserting(Component.text("${serverGroup.getPlayers().size}"))
+                ),
+                TagResolver.resolver(
+                    "page-number", Tag.selfClosingInserting(Component.text("${page.pageNumber + 1}"))
+                ),
+                TagResolver.resolver(
+                    "total-pages", Tag.selfClosingInserting(Component.text("${page.totalPages}"))
+                ),
+                TagResolver.resolver(
+                    "page-controller",
+                    Tag.selfClosingInserting(
+                        pageControllerMessages.buildController(
+                            page.hasPrevious,
+                            page.hasNext,
+                            "/$slistLabel ${(page.pageNumber + 1) - 1}",
+                            "/$slistLabel ${(page.pageNumber + 1) + 1}",
+                            page.pageNumber
+                        )
+                    )
+                )
+            )
+        )
     }
 
 }
