@@ -28,4 +28,18 @@ abstract class PlatformServer<S>(
 
     abstract fun getPlayers(): List<PlatformExecutor<S>>
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is PlatformServer<*>) return false
+
+        if (server != other.server) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return server.hashCode()
+    }
+
+
 }
