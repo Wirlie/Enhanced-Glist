@@ -124,7 +124,6 @@ slist:
       players: "<player-prefix> <white><player-name></white> <afk-status><vanish-status>"
       afk-status: "<yellow><bold>AFK</bold></yellow>"
       vanish-status: "<gray>[<aqua>V</aqua>]</gray>"
-  page-not-found: "<prefix> <red>No data to display in this page! Try with a another page between <white>1</white> and <white><total-pages></white>."
   server-no-players: "<prefix> <red>This server does not have online players at this moment."
   cannot-find-server: "<prefix> <red>Server <white><server-name></white> not found."
   usage: "<prefix> <red>Usage:</red> <white>/<slist-label></white> <aqua><server></aqua> <green>[page]</green>"

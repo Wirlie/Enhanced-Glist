@@ -46,6 +46,8 @@ class TranslationMessages {
 
         var noServersToDisplay: String = ""
 
+        var clickToShowPlayersHoverMessage = ""
+
         var pageController: PageController = PageController()
 
         var serversFormat = ServersFormat()
@@ -127,8 +129,6 @@ class TranslationMessages {
 
         var mainMessage = MainMessage()
 
-        var pageNotFound = ""
-
         var serverNoPlayers = ""
 
         var cannotFindServer = ""
@@ -136,10 +136,6 @@ class TranslationMessages {
         var usage = ""
 
         var pageController = PageController()
-
-        var allPages = ""
-
-        var clickToShowPlayersHoverMessage = ""
 
         @ConfigSerializable
         class MainMessage {
