@@ -12,6 +12,7 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.1.1")
     kapt("com.velocitypowered:velocity-api:3.1.1")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
 
     implementation(project(":EnhancedGlist-Common"))
 
