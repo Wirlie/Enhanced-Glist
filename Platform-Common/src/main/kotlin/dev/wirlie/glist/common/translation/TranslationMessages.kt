@@ -212,15 +212,37 @@ class TranslationMessages {
 
         }
 
-        fun buildController(hasPrevious: Boolean, hasNext: Boolean, previousCommand: String, nextCommand: String, pageNumber: Int): Component {
-            return if(hasPrevious && hasNext) {
-                buildPreviousAndNextController(previousCommand, nextCommand, pageNumber)
-            } else if(hasPrevious) {
-                buildPreviousOnlyController(previousCommand, pageNumber)
-            } else if(hasNext) {
-                buildNextOnlyController(nextCommand, pageNumber)
+        fun buildController(
+            hasPrevious: Boolean,
+            hasNext: Boolean,
+            previousCommand: String,
+            nextCommand: String,
+            pageNumber: Int,
+            fromConsole: Boolean
+        ): Component {
+            if(fromConsole) {
+                return if (hasPrevious && hasNext) {
+                    Component.empty()
+                        .append(buildPreviousControllerForConsole(previousCommand))
+                        .append(Component.newline())
+                        .append(buildNextControllerForConsole(nextCommand))
+                } else if (hasPrevious) {
+                    buildPreviousControllerForConsole(previousCommand)
+                } else if (hasNext) {
+                    buildNextControllerForConsole(nextCommand)
+                } else {
+                    Component.empty()
+                }
             } else {
-                buildDisabledController()
+                return if (hasPrevious && hasNext) {
+                    buildPreviousAndNextController(previousCommand, nextCommand, pageNumber)
+                } else if (hasPrevious) {
+                    buildPreviousOnlyController(previousCommand, pageNumber)
+                } else if (hasNext) {
+                    buildNextOnlyController(nextCommand, pageNumber)
+                } else {
+                    buildDisabledController()
+                }
             }
         }
 
@@ -306,6 +328,26 @@ class TranslationMessages {
             ).hoverEvent(
                 HoverEvent.showText(
                     AdventureUtil.parseMiniMessage(nextPageHoverMessageNoNextPage)
+                )
+            )
+        }
+
+        private fun buildPreviousControllerForConsole(command: String): Component {
+            return AdventureUtil.parseMiniMessage(
+                console.previousPage,
+                TagResolver.resolver(
+                    "command",
+                    Tag.selfClosingInserting(Component.text(command))
+                )
+            )
+        }
+
+        private fun buildNextControllerForConsole(command: String): Component {
+            return AdventureUtil.parseMiniMessage(
+                console.nextPage,
+                TagResolver.resolver(
+                    "command",
+                    Tag.selfClosingInserting(Component.text(command))
                 )
             )
         }

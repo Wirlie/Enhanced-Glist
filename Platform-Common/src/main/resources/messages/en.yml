@@ -6,7 +6,7 @@ glist:
     - " "
     - "<servers>"
     - " "
-    - " <page-controller>"
+    - "<page-controller>"
     - " "
     - " <white>TIP:</white> <gray>Use <yellow>/<slist-label> [server]</yellow> to display a list of all players in the specified server."
     - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
@@ -25,16 +25,16 @@ glist:
     next-page-controller-disabled: "<dark_aqua><next-page-phrase> »</dark_aqua>"
     format:
       # Controller displayed when player can go to the previous page or to the next page
-      previous-and-next: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller>"
+      previous-and-next: " <previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller>"
       # Controller displayed when player can only go to the previous page
-      previous-only: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
+      previous-only: " <previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
       # Controller displayed when player can only go to the next page
-      next-only: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller>"
+      next-only: " <previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller>"
       # Controller displayed when player cannot go the previous page and cannot go to the next page
-      disabled: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
+      disabled: " <previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
     console:
-      previous-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the previous page."
-      next-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the next page."
+      previous-page: " <gold>Use <white><command></white> to go to the previous page."
+      next-page: " <gold>Use <white><command></white> to go to the next page."
   servers-format:
     template: " <gray>•</gray> <green><server-name></green> <gray>-</gray> <yellow><player-amount></yellow> <bars> <dark_gray>[<gold><percent:'0.00'>%</gold>]"
     bars:
@@ -106,7 +106,7 @@ slist:
       - " "
       - "<players-rows>"
       - " "
-      - " <page-controller>"
+      - "<page-controller>"
       - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
     # Message when you use /slist <group-name> (grouped servers)
     group:
@@ -141,16 +141,16 @@ slist:
     next-page-controller-disabled: "<dark_aqua><next-page-phrase> »</dark_aqua>"
     format:
       # Controller displayed when player can go to the previous page or to the next page
-      previous-and-next: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller>"
+      previous-and-next: " <previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller>"
       # Controller displayed when player can only go to the previous page
-      previous-only: "<previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
+      previous-only: " <previous-page-controller> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
       # Controller displayed when player can only go to the next page
-      next-only: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller>"
+      next-only: " <previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller>"
       # Controller displayed when player cannot go the previous page and cannot go to the next page
-      disabled: "<previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
+      disabled: " <previous-page-controller-disabled> <dark_gray>|</dark_gray> <next-page-controller-disabled>"
     console:
-      previous-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the previous page."
-      next-page: "<gold>Use <white>/<command-label> <server-name> <page-number></white> to go to the next page."
+      previous-page: " <gold>Use <white><command></white> to go to the previous page."
+      next-page: " <gold>Use <white><command></white> to go to the next page."
 updater:
   notify-message:
     - "<dark_gray><strikethrough><bold>-------------[</bold></strikethrough></dark_gray> <green>EnhancedBungeeList</green> <dark_gray><strikethrough><bold>]-------------</bold></strikethrough></dark_gray>"

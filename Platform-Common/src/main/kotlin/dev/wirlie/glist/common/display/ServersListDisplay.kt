@@ -24,6 +24,7 @@ import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.pageable.Page
 import dev.wirlie.glist.common.pageable.PageDisplay
+import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
 import net.kyori.adventure.audience.Audience
@@ -33,6 +34,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 
 class ServersListDisplay<S>(
     val platform: Platform<S, *, *>,
+    val executor: PlatformExecutor<S>,
     audience: Audience,
     initialPageSize: Int,
     initialData: MutableList<PlatformServerGroup<S>> = mutableListOf()
@@ -79,7 +81,8 @@ class ServersListDisplay<S>(
                         page.hasNext,
                         "/$glistLabel ${(page.pageNumber + 1) - 1}",
                         "/$glistLabel ${(page.pageNumber + 1) + 1}",
-                        page.pageNumber
+                        page.pageNumber,
+                        executor.isConsole()
                     )
                 )
             )

@@ -91,7 +91,8 @@ class ServerPlayersDisplay<S>(
                             page.hasNext,
                             "/$slistLabel ${(page.pageNumber + 1) - 1}",
                             "/$slistLabel ${(page.pageNumber + 1) + 1}",
-                            page.pageNumber
+                            page.pageNumber,
+                            executor.isConsole()
                         )
                     )
                 ),
