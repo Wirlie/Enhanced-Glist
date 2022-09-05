@@ -88,7 +88,15 @@ class ServersListDisplay<S>(
             )
         )
 
-        audience.sendMessage(mainMessage)
+        if(executor.isConsole()) {
+            // Insert a line break due console log prefix.
+            audience.sendMessage(
+                Component.newline()
+                    .append(mainMessage)
+            )
+        } else {
+            audience.sendMessage(mainMessage)
+        }
     }
 
 }

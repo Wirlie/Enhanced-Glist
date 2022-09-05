@@ -62,48 +62,56 @@ class ServerPlayersDisplay<S>(
 
         val pageControllerMessages = slistMessages.pageController
 
-        audience.sendMessage(
-            AdventureUtil.parseMiniMessage(
-                AdventureUtil.groupListToString(messageToUse),
-                TagResolver.resolver(
-                    "group-name", Tag.selfClosingInserting(Component.text(serverGroup.name))
-                ),
-                TagResolver.resolver(
-                    "server-name", Tag.selfClosingInserting(Component.text(serverGroup.name))
-                ),
-                TagResolver.resolver(
-                    "server-count", Tag.selfClosingInserting(Component.text("${serverGroup.getServers().size}"))
-                ),
-                TagResolver.resolver(
-                    "players-count", Tag.selfClosingInserting(Component.text("${serverGroup.getPlayers().size}"))
-                ),
-                TagResolver.resolver(
-                    "page-number", Tag.selfClosingInserting(Component.text("${page.pageNumber + 1}"))
-                ),
-                TagResolver.resolver(
-                    "total-pages", Tag.selfClosingInserting(Component.text("${page.totalPages}"))
-                ),
-                TagResolver.resolver(
-                    "page-controller",
-                    Tag.selfClosingInserting(
-                        pageControllerMessages.buildController(
-                            page.hasPrevious,
-                            page.hasNext,
-                            "/$slistLabel ${(page.pageNumber + 1) - 1}",
-                            "/$slistLabel ${(page.pageNumber + 1) + 1}",
-                            page.pageNumber,
-                            executor.isConsole()
-                        )
+        val mainMessage = AdventureUtil.parseMiniMessage(
+            AdventureUtil.groupListToString(messageToUse),
+            TagResolver.resolver(
+                "group-name", Tag.selfClosingInserting(Component.text(serverGroup.name))
+            ),
+            TagResolver.resolver(
+                "server-name", Tag.selfClosingInserting(Component.text(serverGroup.name))
+            ),
+            TagResolver.resolver(
+                "server-count", Tag.selfClosingInserting(Component.text("${serverGroup.getServers().size}"))
+            ),
+            TagResolver.resolver(
+                "players-count", Tag.selfClosingInserting(Component.text("${serverGroup.getPlayers().size}"))
+            ),
+            TagResolver.resolver(
+                "page-number", Tag.selfClosingInserting(Component.text("${page.pageNumber + 1}"))
+            ),
+            TagResolver.resolver(
+                "total-pages", Tag.selfClosingInserting(Component.text("${page.totalPages}"))
+            ),
+            TagResolver.resolver(
+                "page-controller",
+                Tag.selfClosingInserting(
+                    pageControllerMessages.buildController(
+                        page.hasPrevious,
+                        page.hasNext,
+                        "/$slistLabel ${(page.pageNumber + 1) - 1}",
+                        "/$slistLabel ${(page.pageNumber + 1) + 1}",
+                        page.pageNumber,
+                        executor.isConsole()
                     )
-                ),
-                TagResolver.resolver(
-                    "players-rows",
-                    Tag.selfClosingInserting(
-                        makePlayersComponent(slistMessages.mainMessage.format, page.items)
-                    )
+                )
+            ),
+            TagResolver.resolver(
+                "players-rows",
+                Tag.selfClosingInserting(
+                    makePlayersComponent(slistMessages.mainMessage.format, page.items)
                 )
             )
         )
+
+        if(executor.isConsole()) {
+            // Insert a line break due console log prefix.
+            audience.sendMessage(
+                Component.newline()
+                    .append(mainMessage)
+            )
+        } else {
+            audience.sendMessage(mainMessage)
+        }
     }
 
     private fun makePlayersComponent(
