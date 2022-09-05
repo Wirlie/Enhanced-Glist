@@ -20,6 +20,7 @@ dependencies {
     implementation("net.kyori:adventure-platform-bungeecord:4.1.2")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
+    compileOnly("net.luckperms:api:5.4")
 
     implementation(project(":EnhancedGlist-Common"))
 

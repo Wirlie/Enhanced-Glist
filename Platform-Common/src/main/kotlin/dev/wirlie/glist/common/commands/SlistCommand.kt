@@ -127,6 +127,7 @@ class SlistCommand<S>(
             return ServerPlayersDisplay(
                 platform,
                 server,
+                executor,
                 executor.asAudience(),
                 platform.configuration.getSection(GeneralSection::class.java).playersPerPage
             )

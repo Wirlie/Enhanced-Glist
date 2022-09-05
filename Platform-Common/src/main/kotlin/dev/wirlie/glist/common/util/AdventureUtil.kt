@@ -30,7 +30,8 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 object AdventureUtil {
 
     val miniMessage: MiniMessage = MiniMessage.miniMessage()
-    val legacySerializer = LegacyComponentSerializer.legacySection()
+    val legacySectionSerializer = LegacyComponentSerializer.legacySection()
+    val legacyAmpersandSerializer = LegacyComponentSerializer.legacyAmpersand()
 
     fun parseMiniMessage(text: String, vararg tagResolver: TagResolver): Component {
 
@@ -46,12 +47,20 @@ object AdventureUtil {
         return miniMessage.deserialize(text, *resolvers.toTypedArray())
     }
 
-    fun serializeToLegacy(component: Component): String {
-        return legacySerializer.serialize(component)
+    fun legacySectionSerialize(component: Component): String {
+        return legacySectionSerializer.serialize(component)
     }
 
-    fun deserializeFromLegacy(legacy: String): Component {
-        return legacySerializer.deserialize(legacy)
+    fun legacySectionDeserialize(legacy: String): Component {
+        return legacySectionSerializer.deserialize(legacy)
+    }
+
+    fun legacyAmpersandSerialize(component: Component): String {
+        return legacyAmpersandSerializer.serialize(component)
+    }
+
+    fun legacyAmpersandDeserialize(legacy: String): Component {
+        return legacyAmpersandSerializer.deserialize(legacy)
     }
 
     fun groupListToString(list: List<String>): String {

@@ -54,4 +54,13 @@ class BungeePlatform: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>(
         return ProxyServer.getInstance().players.size
     }
 
+    override fun registerHooks() {
+        val proxy = ProxyServer.getInstance()
+        val pluginManager = proxy.pluginManager
+
+        if(pluginManager.getPlugin("LuckPerms") != null) {
+            hookManager.enableLuckPermsHook()
+        }
+    }
+
 }

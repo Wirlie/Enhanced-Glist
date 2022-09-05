@@ -17,6 +17,7 @@ dependencies {
     implementation("net.kyori:adventure-api:4.11.0")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
+    compileOnly("net.luckperms:api:5.4")
 
     // Caffeine for Cache
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")

@@ -56,4 +56,13 @@ class VelocityPlatform(
         return server.allPlayers.size
     }
 
+    override fun registerHooks() {
+        val proxy = server
+        val pluginManager = proxy.pluginManager
+
+        if(pluginManager.isLoaded("luckperms")) {
+            hookManager.enableLuckPermsHook()
+        }
+    }
+
 }

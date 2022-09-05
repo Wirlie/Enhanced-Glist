@@ -104,9 +104,9 @@ slist:
       - " <gold>Players:</gold> <white><players-count> player(s)</white>"
       - " <yellow>Displaying page <white><page-number></white> of <white><total-pages></white>"
       - " "
-      - "<players>"
+      - "<players-rows>"
       - " "
-      - "<page-controller>"
+      - " <page-controller>"
       - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
     # Message when you use /slist <group-name> (grouped servers)
     group:
@@ -116,11 +116,12 @@ slist:
       - " <gold>Players:</gold> <white><players-count> player(s)</white>"
       - " <yellow>Displaying page <white><page-number></white> of <white><total-pages></white>"
       - " "
-      - "<players>"
+      - "<players-rows>"
       - " "
-      - "<page-controller>"
+      - " <page-controller>"
       - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
     format:
+      players-rows: " <players>"
       players: "<player-prefix> <white><player-name></white> <afk-status><vanish-status>"
       afk-status: "<yellow><bold>AFK</bold></yellow>"
       vanish-status: "<gray>[<aqua>V</aqua>]</gray>"

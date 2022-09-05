@@ -24,9 +24,11 @@ import dev.wirlie.glist.common.configuration.PlatformConfiguration
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.configuration.sections.GroupServersSection
 import dev.wirlie.glist.common.extensions.miniMessage
+import dev.wirlie.glist.common.hooks.HookManager
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 import dev.wirlie.glist.common.platform.PlatformServerGroup
+import dev.wirlie.glist.common.player.PlayerManager
 import dev.wirlie.glist.common.translation.TranslatorManager
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
@@ -39,6 +41,8 @@ abstract class Platform<S, P, C> {
 
     lateinit var translatorManager: TranslatorManager
     lateinit var platformCommandManager: PlatformCommandManager<S>
+    lateinit var hookManager: HookManager
+    lateinit var playerManager: PlayerManager
 
     var console: Audience = Audience.empty()
         set(value) {
@@ -58,6 +62,9 @@ abstract class Platform<S, P, C> {
         platformCommandManager = commandManager
         platformCommandManager.setup()
         platformCommandManager.registerCommands()
+        hookManager = HookManager(this)
+        registerHooks()
+        playerManager = PlayerManager(this)
     }
 
     fun disable() {
@@ -79,6 +86,8 @@ abstract class Platform<S, P, C> {
     abstract fun getServerByName(name: String): PlatformServer<S>?
 
     abstract fun getConnectedPlayersAmount(): Int
+
+    abstract fun registerHooks()
 
     fun getServerGrouped(name: String): PlatformServerGroup<S>? {
         val configuration = configuration.getSection(GroupServersSection::class.java)

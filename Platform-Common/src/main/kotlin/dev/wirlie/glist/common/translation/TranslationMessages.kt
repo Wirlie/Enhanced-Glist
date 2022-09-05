@@ -149,6 +149,8 @@ class TranslationMessages {
             @ConfigSerializable
             class FormatSection {
 
+                val playersRows = ""
+
                 val players = ""
 
                 val afkStatus = ""
