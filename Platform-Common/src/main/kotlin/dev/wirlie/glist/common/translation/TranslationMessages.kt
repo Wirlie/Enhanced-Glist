@@ -21,6 +21,7 @@
 package dev.wirlie.glist.common.translation
 
 import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
 import net.kyori.adventure.text.Component
@@ -46,14 +47,14 @@ class TranslationMessages {
 
         var noServersToDisplay: String = ""
 
-        var clickToShowPlayersHoverMessage = ""
-
         var pageController: PageController = PageController()
 
         var serversFormat = ServersFormat()
 
         @ConfigSerializable
         class ServersFormat {
+
+            var clickToShowPlayersHoverMessage = ""
 
             var template: String = ""
 
@@ -83,6 +84,8 @@ class TranslationMessages {
                         }
                     }
 
+                    val slistLabel = platform.configuration.getSection(CommandsSection::class.java).slist.label
+
                     component = component
                         .append(
                             AdventureUtil.parseMiniMessage(
@@ -106,6 +109,18 @@ class TranslationMessages {
                                         )
                                     )
                                 ),
+                            ).hoverEvent(
+                                HoverEvent.showText(
+                                    AdventureUtil.parseMiniMessage(
+                                        clickToShowPlayersHoverMessage,
+                                        TagResolver.resolver(
+                                            "server-name",
+                                            Tag.selfClosingInserting(Component.text(server.name))
+                                        )
+                                    )
+                                )
+                            ).clickEvent(
+                                ClickEvent.runCommand("/$slistLabel ${server.name}")
                             )
                         )
                         .run {

@@ -11,7 +11,6 @@ glist:
     - " <white>TIP:</white> <gray>Use <yellow>/<slist-label> [server]</yellow> to display a list of all players in the specified server."
     - "<dark_gray><strikethrough><bold>----------------------------------</bold></strikethrough></dark_gray>"
   no-servers-to-display: "<prefix> <red>No servers to display."
-  click-to-show-players-hover-message: "<yellow><server-name></yellow><newline><white>Click here to display the<newline>player list of this server."
   page-controller:
     previous-page-hover-message: "<yellow>Click here to go to the<newline>page <white>#<page-number></white>"
     previous-page-hover-message-no-previous-page: "<red>No previous page available."
@@ -37,6 +36,7 @@ glist:
       next-page: " <gold>Use <white><command></white> to go to the next page."
   servers-format:
     template: " <gray>•</gray> <green><server-name></green> <gray>-</gray> <yellow><player-amount></yellow> <bars> <dark_gray>[<gold><percent:'0.00'>%</gold>]"
+    click-to-show-players-hover-message: "<yellow><server-name></yellow><newline><white>Click here to display the<newline>player list of this server."
     bars:
       # When server does not have connected players
       00..00: "<dark_gray>||||||||||||||||||||||||||||||||||||||||||||||||||</dark_gray>"
