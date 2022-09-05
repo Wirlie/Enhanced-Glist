@@ -81,6 +81,9 @@ class PlatformConfiguration(
 
             hoconConfiguration.mergeFrom(newConfig)
 
+            // Set version
+            hoconConfiguration.node("do-not-edit-this", "config-version").set(newConfig.node("do-not-edit-this", "config-version"))
+
             hocon.save(hoconConfiguration)
 
             Files.delete(temporalFile.toPath())
