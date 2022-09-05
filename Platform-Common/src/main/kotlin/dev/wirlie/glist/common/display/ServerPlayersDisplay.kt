@@ -122,7 +122,7 @@ class ServerPlayersDisplay<S>(
                 format.players,
                 TagResolver.resolver(
                     "player-prefix",
-                    Tag.selfClosingInserting(platform.playerManager.getPrefix(executor))
+                    Tag.selfClosingInserting(platform.playerManager.getPrefix(player))
                 ),
                 TagResolver.resolver(
                     "player-name",
