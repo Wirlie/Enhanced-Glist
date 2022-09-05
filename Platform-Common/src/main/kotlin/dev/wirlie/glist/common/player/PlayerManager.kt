@@ -24,10 +24,49 @@ import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.hooks.HookType
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import net.kyori.adventure.text.Component
+import java.util.UUID
 
 class PlayerManager(
     val platform: Platform<*, *, *>
 ) {
+
+    private val knowAFKState = mutableMapOf<UUID, Boolean>()
+    private val knowVanishState = mutableMapOf<UUID, Boolean>()
+
+    fun getAFKState(executor: PlatformExecutor<*>): Boolean? {
+        if(executor.isConsole()) throw IllegalArgumentException("Console executor is not allowed here.")
+        return getAFKState(executor.getUUID())
+    }
+
+    fun getAFKState(uuid: UUID) = knowAFKState[uuid]
+
+    fun setAFKState(executor: PlatformExecutor<*>, state: Boolean) {
+        setAFKState(executor.getUUID(), state)
+    }
+
+    fun setAFKState(uuid: UUID, state: Boolean) {
+        knowAFKState[uuid] = state
+    }
+
+    fun getVanishState(executor: PlatformExecutor<*>): Boolean? {
+        if(executor.isConsole()) throw IllegalArgumentException("Console executor is not allowed here.")
+        return getVanishState(executor.getUUID())
+    }
+
+    fun getVanishState(uuid: UUID) = knowVanishState[uuid]
+
+    fun setVanishState(executor: PlatformExecutor<*>, state: Boolean) {
+        setVanishState(executor.getUUID(), state)
+    }
+
+    fun setVanishState(uuid: UUID, state: Boolean) {
+        knowVanishState[uuid] = state
+    }
+
+    fun handlePlayerDisconnect(uuid: UUID) {
+        knowAFKState.remove(uuid)
+        knowVanishState.remove(uuid)
+    }
 
     fun getPrefix(executor: PlatformExecutor<*>): Component {
         if(executor.isConsole()) {

@@ -20,6 +20,8 @@
 
 package dev.wirlie.glist.bungeecord
 
+import dev.wirlie.glist.bungeecord.listener.PlayerDisconnectListener
+import dev.wirlie.glist.bungeecord.platform.BungeeMessenger
 import dev.wirlie.glist.bungeecord.platform.BungeePlatform
 import dev.wirlie.glist.bungeecord.platform.BungeePlatformCommandManager
 import dev.wirlie.glist.common.Platform
@@ -37,8 +39,14 @@ class EnhancedGlistBungeeCord: Plugin() {
         platform.pluginFolder = dataFolder
         platform.console = adventure.console()
         platform.setup(
-            BungeePlatformCommandManager(platform, ProxyServer.getInstance().pluginManager, this)
+            BungeePlatformCommandManager(platform, ProxyServer.getInstance().pluginManager, this),
+            BungeeMessenger(this, platform)
         )
+
+        val proxy = ProxyServer.getInstance()
+        val pluginManager = proxy.pluginManager
+
+        pluginManager.registerListener(this, PlayerDisconnectListener(platform))
     }
 
     override fun onDisable() {

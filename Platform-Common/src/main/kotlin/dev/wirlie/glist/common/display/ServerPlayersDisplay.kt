@@ -130,11 +130,23 @@ class ServerPlayersDisplay<S>(
                 ),
                 TagResolver.resolver(
                     "afk-status",
-                    Tag.selfClosingInserting(Component.empty()) // TODO
+                    Tag.selfClosingInserting(
+                        if(platform.playerManager.getAFKState(player) == true) {
+                            AdventureUtil.parseMiniMessage(format.afkStatus)
+                        } else {
+                            Component.empty()
+                        }
+                    )
                 ),
                 TagResolver.resolver(
                     "vanish-status",
-                    Tag.selfClosingInserting(Component.empty()) // TODO
+                    Tag.selfClosingInserting(
+                        if(platform.playerManager.getVanishState(player) == true) {
+                            AdventureUtil.parseMiniMessage(format.vanishStatus)
+                        } else {
+                            Component.empty()
+                        }
+                    )
                 )
             )
 

@@ -18,19 +18,14 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.spigot.glist.hooks
+package dev.wirlie.glist.spigot.hooks
 
-import dev.wirlie.spigot.glist.EnhancedGlistSpigot
-import org.bukkit.entity.Player
+import java.util.UUID
 
 interface AbstractHook {
 
-    fun sendStateToBridge(player: Player, type: StateNotificationType, newValue: Boolean)
+    fun computePlayersAfkState(): Map<UUID, Boolean>
 
-    fun sendAllPlayersStateToBridge()
-
-    fun sendPlayerToBridge(player: Player)
-
-    fun registerListeners(bridge: EnhancedGlistSpigot)
+    fun computePlayersVanishState(): Map<UUID, Boolean>
 
 }

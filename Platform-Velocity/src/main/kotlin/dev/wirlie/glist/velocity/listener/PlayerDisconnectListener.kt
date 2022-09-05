@@ -18,23 +18,19 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.spigot.glist
+package dev.wirlie.glist.velocity.listener
 
-import dev.wirlie.spigot.glist.hooks.AbstractHook
-import org.bukkit.event.EventHandler
-import org.bukkit.event.EventPriority
-import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.scheduler.BukkitRunnable
-import java.util.function.Consumer
+import com.velocitypowered.api.event.Subscribe
+import com.velocitypowered.api.event.connection.DisconnectEvent
+import dev.wirlie.glist.velocity.platform.VelocityPlatform
 
-class JoinListener(private val bridge: EnhancedGlistSpigot) : Listener {
-    @EventHandler(priority = EventPriority.MONITOR)
-    fun event(e: PlayerJoinEvent) {
-        object : BukkitRunnable() {
-            override fun run() {
-                bridge.getHooks().forEach(Consumer { h: AbstractHook -> h.sendPlayerToBridge(e.player) })
-            }
-        }.runTask(bridge)
+class PlayerDisconnectListener(
+    val platform: VelocityPlatform
+) {
+
+    @Subscribe
+    fun onPlayerDisconnect(event: DisconnectEvent) {
+        platform.playerManager.handlePlayerDisconnect(event.player.uniqueId)
     }
+
 }

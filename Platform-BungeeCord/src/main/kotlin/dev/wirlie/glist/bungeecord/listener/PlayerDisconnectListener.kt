@@ -18,8 +18,20 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.spigot.glist.hooks
+package dev.wirlie.glist.bungeecord.listener
 
-enum class StateNotificationType {
-    AFK, VANISH
+import dev.wirlie.glist.bungeecord.platform.BungeePlatform
+import net.md_5.bungee.api.event.PlayerDisconnectEvent
+import net.md_5.bungee.api.plugin.Listener
+import net.md_5.bungee.event.EventHandler
+
+class PlayerDisconnectListener(
+    val platform: BungeePlatform
+): Listener {
+
+    @EventHandler
+    fun onPlayerDisconnect(event: PlayerDisconnectEvent) {
+        platform.playerManager.handlePlayerDisconnect(event.player.uniqueId)
+    }
+
 }

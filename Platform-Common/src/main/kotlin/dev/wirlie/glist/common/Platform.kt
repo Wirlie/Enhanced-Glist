@@ -20,11 +20,13 @@
 
 package dev.wirlie.glist.common
 
+import com.google.gson.GsonBuilder
 import dev.wirlie.glist.common.configuration.PlatformConfiguration
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.configuration.sections.GroupServersSection
 import dev.wirlie.glist.common.extensions.miniMessage
 import dev.wirlie.glist.common.hooks.HookManager
+import dev.wirlie.glist.common.messenger.NetworkMessenger
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 import dev.wirlie.glist.common.platform.PlatformServerGroup
@@ -43,6 +45,9 @@ abstract class Platform<S, P, C> {
     lateinit var platformCommandManager: PlatformCommandManager<S>
     lateinit var hookManager: HookManager
     lateinit var playerManager: PlayerManager
+    lateinit var messenger: NetworkMessenger<S>
+
+    val gsonInstance = GsonBuilder().create()
 
     var console: Audience = Audience.empty()
         set(value) {
@@ -53,8 +58,10 @@ abstract class Platform<S, P, C> {
     val configuration = PlatformConfiguration(this)
 
     fun setup(
-        commandManager: PlatformCommandManager<S>
+        commandManager: PlatformCommandManager<S>,
+        networkMessenger: NetworkMessenger<S>
     ) {
+        messenger = networkMessenger
         configuration.setup()
         pluginPrefix = configuration.getSection(GeneralSection::class.java).prefix.miniMessage()
         translatorManager = TranslatorManager(this)
@@ -65,6 +72,8 @@ abstract class Platform<S, P, C> {
         hookManager = HookManager(this)
         registerHooks()
         playerManager = PlayerManager(this)
+        networkMessenger.register()
+        networkMessenger.registerListeners()
     }
 
     fun disable() {

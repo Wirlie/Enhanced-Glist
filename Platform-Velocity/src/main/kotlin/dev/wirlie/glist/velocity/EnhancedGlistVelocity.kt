@@ -29,13 +29,10 @@ import com.velocitypowered.api.plugin.Dependency
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
-import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.configuration.sections.CommandsSection
-import dev.wirlie.glist.common.configuration.sections.DoNotEditSection
-import dev.wirlie.glist.common.configuration.sections.GroupServersSection
+import dev.wirlie.glist.velocity.listener.PlayerDisconnectListener
+import dev.wirlie.glist.velocity.platform.VelocityMessenger
 import dev.wirlie.glist.velocity.platform.VelocityPlatform
 import dev.wirlie.glist.velocity.platform.VelocityPlatformCommandManager
-import net.kyori.adventure.text.Component
 import java.nio.file.Path
 
 @Plugin(
@@ -54,7 +51,7 @@ class EnhancedGlistVelocity {
     lateinit var pluginDirectory: Path
 
     @Inject
-    lateinit var server: ProxyServer
+    lateinit var proxyServer: ProxyServer
 
     @Inject
     lateinit var commandManager: CommandManager
@@ -63,10 +60,15 @@ class EnhancedGlistVelocity {
 
     @Subscribe
     fun onProxyInitialization(event: ProxyInitializeEvent) {
-        platform = VelocityPlatform(server)
+        platform = VelocityPlatform(proxyServer)
         platform.pluginFolder = pluginDirectory.toFile()
-        platform.console = server.consoleCommandSource
-        platform.setup(VelocityPlatformCommandManager(platform, commandManager))
+        platform.console = proxyServer.consoleCommandSource
+        platform.setup(
+            VelocityPlatformCommandManager(platform, commandManager),
+            VelocityMessenger(this, platform)
+        )
+
+        proxyServer.eventManager.register(this, PlayerDisconnectListener(platform))
     }
 
     @Subscribe

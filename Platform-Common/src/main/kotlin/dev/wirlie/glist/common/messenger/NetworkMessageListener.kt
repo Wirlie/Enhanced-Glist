@@ -18,31 +18,16 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.common.hooks
+package dev.wirlie.glist.common.messenger
 
-import dev.wirlie.glist.common.Platform
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
+import dev.wirlie.glist.common.platform.PlatformExecutor
+import dev.wirlie.glist.common.platform.PlatformServer
 
-class HookManager(
-    val platform: Platform<*, *, *>
+abstract class NetworkMessageListener<S>(
+    val channel: String,
+    val subject: String
 ) {
 
-    private val enabledHooks = mutableSetOf<HookType>()
-
-    private var luckPermsHook: LuckPermsHook? = null
-
-    fun enableLuckPermsHook() {
-        if(enabledHooks.add(HookType.LUCKPERMS)) {
-            platform.logger.info(Component.text("[HOOK] ", NamedTextColor.GREEN).append(Component.text("LuckPerms found.", NamedTextColor.WHITE)))
-            luckPermsHook = LuckPermsHook()
-        }
-    }
-
-    fun getLuckPermsHook() = luckPermsHook
-
-    fun isHookEnabled(type: HookType): Boolean {
-        return enabledHooks.contains(type)
-    }
+    abstract fun onObjectReceive(dataObject: String, fromPlayer: PlatformExecutor<S>, fromServer: PlatformServer<S>)
 
 }
