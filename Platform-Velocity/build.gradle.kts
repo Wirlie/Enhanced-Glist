@@ -23,6 +23,7 @@ dependencies {
 
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
+    implementation("org.spongepowered:configurate-hocon:4.1.2")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
