@@ -142,7 +142,7 @@ class ServerPlayersDisplay<S>(
             val width = TextWidthUtil.estimateWidth(onlyString, TextWidthUtil.VERSION_113)
 
             if(columnIndex == 0 && width > TextWidthUtil.lineMaxWidth) {
-                // String is longer than row width
+                // String is longer than width of row
                 component = component.append(
                     AdventureUtil.parseMiniMessage(
                         format.playersRows,
