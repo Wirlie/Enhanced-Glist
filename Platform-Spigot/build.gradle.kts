@@ -24,4 +24,6 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("org.yaml.snakeyaml", "dev.wirlie.shaded.org.yaml.snakeyaml")
     relocate("io.leangen.geantyref", "dev.wirlie.shaded.io.leangen.geantyref")
     relocate("kotlin", "dev.wirlie.shaded.kotlin")
+    relocate("com.github.benmanes.caffeine", "dev.wirlie.shaded.com.github.benmanes.caffeine")
+    relocate("net.kyori", "dev.wirlie.shaded.net.kyori")
 }
