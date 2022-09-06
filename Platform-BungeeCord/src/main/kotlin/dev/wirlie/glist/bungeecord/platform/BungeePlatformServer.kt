@@ -20,11 +20,13 @@
 
 package dev.wirlie.glist.bungeecord.platform
 
+import dev.wirlie.glist.common.configuration.sections.BehaviorSection
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 import net.md_5.bungee.api.config.ServerInfo
 
 class BungeePlatformServer(
+    val platform: BungeePlatform,
     server: ServerInfo
 ): PlatformServer<ServerInfo>(
     server
@@ -34,8 +36,18 @@ class BungeePlatformServer(
         return server.name
     }
 
-    override fun getPlayers(): List<PlatformExecutor<ServerInfo>> {
-        return server.players.map { BungeePlayerPlatformExecutor(it) }
+    override fun getPlayers(onlyReachableBy: PlatformExecutor<ServerInfo>?): List<PlatformExecutor<ServerInfo>> {
+        return if (onlyReachableBy == null || onlyReachableBy.isConsole() /* Console always have permission */) {
+            server.players.map { BungeePlayerPlatformExecutor(platform, it) }
+        } else {
+            // Hide vanished players if executor does not have permission
+            val vanishByPassPermission = platform.configuration.getSection(BehaviorSection::class.java).vanish.hideBypassPermission
+            val canSeeVanished = onlyReachableBy.hasPermission(vanishByPassPermission)
+
+            server.players
+                .filter { canSeeVanished || !platform.playerManager.hasVanishState(it.uniqueId) }
+                .map { BungeePlayerPlatformExecutor(platform, it) }
+        }
     }
 
 }

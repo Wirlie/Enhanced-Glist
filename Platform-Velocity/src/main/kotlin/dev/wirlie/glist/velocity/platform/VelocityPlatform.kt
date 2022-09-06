@@ -33,11 +33,11 @@ class VelocityPlatform(
 ): Platform<RegisteredServer, Player, ConsoleCommandSource>() {
 
     override fun toPlatformServer(server: RegisteredServer): PlatformServer<RegisteredServer> {
-        return VelocityPlatformServer(server)
+        return VelocityPlatformServer(this, server)
     }
 
     override fun toPlatformExecutorPlayer(executor: Player): PlatformExecutor<RegisteredServer> {
-        return VelocityPlayerPlatformExecutor(executor)
+        return VelocityPlayerPlatformExecutor(this, executor)
     }
 
     override fun toPlatformExecutorConsole(executor: ConsoleCommandSource): PlatformExecutor<RegisteredServer> {
@@ -45,11 +45,11 @@ class VelocityPlatform(
     }
 
     override fun getAllServers(): List<PlatformServer<RegisteredServer>> {
-        return server.allServers.map { VelocityPlatformServer(it) }
+        return server.allServers.map { VelocityPlatformServer(this, it) }
     }
 
     override fun getServerByName(name: String): PlatformServer<RegisteredServer>? {
-        return server.getServer(name).orElse(null)?.run { VelocityPlatformServer(this) }
+        return server.getServer(name).orElse(null)?.run { VelocityPlatformServer(this@VelocityPlatform, this) }
     }
 
     override fun getConnectedPlayersAmount(): Int {

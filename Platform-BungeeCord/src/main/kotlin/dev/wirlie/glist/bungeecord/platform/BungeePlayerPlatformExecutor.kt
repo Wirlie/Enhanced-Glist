@@ -29,6 +29,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 import java.util.*
 
 class BungeePlayerPlatformExecutor(
+    val platform: BungeePlatform,
     val player: ProxiedPlayer
 ): PlatformExecutor<ServerInfo>() {
 
@@ -58,7 +59,7 @@ class BungeePlayerPlatformExecutor(
 
     override fun getConnectedServer(): PlatformServer<ServerInfo>? {
         val server = player.server ?: return null
-        return BungeePlatformServer(server.info)
+        return BungeePlatformServer(platform, server.info)
     }
 
 }

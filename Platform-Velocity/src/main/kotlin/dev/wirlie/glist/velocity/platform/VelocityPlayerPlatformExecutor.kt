@@ -28,6 +28,7 @@ import net.kyori.adventure.audience.Audience
 import java.util.*
 
 class VelocityPlayerPlatformExecutor(
+    val platform: VelocityPlatform,
     private val executor: Player
 ): PlatformExecutor<RegisteredServer>() {
 
@@ -57,7 +58,7 @@ class VelocityPlayerPlatformExecutor(
 
     override fun getConnectedServer(): PlatformServer<RegisteredServer>? {
         val server = executor.currentServer.orElse(null) ?: return null
-        return VelocityPlatformServer(server.server)
+        return VelocityPlatformServer(platform, server.server)
     }
 
 }

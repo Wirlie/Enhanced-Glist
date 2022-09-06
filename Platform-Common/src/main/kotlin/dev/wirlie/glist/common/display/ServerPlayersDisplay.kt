@@ -47,7 +47,7 @@ class ServerPlayersDisplay<S>(
 ): PageDisplay<PlatformExecutor<S>>(
     audience,
     playersPerPage,
-    serverGroup.getPlayers().toMutableList()
+    serverGroup.getPlayers(executor).toMutableList()
 ) {
 
     override fun buildPageDisplay(page: Page<PlatformExecutor<S>>) {

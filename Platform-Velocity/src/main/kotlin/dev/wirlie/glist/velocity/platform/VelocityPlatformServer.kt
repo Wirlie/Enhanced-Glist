@@ -21,10 +21,12 @@
 package dev.wirlie.glist.velocity.platform
 
 import com.velocitypowered.api.proxy.server.RegisteredServer
+import dev.wirlie.glist.common.configuration.sections.BehaviorSection
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 
 class VelocityPlatformServer(
+    val platform: VelocityPlatform,
     server: RegisteredServer
 ): PlatformServer<RegisteredServer>(
     server
@@ -34,8 +36,18 @@ class VelocityPlatformServer(
         return server.serverInfo.name
     }
 
-    override fun getPlayers(): List<PlatformExecutor<RegisteredServer>> {
-        return server.playersConnected.map { VelocityPlayerPlatformExecutor(it) }
+    override fun getPlayers(onlyReachableBy: PlatformExecutor<RegisteredServer>?): List<PlatformExecutor<RegisteredServer>> {
+        return if (onlyReachableBy == null || onlyReachableBy.isConsole() /* Console always have permission */) {
+            server.playersConnected.map { VelocityPlayerPlatformExecutor(platform, it) }
+        } else {
+            // Hide vanished players if executor does not have permission
+            val vanishByPassPermission = platform.configuration.getSection(BehaviorSection::class.java).vanish.hideBypassPermission
+            val canSeeVanished = onlyReachableBy.hasPermission(vanishByPassPermission)
+
+            server.playersConnected
+                .filter { canSeeVanished || !platform.playerManager.hasVanishState(it.uniqueId) }
+                .map { VelocityPlayerPlatformExecutor(platform, it) }
+        }
     }
 
 }

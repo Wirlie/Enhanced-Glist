@@ -31,11 +31,11 @@ import net.md_5.bungee.command.ConsoleCommandSender
 class BungeePlatform: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>() {
 
     override fun toPlatformServer(server: ServerInfo): PlatformServer<ServerInfo> {
-        return BungeePlatformServer(server)
+        return BungeePlatformServer(this, server)
     }
 
     override fun toPlatformExecutorPlayer(executor: ProxiedPlayer): PlatformExecutor<ServerInfo> {
-        return BungeePlayerPlatformExecutor(executor)
+        return BungeePlayerPlatformExecutor(this, executor)
     }
 
     override fun toPlatformExecutorConsole(executor: ConsoleCommandSender): PlatformExecutor<ServerInfo> {
@@ -43,11 +43,11 @@ class BungeePlatform: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>(
     }
 
     override fun getAllServers(): List<PlatformServer<ServerInfo>> {
-        return ProxyServer.getInstance().servers.values.map { BungeePlatformServer(it) }
+        return ProxyServer.getInstance().servers.values.map { BungeePlatformServer(this, it) }
     }
 
     override fun getServerByName(name: String): PlatformServer<ServerInfo>? {
-        return ProxyServer.getInstance().getServerInfo(name)?.run { BungeePlatformServer(this) }
+        return ProxyServer.getInstance().getServerInfo(name)?.run { BungeePlatformServer(this@BungeePlatform, this) }
     }
 
     override fun getConnectedPlayersAmount(): Int {

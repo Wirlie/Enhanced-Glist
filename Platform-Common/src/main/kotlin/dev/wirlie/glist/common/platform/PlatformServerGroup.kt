@@ -30,6 +30,10 @@ class PlatformServerGroup<S>(
 
     fun getServers() = servers.toList()
 
-    fun getPlayers(): List<PlatformExecutor<S>> = servers.flatMap { it.getPlayers() }
+    fun getPlayers(
+        onlyReachableBy: PlatformExecutor<S>? = null
+    ): List<PlatformExecutor<S>> {
+        return servers.flatMap { it.getPlayers(onlyReachableBy) }
+    }
 
 }

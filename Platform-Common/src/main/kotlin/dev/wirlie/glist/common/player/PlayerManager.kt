@@ -55,6 +55,8 @@ class PlayerManager(
 
     fun getVanishState(uuid: UUID) = knowVanishState[uuid]
 
+    fun hasVanishState(uuid: UUID) = getVanishState(uuid) ?: false
+
     fun setVanishState(executor: PlatformExecutor<*>, state: Boolean) {
         setVanishState(executor.getUUID(), state)
     }

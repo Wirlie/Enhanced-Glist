@@ -99,7 +99,7 @@ class SlistCommand<S>(
             return
         }
 
-        if(server.getPlayers().isEmpty()) {
+        if(server.getPlayers(executor).isEmpty()) {
             // No players in server
             audience.sendMessage(
                 AdventureUtil.parseMiniMessage(

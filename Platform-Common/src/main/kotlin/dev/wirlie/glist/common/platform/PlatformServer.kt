@@ -26,7 +26,7 @@ abstract class PlatformServer<S>(
 
     abstract fun getName(): String
 
-    abstract fun getPlayers(): List<PlatformExecutor<S>>
+    abstract fun getPlayers(onlyReachableBy: PlatformExecutor<S>? = null): List<PlatformExecutor<S>>
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

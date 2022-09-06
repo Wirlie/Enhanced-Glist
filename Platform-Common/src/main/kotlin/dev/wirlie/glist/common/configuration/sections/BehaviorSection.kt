@@ -38,7 +38,7 @@ class BehaviorSection {
 
         var hideVanishedUsers = true
 
-        var hideBypassPermission = true
+        var hideBypassPermission = ""
 
         var prefix: String = "<dark_gray>[<aqua>V</aqua>]</dark_gray>"
 
