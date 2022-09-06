@@ -29,7 +29,7 @@ class IntRangeSerializer: TypeSerializer<IntRange> {
 
     override fun deserialize(type: Type, node: ConfigurationNode): IntRange {
         val value = node.string!!
-        val parts = value.split("..")
+        val parts = value.split("_")
 
         if(parts.size != 2) {
             throw SerializationException("Cannot deserialize IntRange from string '$value'")
@@ -49,7 +49,7 @@ class IntRangeSerializer: TypeSerializer<IntRange> {
         if(obj == null) {
             node.set(null)
         } else {
-            node.set("${obj.first}..${obj.last}")
+            node.set("${obj.first}_${obj.last}")
         }
     }
 

@@ -21,6 +21,7 @@
 package dev.wirlie.glist.common.configuration
 
 import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.util.ConfigurateUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import org.spongepowered.configurate.ConfigurationNode
@@ -33,8 +34,8 @@ class PlatformConfiguration(
 ) {
 
     private lateinit var configurationFile: File
-    private lateinit var hocon: HoconConfigurationLoader
-    private lateinit var hoconConfiguration: ConfigurationNode
+    private lateinit var configuration: ConfigurationNode
+    private lateinit var configurationLoader: HoconConfigurationLoader
 
     fun setup() {
         platform.logger.info(Component.text("Loading configuration..."))
@@ -57,7 +58,7 @@ class PlatformConfiguration(
         Files.copy(this::class.java.getResourceAsStream("/config.conf")!!, configurationFile.toPath())
     }
 
-    fun applyUpdates() {
+    private fun applyUpdates() {
         val temporalFile = File(platform.pluginFolder, "config-temp.conf")
         if(temporalFile.exists()) {
             Files.delete(temporalFile.toPath())
@@ -72,39 +73,41 @@ class PlatformConfiguration(
             .build()
             .load()
 
-        if(newConfig.node("do-not-edit-this", "config-version").getInt(1) != hoconConfiguration.node("do-not-edit-this", "config-version").getInt(0)) {
+        if(newConfig.node("do-not-edit-this", "config-version").getInt(1) != configuration.node("do-not-edit-this", "config-version").getInt(0)) {
             platform.logger.info(Component.text("Updating configuration...", NamedTextColor.YELLOW))
 
-            // Remove dynamic nodes
-            newConfig.node("group-servers", "lobby").set(null)
-            newConfig.node("group-servers", "bedwars").set(null)
+            // Remove dynamic nodes, only if exists
+            ConfigurateUtil.setIfMissingConfigMap(newConfig, configuration, "group-servers")
 
-            hoconConfiguration.mergeFrom(newConfig)
+            configuration.mergeFrom(newConfig)
 
             // Set version
-            hoconConfiguration.node("do-not-edit-this", "config-version").set(newConfig.node("do-not-edit-this", "config-version"))
+            configuration.node("do-not-edit-this", "config-version").set(newConfig.node("do-not-edit-this", "config-version"))
 
-            hocon.save(hoconConfiguration)
+            configurationLoader.save(configuration)
 
             Files.delete(temporalFile.toPath())
             platform.logger.info(Component.text("Configuration updated.", NamedTextColor.GREEN))
+        } else {
+            // Delete temporal file, no longer needed.
+            Files.delete(temporalFile.toPath())
         }
     }
 
     fun load() {
-        hocon = HoconConfigurationLoader.builder()
+        configurationLoader = HoconConfigurationLoader.builder()
             .emitComments(true)
             .prettyPrinting(true)
             .path(configurationFile.toPath())
             .build()
 
-        hoconConfiguration = hocon.load()
+        configuration = configurationLoader.load()
         platform.logger.info(Component.text("Configuration loaded."))
     }
 
     fun save() {
-        hoconConfiguration
-        hocon.save(hoconConfiguration)
+        configuration
+        configurationLoader.save(configuration)
     }
 
     fun <T> getSection(clazz: Class<T>): T {
@@ -113,17 +116,17 @@ class PlatformConfiguration(
 
         val rootPath = rootAnnotation.path
 
-        if(!hoconConfiguration.hasChild(rootPath)) {
+        if(!configuration.hasChild(rootPath)) {
             throw IllegalStateException("Cannot resolve root node '${rootPath}', configuration modified or corrupted?")
         }
 
         return if(ConfigHandler::class.java.isAssignableFrom(clazz)) {
             val instance = clazz.getDeclaredConstructor().newInstance()
-            (instance as ConfigHandler).handle(hoconConfiguration.node(rootPath))
+            (instance as ConfigHandler).handle(configuration.node(rootPath))
             instance
         } else {
             // If configurate cannot get ConfigurationNode, use a new instance instead to work with default values
-            hoconConfiguration.node(rootPath).get(clazz) ?: clazz.getDeclaredConstructor().newInstance()
+            configuration.node(rootPath).get(clazz) ?: clazz.getDeclaredConstructor().newInstance()
         }
     }
 
@@ -133,7 +136,7 @@ class PlatformConfiguration(
 
         val rootPath = rootAnnotation.path
 
-        hoconConfiguration.node(rootPath).set(section)
+        configuration.node(rootPath).set(section)
     }
 
 }

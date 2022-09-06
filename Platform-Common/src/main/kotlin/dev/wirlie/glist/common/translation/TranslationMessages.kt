@@ -36,9 +36,18 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 @ConfigSerializable
 class TranslationMessages {
 
+    var doNotEditThis: DoNotEditShitSection = DoNotEditShitSection()
+
     var glist: GlistMessages = GlistMessages()
 
     var slist: SlistMessages = SlistMessages()
+
+    @ConfigSerializable
+    class DoNotEditShitSection {
+
+        var configVersion: Int = -1
+
+    }
 
     @ConfigSerializable
     class GlistMessages {
