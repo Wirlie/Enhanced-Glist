@@ -79,7 +79,7 @@ class Translator(
 
         if(input == null) {
             // Fallback to english...
-            platform.logger.warning(Component.text("Unknown language code '$code'.", NamedTextColor.YELLOW))
+            platform.logger.warning(Component.text("Unknown language code '$code' (/messages/$fileName).", NamedTextColor.YELLOW))
             platform.logger.warning(Component.text("New file generated '$code.conf', you can edit this file and make your own translation.", NamedTextColor.YELLOW))
             platform.logger.warning(Component.text("If this is not intentional, please read the documentation to view the list of supported languages.", NamedTextColor.YELLOW))
             input = this::class.java.getResourceAsStream("/messages/en.conf")!!
@@ -95,7 +95,13 @@ class Translator(
             Files.delete(temporalFile.toPath())
         }
 
-        val input = this::class.java.getResourceAsStream("/messages/$fileName")!!
+        var input = this::class.java.getResourceAsStream("/messages/$fileName")
+
+        if(input == null) {
+            // Fallback to english
+            input = this::class.java.getResourceAsStream("/messages/en.conf")!!
+        }
+
         Files.copy(input, temporalFile.toPath())
 
         val newConfig = HoconConfigurationLoader.builder()
