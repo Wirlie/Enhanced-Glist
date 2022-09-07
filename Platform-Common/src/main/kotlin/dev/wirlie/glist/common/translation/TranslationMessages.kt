@@ -101,7 +101,7 @@ class TranslationMessages {
                                 template,
                                 TagResolver.resolver(
                                     "server-name",
-                                    Tag.selfClosingInserting(Component.text(server.name))
+                                    Tag.selfClosingInserting(Component.text(server.getName()))
                                 ),
                                 TagResolver.resolver(
                                     "player-amount",
@@ -124,12 +124,12 @@ class TranslationMessages {
                                         clickToShowPlayersHoverMessage,
                                         TagResolver.resolver(
                                             "server-name",
-                                            Tag.selfClosingInserting(Component.text(server.name))
+                                            Tag.selfClosingInserting(Component.text(server.getName()))
                                         )
                                     )
                                 )
                             ).clickEvent(
-                                ClickEvent.runCommand("/$slistLabel ${server.name}")
+                                ClickEvent.runCommand("/$slistLabel ${server.getName()}")
                             )
                         )
                         .run {

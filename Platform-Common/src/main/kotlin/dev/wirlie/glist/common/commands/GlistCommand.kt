@@ -87,7 +87,7 @@ class GlistCommand<S>(
             executor,
             executor.asAudience(),
             platform.configuration.getSection(GeneralSection::class.java).serversPerPage,
-            platform.getAllServersGrouped(executor).sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayers().size }.thenBy { it.name }).toMutableList()
+            platform.getAllServersGrouped(executor).sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayers().size }.thenBy { it.getName() }).toMutableList()
         )
 
         cache.put(key, newDisplay)

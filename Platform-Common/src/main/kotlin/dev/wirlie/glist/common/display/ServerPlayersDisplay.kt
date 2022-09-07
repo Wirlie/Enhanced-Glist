@@ -66,10 +66,10 @@ class ServerPlayersDisplay<S>(
         val mainMessage = AdventureUtil.parseMiniMessage(
             AdventureUtil.groupListToString(messageToUse),
             TagResolver.resolver(
-                "group-name", Tag.selfClosingInserting(Component.text(serverGroup.name))
+                "group-name", Tag.selfClosingInserting(Component.text(serverGroup.getName()))
             ),
             TagResolver.resolver(
-                "server-name", Tag.selfClosingInserting(Component.text(serverGroup.name))
+                "server-name", Tag.selfClosingInserting(Component.text(serverGroup.getName()))
             ),
             TagResolver.resolver(
                 "server-count", Tag.selfClosingInserting(Component.text("${serverGroup.getServers().size}"))
