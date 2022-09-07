@@ -20,7 +20,9 @@
 
 package dev.wirlie.glist.bungeecord.platform
 
+import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configuration.sections.BehaviorSection
+import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 import net.md_5.bungee.api.config.ServerInfo
@@ -33,16 +35,27 @@ class BungeePlatformServer(
 ) {
 
     override fun getName(): String {
-        return server.name
+        val upperCase = platform.configuration.getSection(GeneralSection::class.java).displayServerNameUppercase
+        return if (upperCase) {
+            server.name.uppercase()
+        } else {
+            server.name
+        }
     }
 
     override fun getPlayers(onlyReachableBy: PlatformExecutor<ServerInfo>?): List<PlatformExecutor<ServerInfo>> {
-        return if (onlyReachableBy == null || onlyReachableBy.isConsole() /* Console always have permission */) {
+        val configuration = platform.configuration.getSection(BehaviorSection::class.java)
+
+        return if (
+            !configuration.vanish.enable /* Vanish is not enabled */ ||
+            onlyReachableBy == null ||
+            onlyReachableBy.isConsole() /* Console always have permission */
+        ) {
             server.players.map { BungeePlayerPlatformExecutor(platform, it) }
         } else {
             // Hide vanished players if executor does not have permission
-            val vanishByPassPermission = platform.configuration.getSection(BehaviorSection::class.java).vanish.hideBypassPermission
-            val canSeeVanished = onlyReachableBy.hasPermission(vanishByPassPermission)
+            val vanishBypassPermission = configuration.vanish.hideBypassPermission
+            val canSeeVanished = !configuration.vanish.hideVanishedUsers || onlyReachableBy.hasPermission(vanishBypassPermission)
 
             server.players
                 .filter { canSeeVanished || !platform.playerManager.hasVanishState(it.uniqueId) }

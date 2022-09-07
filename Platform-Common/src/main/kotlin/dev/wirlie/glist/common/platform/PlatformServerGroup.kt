@@ -20,11 +20,24 @@
 
 package dev.wirlie.glist.common.platform
 
+import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.configuration.sections.GeneralSection
+
 class PlatformServerGroup<S>(
-    val name: String,
+    private val originalName: String,
     private val servers: List<PlatformServer<S>>,
     val byConfiguration: Boolean = true
 ) {
+
+    fun getName(): String {
+        val upperCase = Platform.unsafeInstance.configuration.getSection(GeneralSection::class.java).displayServerNameUppercase
+
+        return if(upperCase) {
+            originalName.uppercase()
+        } else {
+            originalName
+        }
+    }
 
     fun getServersCount() = servers.size
 
@@ -34,6 +47,12 @@ class PlatformServerGroup<S>(
         onlyReachableBy: PlatformExecutor<S>? = null
     ): List<PlatformExecutor<S>> {
         return servers.flatMap { it.getPlayers(onlyReachableBy) }
+    }
+
+    fun getPlayersCount(
+        onlyReachableBy: PlatformExecutor<S>? = null
+    ): Int {
+        return servers.sumOf { it.getPlayers(onlyReachableBy).size }
     }
 
 }

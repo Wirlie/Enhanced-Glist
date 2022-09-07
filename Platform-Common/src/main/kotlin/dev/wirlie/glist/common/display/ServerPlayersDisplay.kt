@@ -21,6 +21,7 @@
 package dev.wirlie.glist.common.display
 
 import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.configuration.sections.BehaviorSection
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.pageable.Page
@@ -120,6 +121,7 @@ class ServerPlayersDisplay<S>(
     ): Component {
 
         val columnsPerRow = platform.configuration.getSection(GeneralSection::class.java).playersPerRow
+        val behaviorConfiguration = platform.configuration.getSection(BehaviorSection::class.java)
         val columnWidth = TextWidthUtil.lineMaxWidth / columnsPerRow
         var component = Component.empty()
         var rowComponent = Component.empty()
@@ -140,7 +142,7 @@ class ServerPlayersDisplay<S>(
                 TagResolver.resolver(
                     "afk-status",
                     Tag.selfClosingInserting(
-                        if(platform.playerManager.getAFKState(player) == true) {
+                        if(behaviorConfiguration.afk.enable && platform.playerManager.getAFKState(player) == true) {
                             AdventureUtil.parseMiniMessage(format.afkStatus)
                         } else {
                             Component.empty()
@@ -150,7 +152,7 @@ class ServerPlayersDisplay<S>(
                 TagResolver.resolver(
                     "vanish-status",
                     Tag.selfClosingInserting(
-                        if(platform.playerManager.getVanishState(player) == true) {
+                        if(behaviorConfiguration.vanish.enable && platform.playerManager.getVanishState(player) == true) {
                             AdventureUtil.parseMiniMessage(format.vanishStatus)
                         } else {
                             Component.empty()

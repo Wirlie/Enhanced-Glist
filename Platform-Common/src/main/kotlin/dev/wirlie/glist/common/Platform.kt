@@ -62,6 +62,7 @@ abstract class Platform<S, P, C> {
         commandManager: PlatformCommandManager<S>,
         networkMessenger: NetworkMessenger<S>
     ) {
+        unsafeInstance = this
         messenger = networkMessenger
         configuration.setup()
         pluginPrefix = configuration.getSection(GeneralSection::class.java).prefix.miniMessage()
@@ -127,14 +128,16 @@ abstract class Platform<S, P, C> {
         return PlatformServerGroup(groupConfiguration.serverName, servers)
     }
 
-    fun getAllServersGrouped(): List<PlatformServerGroup<S>> {
-        val ignoreServers = configuration.getSection(IgnoreServersSection::class.java)
-        val configuration = configuration.getSection(GroupServersSection::class.java)
+    fun getAllServersGrouped(
+        executor: PlatformExecutor<S>
+    ): List<PlatformServerGroup<S>> {
+        val ignoreServersConfiguration = configuration.getSection(IgnoreServersSection::class.java)
+        val groupsConfiguration = configuration.getSection(GroupServersSection::class.java)
         val allServers = getAllServers()
         val groups = mutableListOf<PlatformServerGroup<S>>()
 
-        for(serverConfig in configuration.servers) {
-            val matchedServers = resolveServerGroupByConfiguration(serverConfig, allServers, ignoreServers)
+        for(serverConfig in groupsConfiguration.servers) {
+            val matchedServers = resolveServerGroupByConfiguration(serverConfig, allServers, ignoreServersConfiguration)
 
             if(matchedServers.isNotEmpty()) {
                 groups.add(PlatformServerGroup(serverConfig.serverName, matchedServers))
@@ -143,12 +146,25 @@ abstract class Platform<S, P, C> {
 
         // Make groups for servers without group
         allServers.filter { s -> groups.none { g -> g.getServers().contains(s) } }.forEach {
-            if (!ignoreServers.shouldIgnore(it.getName())) {
+            if (!ignoreServersConfiguration.shouldIgnore(it.getName())) {
                 groups.add(PlatformServerGroup(it.getName(), listOf(it), byConfiguration = false))
             }
         }
 
-        return groups
+        return groups.run {
+            // Hide empty servers, if enabled.
+            val generalConfiguration = configuration.getSection(GeneralSection::class.java)
+
+            if(generalConfiguration.hideEmptyServers) {
+                var minPlayers = generalConfiguration.minPlayersRequiredToDisplayServer
+                if(minPlayers < 0) {
+                    minPlayers = 0
+                }
+                this.filter { it.getPlayersCount(executor) <= minPlayers }
+            } else {
+                this
+            }
+        }
     }
 
     private fun resolveServerGroupByConfiguration(
@@ -182,6 +198,8 @@ abstract class Platform<S, P, C> {
     companion object {
 
         var pluginPrefix: Component = Component.empty()
+
+        lateinit var unsafeInstance: Platform<*,*,*>
 
     }
 

@@ -22,6 +22,7 @@ package dev.wirlie.glist.velocity.platform
 
 import com.velocitypowered.api.proxy.server.RegisteredServer
 import dev.wirlie.glist.common.configuration.sections.BehaviorSection
+import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 
@@ -33,7 +34,12 @@ class VelocityPlatformServer(
 ) {
 
     override fun getName(): String {
-        return server.serverInfo.name
+        val upperCase = platform.configuration.getSection(GeneralSection::class.java).displayServerNameUppercase
+        return if (upperCase) {
+            server.serverInfo.name.uppercase()
+        } else {
+            server.serverInfo.name
+        }
     }
 
     override fun getPlayers(onlyReachableBy: PlatformExecutor<RegisteredServer>?): List<PlatformExecutor<RegisteredServer>> {

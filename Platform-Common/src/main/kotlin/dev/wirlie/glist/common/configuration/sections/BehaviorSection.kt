@@ -40,16 +40,12 @@ class BehaviorSection {
 
         var hideBypassPermission = ""
 
-        var prefix: String = "<dark_gray>[<aqua>V</aqua>]</dark_gray>"
-
     }
 
     @ConfigSerializable
     class AfkSection {
 
         var enable = true
-
-        var prefix = "<dark_gray>[<yellow>AFK</yellow>]</dark_gray>"
     }
 
 }
