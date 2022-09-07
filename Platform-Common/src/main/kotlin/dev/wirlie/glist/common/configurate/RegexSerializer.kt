@@ -18,29 +18,25 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.common.configuration.sections
+package dev.wirlie.glist.common.configurate
 
-import dev.wirlie.glist.common.configuration.ConfigRootPath
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
+import org.spongepowered.configurate.ConfigurationNode
+import org.spongepowered.configurate.serialize.TypeSerializer
+import java.lang.reflect.Type
 
-@ConfigSerializable
-@ConfigRootPath("ignore-servers")
-class IgnoreServersSection {
+class RegexSerializer: TypeSerializer<Regex> {
 
-    var byName: MutableList<String> = mutableListOf()
+    override fun deserialize(type: Type, node: ConfigurationNode): Regex {
+        val value = node.string!!
+        return Regex(value)
+    }
 
-    var byPattern: MutableList<Regex> = mutableListOf()
-
-    fun shouldIgnore(serverName: String): Boolean {
-        if(byName.contains(serverName)) return true
-
-        for(pattern in byPattern) {
-            if(pattern.matches(serverName)) {
-                return true
-            }
+    override fun serialize(type: Type, obj: Regex?, node: ConfigurationNode) {
+        if(obj == null) {
+            node.set(null)
+        } else {
+            node.set(obj.pattern)
         }
-
-        return false
     }
 
 }

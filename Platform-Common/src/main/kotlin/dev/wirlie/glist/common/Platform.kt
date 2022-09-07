@@ -24,6 +24,7 @@ import com.google.gson.GsonBuilder
 import dev.wirlie.glist.common.configuration.PlatformConfiguration
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.configuration.sections.GroupServersSection
+import dev.wirlie.glist.common.configuration.sections.IgnoreServersSection
 import dev.wirlie.glist.common.extensions.miniMessage
 import dev.wirlie.glist.common.hooks.HookManager
 import dev.wirlie.glist.common.messenger.NetworkMessenger
@@ -99,6 +100,7 @@ abstract class Platform<S, P, C> {
     abstract fun registerHooks()
 
     fun getServerGrouped(name: String): PlatformServerGroup<S>? {
+        val ignoreServers = configuration.getSection(IgnoreServersSection::class.java)
         val configuration = configuration.getSection(GroupServersSection::class.java)
 
         val groupConfiguration = configuration.servers.firstOrNull { it.serverName.equals(name, true) }
@@ -106,11 +108,17 @@ abstract class Platform<S, P, C> {
         @Suppress("FoldInitializerAndIfToElvis")
         if(groupConfiguration == null) {
             // No group, try to return a server directly
-            return getServerByName(name)?.run { PlatformServerGroup(this.getName(), listOf(this), false) }
+            return getServerByName(name)?.run {
+                if(!ignoreServers.shouldIgnore(this.getName())) {
+                    PlatformServerGroup(this.getName(), listOf(this), false)
+                } else {
+                    null
+                }
+            }
         }
 
         val allServers = getAllServers()
-        val servers = resolveServerGroupByConfiguration(groupConfiguration, allServers)
+        val servers = resolveServerGroupByConfiguration(groupConfiguration, allServers, ignoreServers)
 
         if(servers.isEmpty()) {
             return null
@@ -120,12 +128,13 @@ abstract class Platform<S, P, C> {
     }
 
     fun getAllServersGrouped(): List<PlatformServerGroup<S>> {
+        val ignoreServers = configuration.getSection(IgnoreServersSection::class.java)
         val configuration = configuration.getSection(GroupServersSection::class.java)
         val allServers = getAllServers()
         val groups = mutableListOf<PlatformServerGroup<S>>()
 
         for(serverConfig in configuration.servers) {
-            val matchedServers = resolveServerGroupByConfiguration(serverConfig, allServers)
+            val matchedServers = resolveServerGroupByConfiguration(serverConfig, allServers, ignoreServers)
 
             if(matchedServers.isNotEmpty()) {
                 groups.add(PlatformServerGroup(serverConfig.serverName, matchedServers))
@@ -134,7 +143,9 @@ abstract class Platform<S, P, C> {
 
         // Make groups for servers without group
         allServers.filter { s -> groups.none { g -> g.getServers().contains(s) } }.forEach {
-            groups.add(PlatformServerGroup(it.getName(), listOf(it), byConfiguration = false))
+            if (!ignoreServers.shouldIgnore(it.getName())) {
+                groups.add(PlatformServerGroup(it.getName(), listOf(it), byConfiguration = false))
+            }
         }
 
         return groups
@@ -142,13 +153,16 @@ abstract class Platform<S, P, C> {
 
     private fun resolveServerGroupByConfiguration(
         serverConfig: GroupServersSection.ServerSection,
-        allServers: List<PlatformServer<S>>
+        allServers: List<PlatformServer<S>>,
+        ignoreServersConfig: IgnoreServersSection
     ): MutableList<PlatformServer<S>> {
         val matchedServers = mutableListOf<PlatformServer<S>>()
 
         for(name in serverConfig.byName) {
             getServerByName(name)?.also {
-                matchedServers.add(it)
+                if(!ignoreServersConfig.shouldIgnore(it.getName())) {
+                    matchedServers.add(it)
+                }
             }
         }
 
@@ -156,7 +170,9 @@ abstract class Platform<S, P, C> {
             val regex = Regex(patternString)
 
             allServers.filter { regex.matches(it.getName()) }.forEach {
-                matchedServers.add(it)
+                if(!ignoreServersConfig.shouldIgnore(it.getName())) {
+                    matchedServers.add(it)
+                }
             }
         }
 
