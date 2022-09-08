@@ -29,6 +29,13 @@ import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
 import java.util.concurrent.TimeUnit
 
+/**
+ * Implementation for /glist command.
+ * @param platform Platform instance.
+ * @param name Label of command.
+ * @param aliases Aliases of command.
+ * @param permission Permission required to execute command.
+ */
 class GlistCommand<S>(
     val platform: Platform<S, *, *>,
     name: String,
@@ -74,6 +81,11 @@ class GlistCommand<S>(
         display.showPage(page)
     }
 
+    /**
+     * Create a Display instance if not cached.
+     * @param executor Command Executor.
+     * @return Display instance.
+     */
     private fun getDisplayFor(executor: PlatformExecutor<S>): ServersListDisplay<S> {
         val key = if (executor.isConsole()) "console" else "player-${executor.getUUID()}"
         val current = cache.getIfPresent(key)

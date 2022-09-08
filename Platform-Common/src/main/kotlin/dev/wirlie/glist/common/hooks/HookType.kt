@@ -20,8 +20,14 @@
 
 package dev.wirlie.glist.common.hooks
 
+/**
+ * Type of Hook supported by plugin.
+ */
 enum class HookType {
 
-    LUCKPERMS
+    /**
+     * LuckPerms plugin.
+     */
+    LUCKPERMS,
 
 }

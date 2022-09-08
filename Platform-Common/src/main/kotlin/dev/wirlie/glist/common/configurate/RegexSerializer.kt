@@ -24,6 +24,9 @@ import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
 
+/**
+ * Serializer used by Configurate to handle [Regex].
+ */
 class RegexSerializer: TypeSerializer<Regex> {
 
     override fun deserialize(type: Type, node: ConfigurationNode): Regex {

@@ -27,6 +27,9 @@ import net.kyori.adventure.audience.Audience
 import net.md_5.bungee.api.config.ServerInfo
 import java.util.*
 
+/**
+ * BungeeCord implementation for command executor.
+ */
 class BungeeConsolePlatformExecutor: PlatformExecutor<ServerInfo>() {
 
     override fun isPlayer(): Boolean {

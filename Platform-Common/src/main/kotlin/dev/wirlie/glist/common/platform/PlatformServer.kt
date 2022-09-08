@@ -20,12 +20,23 @@
 
 package dev.wirlie.glist.common.platform
 
+/**
+ * Abstract representation of server, compatible with multiple Platforms.
+ */
 abstract class PlatformServer<S>(
     val server: S
 ) {
 
+    /**
+     * Get the name of this server.
+     */
     abstract fun getName(): String
 
+    /**
+     * Get players connected to this server.
+     * @param onlyReachableBy Optional executor to use to filter vanished players if executor does not have permission
+     * to see vanished players, if no executor is provided then all players will be returned.
+     */
     abstract fun getPlayers(onlyReachableBy: PlatformExecutor<S>? = null): List<PlatformExecutor<S>>
 
     override fun equals(other: Any?): Boolean {

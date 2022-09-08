@@ -27,6 +27,9 @@ import dev.wirlie.glist.common.platform.PlatformServer
 import net.kyori.adventure.audience.Audience
 import java.util.*
 
+/**
+ * Velocity implementation for command executor.
+ */
 class VelocityPlayerPlatformExecutor(
     val platform: VelocityPlatform,
     private val executor: Player

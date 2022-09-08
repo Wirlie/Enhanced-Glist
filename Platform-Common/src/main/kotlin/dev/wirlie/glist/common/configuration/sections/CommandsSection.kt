@@ -23,9 +23,12 @@ package dev.wirlie.glist.common.configuration.sections
 import dev.wirlie.glist.common.configuration.ConfigRootPath
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
+/**
+ * Configuration for `commands{}` section.
+ */
 @ConfigSerializable
 @ConfigRootPath("commands")
-class CommandsSection {
+class CommandsSection: ConfigurationSection {
 
     var glist: GlistSection = GlistSection()
 

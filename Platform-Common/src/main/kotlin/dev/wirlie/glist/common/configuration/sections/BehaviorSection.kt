@@ -23,9 +23,12 @@ package dev.wirlie.glist.common.configuration.sections
 import dev.wirlie.glist.common.configuration.ConfigRootPath
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
+/**
+ * Configuration for `behavior{}` section.
+ */
 @ConfigSerializable
 @ConfigRootPath("behavior")
-class BehaviorSection {
+class BehaviorSection: ConfigurationSection {
 
     var vanish: VanishSection = VanishSection()
 

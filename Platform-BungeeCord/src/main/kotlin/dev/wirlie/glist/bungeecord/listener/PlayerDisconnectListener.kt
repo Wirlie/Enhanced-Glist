@@ -25,6 +25,10 @@ import net.md_5.bungee.api.event.PlayerDisconnectEvent
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
 
+/**
+ * Listener to handle player disconnection.
+ * @param platform BungeeCord platform instance
+ */
 class PlayerDisconnectListener(
     val platform: BungeePlatform
 ): Listener {

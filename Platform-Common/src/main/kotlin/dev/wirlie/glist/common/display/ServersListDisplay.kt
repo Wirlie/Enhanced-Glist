@@ -32,6 +32,14 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.tag.Tag
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 
+/**
+ * Display for servers list.
+ * @param platform Platform instance.
+ * @param executor Command executor.
+ * @param audience Audience to send the result of this display.
+ * @param initialPageSize Elements per page.
+ * @param initialData Data to use for pagination.
+ */
 class ServersListDisplay<S>(
     val platform: Platform<S, *, *>,
     val executor: PlatformExecutor<S>,

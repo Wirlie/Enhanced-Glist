@@ -36,6 +36,11 @@ import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 
+/**
+ * BungeeCord implementation for network messenger communication.
+ * @param plugin Plugin instance
+ * @param platformBungee BungeeCord platform instance
+ */
 class BungeeMessenger(
     val plugin: EnhancedGlistBungeeCord,
     private val platformBungee: BungeePlatform

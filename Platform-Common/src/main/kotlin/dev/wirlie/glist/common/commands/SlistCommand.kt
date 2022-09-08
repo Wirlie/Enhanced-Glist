@@ -35,6 +35,13 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
 
+/**
+ * Implementation for /slist command.
+ * @param platform Platform instance.
+ * @param name Label of command.
+ * @param aliases Aliases of command.
+ * @param permission Permission required to execute command.
+ */
 class SlistCommand<S>(
     val platform: Platform<S, *, *>,
     name: String,

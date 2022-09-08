@@ -28,6 +28,11 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Command
 import net.md_5.bungee.command.ConsoleCommandSender
 
+/**
+ * Executor for /glist
+ * @param platform BungeeCord platform instance
+ * @param platformCommand BungeeCord platform command instance
+ */
 class GlistExecutor(
     private val platform: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>,
     private val platformCommand: PlatformCommand<ServerInfo>

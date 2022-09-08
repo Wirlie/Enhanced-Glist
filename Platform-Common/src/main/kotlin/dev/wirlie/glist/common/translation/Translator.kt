@@ -22,6 +22,7 @@ package dev.wirlie.glist.common.translation
 
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configurate.IntRangeSerializer
+import dev.wirlie.glist.common.configurate.RegexSerializer
 import dev.wirlie.glist.common.util.ConfigurateUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -60,6 +61,7 @@ class Translator(
                 opts.serializers { build: TypeSerializerCollection.Builder ->
                     build.registerAnnotatedObjects(customFactory)
                     build.register(IntRange::class.java, IntRangeSerializer())
+                    build.register(Regex::class.java, RegexSerializer())
                 }
             }
             .build()

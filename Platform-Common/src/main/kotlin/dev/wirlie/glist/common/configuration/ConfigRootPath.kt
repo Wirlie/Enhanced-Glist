@@ -20,6 +20,9 @@
 
 package dev.wirlie.glist.common.configuration
 
+/**
+ * Utility to handle Configurate sections from main configuration.
+ */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ConfigRootPath(

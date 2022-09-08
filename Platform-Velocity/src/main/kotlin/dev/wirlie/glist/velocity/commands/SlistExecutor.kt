@@ -27,6 +27,11 @@ import com.velocitypowered.api.proxy.server.RegisteredServer
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.commands.PlatformCommand
 
+/**
+ * Executor for /slist command - BungeeCord platform
+ * @param platform Velocity platform instance
+ * @param platformCommand Velocity platform command instance
+ */
 class SlistExecutor(
     private val platform: Platform<RegisteredServer, Player, ConsoleCommandSource>,
     private val platformCommand: PlatformCommand<RegisteredServer>

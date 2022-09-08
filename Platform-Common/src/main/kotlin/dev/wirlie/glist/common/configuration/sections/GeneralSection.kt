@@ -23,9 +23,12 @@ package dev.wirlie.glist.common.configuration.sections
 import dev.wirlie.glist.common.configuration.ConfigRootPath
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
+/**
+ * Configuration for `general{}` section.
+ */
 @ConfigSerializable
 @ConfigRootPath("general")
-class GeneralSection {
+class GeneralSection: ConfigurationSection {
 
     var prefix: String = "<bold><aqua>EGlist ></aqua></bold><reset>"
 

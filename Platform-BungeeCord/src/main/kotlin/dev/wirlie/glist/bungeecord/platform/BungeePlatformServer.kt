@@ -27,6 +27,11 @@ import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 import net.md_5.bungee.api.config.ServerInfo
 
+/**
+ * BungeeCord implementation for server.
+ * @param platform BungeeCord platform instance.
+ * @param server BungeeCord server reference.
+ */
 class BungeePlatformServer(
     val platform: BungeePlatform,
     server: ServerInfo

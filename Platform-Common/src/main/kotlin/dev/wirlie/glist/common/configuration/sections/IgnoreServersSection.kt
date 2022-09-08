@@ -23,9 +23,12 @@ package dev.wirlie.glist.common.configuration.sections
 import dev.wirlie.glist.common.configuration.ConfigRootPath
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
+/**
+ * Configuration for `ignore-servers{}` section.
+ */
 @ConfigSerializable
 @ConfigRootPath("ignore-servers")
-class IgnoreServersSection {
+class IgnoreServersSection: ConfigurationSection {
 
     var byName: MutableList<String> = mutableListOf()
 

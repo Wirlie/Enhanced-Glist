@@ -26,6 +26,10 @@ import dev.wirlie.glist.common.messenger.NetworkMessageListener
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 
+/**
+ * Messenger listener for Vanish state change.
+ * @param platform Platform instance.
+ */
 class VanishStateChangeListener<S>(
     val platform: Platform<S, *, *>
 ): NetworkMessageListener<S>(

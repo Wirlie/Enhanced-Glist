@@ -28,6 +28,10 @@ import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 
+/**
+ * Main Velocity implementation
+ * @param server Velocity Proxy instance
+ */
 class VelocityPlatform(
     val server: ProxyServer
 ): Platform<RegisteredServer, Player, ConsoleCommandSource>() {

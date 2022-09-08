@@ -30,6 +30,12 @@ import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.PluginManager
 import net.md_5.bungee.command.ConsoleCommandSender
 
+/**
+ * BungeeCord implementation for command management.
+ * @param platformInstance BungeeCord platform instance.
+ * @param pluginManager BungeeCord plugin manager.
+ * @param plugin Plugin instance.
+ */
 class BungeePlatformCommandManager(
     private val platformInstance: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>,
     private val pluginManager: PluginManager,

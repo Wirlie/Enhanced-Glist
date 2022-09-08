@@ -34,6 +34,11 @@ import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 
+/**
+ * Velocity implementation for network messenger communication.
+ * @param plugin Plugin instance
+ * @param platformVelocity BungeeCord platform instance
+ */
 class VelocityMessenger(
     val plugin: EnhancedGlistVelocity,
     private val platformVelocity: VelocityPlatform

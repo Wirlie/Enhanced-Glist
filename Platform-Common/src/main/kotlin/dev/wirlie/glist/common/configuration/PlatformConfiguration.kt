@@ -21,6 +21,7 @@
 package dev.wirlie.glist.common.configuration
 
 import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.configuration.sections.ConfigurationSection
 import dev.wirlie.glist.common.util.ConfigurateUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -28,7 +29,12 @@ import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.io.File
 import java.nio.file.Files
+import dev.wirlie.glist.common.configuration.sections.*
 
+/**
+ * Plugin configuration.
+ * @param platform Platform instance.
+ */
 class PlatformConfiguration(
     val platform: Platform<*, *, *>
 ) {
@@ -37,6 +43,13 @@ class PlatformConfiguration(
     private lateinit var configuration: ConfigurationNode
     private lateinit var configurationLoader: HoconConfigurationLoader
 
+    /**
+     * Setup configuration.
+     *
+     * * This will create configuration file if not exists.
+     * * If configuration file exists, existing configuration will be updated to the latest version.
+     * * Configuration will be loaded after setup.
+     */
     fun setup() {
         platform.logger.info(Component.text("Loading configuration..."))
         configurationFile = File(platform.pluginFolder, "config.conf")
@@ -50,6 +63,9 @@ class PlatformConfiguration(
         }
     }
 
+    /**
+     * Save default configuration.
+     */
     fun saveDefault() {
         platform.logger.info(Component.text("Configuration not found, saving default configuration..."))
         if(!configurationFile.parentFile.exists()) {
@@ -94,6 +110,9 @@ class PlatformConfiguration(
         }
     }
 
+    /**
+     * Load configuration.
+     */
     fun load() {
         configurationLoader = HoconConfigurationLoader.builder()
             .emitComments(true)
@@ -105,12 +124,28 @@ class PlatformConfiguration(
         platform.logger.info(Component.text("Configuration loaded."))
     }
 
+    /**
+     * Save configuration.
+     */
     fun save() {
         configuration
         configurationLoader.save(configuration)
     }
 
-    fun <T> getSection(clazz: Class<T>): T {
+    /**
+     * Get configuration section. Currently available sections:
+     * * [BehaviorSection]
+     * * [CommandsSection]
+     * * [DoNotEditSection]
+     * * [GeneralSection]
+     * * [GroupServersSection]
+     * * [IgnoreServersSection]
+     * * [UpdatesSection]
+     *
+     * @param clazz Section [Class].
+     * @return Section instance using Configurate.
+     */
+    fun <T: ConfigurationSection> getSection(clazz: Class<T>): T {
         val rootAnnotation = clazz.annotations.firstOrNull { it is ConfigRootPath } as ConfigRootPath? ?:
             throw IllegalArgumentException("Class is not annotated with @ConfigRootPath")
 
@@ -130,7 +165,19 @@ class PlatformConfiguration(
         }
     }
 
-    fun setSection(section: Any) {
+    /**
+     * Set section values from instance. Currently available sections:
+     * * [BehaviorSection]
+     * * [CommandsSection]
+     * * [DoNotEditSection]
+     * * [GeneralSection]
+     * * [GroupServersSection]
+     * * [IgnoreServersSection]
+     * * [UpdatesSection]
+     *
+     * @param section Section instance to set.
+     */
+    fun setSection(section: ConfigurationSection) {
         val rootAnnotation = section::class.java.annotations.firstOrNull { it is ConfigRootPath } as ConfigRootPath? ?:
             throw IllegalArgumentException("Class is not annotated with @ConfigRootPath")
 

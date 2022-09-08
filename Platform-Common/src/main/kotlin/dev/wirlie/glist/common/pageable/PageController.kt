@@ -20,6 +20,11 @@
 
 package dev.wirlie.glist.common.pageable
 
+/**
+ * Pagination controller.
+ * @param initialPageSize Page size.
+ * @param initialData Data to use.
+ */
 open class PageController<T>(
     initialPageSize: Int,
     initialData: MutableList<T> = mutableListOf()

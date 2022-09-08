@@ -25,6 +25,9 @@ import org.spongepowered.configurate.serialize.SerializationException
 import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
 
+/**
+ * Serializer used by Configurate to handle [IntRange].
+ */
 class IntRangeSerializer: TypeSerializer<IntRange> {
 
     override fun deserialize(type: Type, node: ConfigurationNode): IntRange {

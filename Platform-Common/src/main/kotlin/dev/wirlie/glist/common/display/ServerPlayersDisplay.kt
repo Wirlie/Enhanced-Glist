@@ -39,6 +39,14 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import java.util.*
 import kotlin.math.ceil
 
+/**
+ * Display for connected players (server).
+ * @param platform Platform instance.
+ * @param serverGroup Server group to use for players list.
+ * @param executor Command executor to filter vanished players if executor does not have permission to see vanished players.
+ * @param audience Audience to send the result of this display.
+ * @param playersPerPage Players to display per page.
+ */
 class ServerPlayersDisplay<S>(
     val platform: Platform<S, *, *>,
     val serverGroup: PlatformServerGroup<S>,
@@ -115,6 +123,12 @@ class ServerPlayersDisplay<S>(
         }
     }
 
+    /**
+     * Utility function to make <players> component.
+     * @param format Format configuration.
+     * @param items Players to use to build component.
+     * @return Adventure Component.
+     */
     private fun makePlayersComponent(
         format: TranslationMessages.SlistMessages.MainMessage.FormatSection,
         items: List<PlatformExecutor<S>>
@@ -245,6 +259,13 @@ class ServerPlayersDisplay<S>(
         return component
     }
 
+    /**
+     * Utility function to fill remaining column width with spaces.
+     * @param component Column Component.
+     * @param columnWidth Max width of column.
+     * @param currentWidth Current used width of column.
+     * @return Component filled by spaces.
+     */
     private fun fillSpaces(component: Component, columnWidth: Int, currentWidth: Int): Component {
         val spaceWidth = TextWidthUtil.estimateWidth(' ', TextWidthUtil.VERSION_113) + 1
         val spacesToAdd = (columnWidth - currentWidth) / spaceWidth
@@ -259,40 +280,6 @@ class ServerPlayersDisplay<S>(
         }
 
         return component.append(Component.text(string.toString()))
-    }
-
-    companion object {
-
-        fun <S> dummyPlayer(name: String) = object: PlatformExecutor<S>() {
-            override fun getName(): String {
-                return name
-            }
-
-            override fun asAudience(): Audience {
-                TODO("Not yet implemented")
-            }
-
-            override fun getUUID(): UUID {
-                TODO("Not yet implemented")
-            }
-
-            override fun isConsole(): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun isPlayer(): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun getConnectedServer(): PlatformServer<S>? {
-                TODO("Not yet implemented")
-            }
-
-            override fun hasPermission(permission: String): Boolean {
-                TODO("Not yet implemented")
-            }
-        }
-
     }
 
 }

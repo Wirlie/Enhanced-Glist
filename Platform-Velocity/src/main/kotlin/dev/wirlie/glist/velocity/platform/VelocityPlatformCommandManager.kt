@@ -29,6 +29,11 @@ import dev.wirlie.glist.common.PlatformCommandManager
 import dev.wirlie.glist.velocity.commands.GlistExecutor
 import dev.wirlie.glist.velocity.commands.SlistExecutor
 
+/**
+ * Velocity implementation for command management.
+ * @param platformInstance Velocity platform instance.
+ * @param commandManager Velocity command manager instance.
+ */
 class VelocityPlatformCommandManager(
     private val platformInstance: Platform<RegisteredServer, Player, ConsoleCommandSource>,
     private val commandManager: CommandManager

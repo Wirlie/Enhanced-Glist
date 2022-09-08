@@ -28,6 +28,10 @@ import dev.wirlie.glist.common.platform.PlatformServer
 import net.kyori.adventure.audience.Audience
 import java.util.*
 
+/**
+ * Velocity implementation for command executor.
+ * @param console Velocity console.
+ */
 class VelocityConsolePlatformExecutor(
     val console: ConsoleCommandSource
 ): PlatformExecutor<RegisteredServer>() {

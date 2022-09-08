@@ -26,6 +26,11 @@ import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 
+/**
+ * Velocity implementation for server.
+ * @param platform Velocity platform instance.
+ * @param server Velocity server reference.
+ */
 class VelocityPlatformServer(
     val platform: VelocityPlatform,
     server: RegisteredServer

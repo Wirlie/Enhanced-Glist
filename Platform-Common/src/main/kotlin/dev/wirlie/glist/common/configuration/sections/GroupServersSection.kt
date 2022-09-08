@@ -24,8 +24,11 @@ import dev.wirlie.glist.common.configuration.ConfigHandler
 import dev.wirlie.glist.common.configuration.ConfigRootPath
 import org.spongepowered.configurate.ConfigurationNode
 
+/**
+ * Configuration for `group-servers{}` section.
+ */
 @ConfigRootPath("group-servers")
-class GroupServersSection: ConfigHandler() {
+class GroupServersSection: ConfigHandler(), ConfigurationSection {
 
     var servers = mutableListOf<ServerSection>()
 

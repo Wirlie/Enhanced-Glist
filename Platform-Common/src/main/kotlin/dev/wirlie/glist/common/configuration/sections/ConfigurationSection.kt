@@ -18,27 +18,10 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.common.commands
-
-import dev.wirlie.glist.common.platform.PlatformExecutor
+package dev.wirlie.glist.common.configuration.sections
 
 /**
- * Abstract implementation for commands.
- * @param name Label of command.
- * @param aliases Aliases of command.
- * @param permission Permission required to execute command.
+ * Utility class.
  */
-abstract class PlatformCommand<S>(
-    val name: String,
-    val aliases: MutableList<String>,
-    val permission: String
-) {
-
-    /**
-     * Try to handle execution with provided arguments.
-     * @param executor Command executor.
-     * @param args Arguments used to execute command.
-     */
-    abstract fun tryExecution(executor: PlatformExecutor<S>, args: Array<String>)
-
+interface ConfigurationSection {
 }

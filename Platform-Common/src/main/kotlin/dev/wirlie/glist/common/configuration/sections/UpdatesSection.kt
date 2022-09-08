@@ -23,9 +23,12 @@ package dev.wirlie.glist.common.configuration.sections
 import dev.wirlie.glist.common.configuration.ConfigRootPath
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
+/**
+ * Configuration for `updates{}` section.
+ */
 @ConfigSerializable
 @ConfigRootPath("updates")
-class UpdatesSection {
+class UpdatesSection: ConfigurationSection {
 
     var checkForUpdates = true
 

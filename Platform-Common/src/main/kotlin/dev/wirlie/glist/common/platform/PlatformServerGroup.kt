@@ -39,16 +39,32 @@ class PlatformServerGroup<S>(
         }
     }
 
+    /**
+     * Get total number of servers of this group.
+     * @return Server count of this group.
+     */
     fun getServersCount() = servers.size
 
+    /**
+     * @return Servers of this group.
+     */
     fun getServers() = servers.toList()
 
+    /**
+     * Get players connected to this server group.
+     * @param onlyReachableBy Optional executor to use to filter vanished players if executor does not have permission
+     * to see vanished players, if no executor is provided then all players will be returned.
+     */
     fun getPlayers(
         onlyReachableBy: PlatformExecutor<S>? = null
     ): List<PlatformExecutor<S>> {
         return servers.flatMap { it.getPlayers(onlyReachableBy) }
     }
-
+    /**
+     * Get player count of this server group.
+     * @param onlyReachableBy Optional executor to use to filter vanished players if executor does not have permission
+     * to see vanished players, if no executor is provided then all players will be returned.
+     */
     fun getPlayersCount(
         onlyReachableBy: PlatformExecutor<S>? = null
     ): Int {

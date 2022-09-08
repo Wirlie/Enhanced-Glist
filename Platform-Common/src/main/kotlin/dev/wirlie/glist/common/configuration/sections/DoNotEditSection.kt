@@ -23,9 +23,12 @@ package dev.wirlie.glist.common.configuration.sections
 import dev.wirlie.glist.common.configuration.ConfigRootPath
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
+/**
+ * Configuration for `dot-not-edit-this{}` section.
+ */
 @ConfigSerializable
 @ConfigRootPath("dot-not-edit-this")
-class DoNotEditSection {
+class DoNotEditSection: ConfigurationSection {
 
     var configVersion: Int = -1
 

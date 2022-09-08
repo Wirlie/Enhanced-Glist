@@ -23,20 +23,50 @@ package dev.wirlie.glist.common.platform
 import net.kyori.adventure.audience.Audience
 import java.util.UUID
 
+/**
+ * Abstract representation of command executor, compatible with multiple Platforms.
+ */
 abstract class PlatformExecutor<S> {
 
+    /**
+     * If this executor is the console.
+     * @return true if this executor is the console.
+     */
     abstract fun isConsole(): Boolean
 
+    /**
+     * If this executor is a player.
+     * @return true if this executor is a player.
+     */
     abstract fun isPlayer(): Boolean
 
+    /**
+     * Convenience function to get an Audience instance from this executor.
+     * @return Audience instance from this executor.
+     */
     abstract fun asAudience(): Audience
 
+    /**
+     * @return Name of this executor.
+     */
     abstract fun getName(): String
 
+    /**
+     * @return UUID of this executor (console will return a random UUID because console does not have a UUID, use [isConsole] to check if this executor is the console)
+     */
     abstract fun getUUID(): UUID
 
+    /**
+     * Test if this executor has a certain permission.
+     * @param permission Permission to test.
+     * @return If executor have the provided permission (console will always have permission)
+     */
     abstract fun hasPermission(permission: String): Boolean
 
+    /**
+     * @return Connected server of this executor, or null if this executor is not connected to any server (console will
+     * always return null)
+     */
     abstract fun getConnectedServer(): PlatformServer<S>?
 
 }

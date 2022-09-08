@@ -23,11 +23,19 @@ package dev.wirlie.glist.common.messenger
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 
+/**
+ * Messenger Listener for incoming messages using Plugin Messages.
+ * @param channel Channel to use (namespace format -> foo:foo)
+ * @param subject Subject to use.
+ */
 abstract class NetworkMessageListener<S>(
     val channel: String,
     val subject: String
 ) {
 
+    /**
+     * When an object is received.
+     */
     abstract fun onObjectReceive(dataObject: String, fromPlayer: PlatformExecutor<S>, fromServer: PlatformServer<S>)
 
 }

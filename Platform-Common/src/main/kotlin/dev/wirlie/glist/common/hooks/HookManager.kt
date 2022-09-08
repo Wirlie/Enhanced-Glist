@@ -24,6 +24,10 @@ import dev.wirlie.glist.common.Platform
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 
+/**
+ * Manager for hooks with third-party plugins.
+ * @param platform Platform instance.
+ */
 class HookManager(
     val platform: Platform<*, *, *>
 ) {
@@ -32,6 +36,9 @@ class HookManager(
 
     private var luckPermsHook: LuckPermsHook? = null
 
+    /**
+     * Enable LuckPerms Hook.
+     */
     fun enableLuckPermsHook() {
         if(enabledHooks.add(HookType.LUCKPERMS)) {
             platform.logger.info(Component.text("[HOOK] ", NamedTextColor.GREEN).append(Component.text("LuckPerms found.", NamedTextColor.WHITE)))
@@ -39,8 +46,15 @@ class HookManager(
         }
     }
 
+    /**
+     * Get LuckPerms Hook if available.
+     */
     fun getLuckPermsHook() = luckPermsHook
 
+    /**
+     * Check if a certain hook is enabled.
+     * @param type Type of Hook.
+     */
     fun isHookEnabled(type: HookType): Boolean {
         return enabledHooks.contains(type)
     }

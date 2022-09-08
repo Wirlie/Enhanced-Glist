@@ -24,6 +24,10 @@ import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.connection.DisconnectEvent
 import dev.wirlie.glist.velocity.platform.VelocityPlatform
 
+/**
+ * Listener to handle player disconnection.
+ * @param platform Velocity platform instance
+ */
 class PlayerDisconnectListener(
     val platform: VelocityPlatform
 ) {

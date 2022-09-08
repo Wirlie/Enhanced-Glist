@@ -26,10 +26,18 @@ import net.kyori.adventure.text.Component
 import net.luckperms.api.LuckPermsProvider
 import net.luckperms.api.query.QueryOptions
 
+/**
+ * Hook for LuckPerms plugin.
+ */
 class LuckPermsHook {
 
     val api = LuckPermsProvider.get()
 
+    /**
+     * Resolve player prefix using LuckPerms.
+     * @param platformExecutor Command executor.
+     * @return Adventure Component containing the prefix.
+     */
     fun getPlayerPrefix(platformExecutor: PlatformExecutor<*>): Component {
         if(platformExecutor.isConsole()) {
             throw IllegalArgumentException("Console executor is not allowed here.")
