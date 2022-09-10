@@ -11,6 +11,9 @@ dependencies {
     compileOnly("org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT")
     compileOnly("com.github.LeonMangler:PremiumVanish:6.2.6-4")
 
+    // Third - Party libraries (only for compilation, allocated at our private repository for development purposes)
+    compileOnly("github.jet315:antiafkpro:3.6.3")
+
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
 }

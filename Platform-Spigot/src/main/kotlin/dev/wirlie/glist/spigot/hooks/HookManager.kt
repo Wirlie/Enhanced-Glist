@@ -65,6 +65,12 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
             hooks.add(EssentialsHook(this, plugin).also { pluginManager.registerEvents(it, plugin) })
         }
 
+        // AntiAFKPro Hook
+        pluginManager.getPlugin("JetsAntiAFKPro")?.run {
+            plugin.logger.info("[Hook] JetsAntiAFKPro plugin found.")
+            hooks.add(AntiAFKProHook(this, plugin).also { pluginManager.registerEvents(it, plugin) })
+        }
+
         // SuperVanish Hook
         if(pluginManager.getPlugin("SuperVanish")?.run {
             plugin.logger.info("[Hook] SuperVanish plugin found.")
