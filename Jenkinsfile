@@ -370,7 +370,7 @@ def nexusPublish(project) {
                 def maven2 = item['maven2']
                 
                 if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START == '') {
-                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`\n"
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
                     env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = ""
                 }
                 
@@ -381,7 +381,7 @@ def nexusPublish(project) {
             def maven2 = item['maven2']
 
             if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START == '') {
-                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`\n"
+                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
                 env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = ""
             }
                 
@@ -402,7 +402,7 @@ def nexusPublish(project) {
             if(env.PUBLISH_PR_ID == 'none') {
                 // Not in pull request
                 if(env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START == '') {
-                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot\n\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`\n"
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
                     env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END = ""
                 }
                 
@@ -410,7 +410,7 @@ def nexusPublish(project) {
             } else {
                 // Pull request
                 if(env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START == '') {
-                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot for Pull Request **#" + env.PUBLISH_PR_ID + "**\n\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`\n"
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot for Pull Request **#" + env.PUBLISH_PR_ID + "**\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
                     env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END = ""
                 }
                 
