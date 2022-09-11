@@ -20,6 +20,7 @@
 
 package dev.wirlie.glist.spigot
 
+import dev.wirlie.glist.spigot.configuration.ConfigurationManager
 import dev.wirlie.glist.spigot.hooks.HookManager
 import dev.wirlie.glist.spigot.messenger.NetworkMessenger
 import dev.wirlie.glist.spigot.messenger.NetworkMessengerListener
@@ -30,8 +31,11 @@ class EnhancedGlistSpigot: JavaPlugin() {
 
     lateinit var networkMessenger: NetworkMessenger
     lateinit var hookManager: HookManager
+    lateinit var configurationManager: ConfigurationManager
 
     override fun onEnable() {
+        configurationManager = ConfigurationManager(this)
+
         server.messenger.registerOutgoingPluginChannel(this, "enhanced-glist:general")
         server.messenger.registerIncomingPluginChannel(this, "enhanced-glist:general", NetworkMessengerListener(this))
 
