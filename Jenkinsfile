@@ -103,7 +103,8 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew clean build'
+                    sh './gradlew clean test shadowJar'
+                    archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
         }
