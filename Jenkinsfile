@@ -114,7 +114,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-BungeeCord:shadowJar'
+                    sh './gradlew :EnhancedGlist-BungeeCord:test :EnhancedGlist-BungeeCord:shadowJar'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
@@ -136,7 +136,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-Velocity:shadowJar'
+                    sh './gradlew :EnhancedGlist-Velocity:test :EnhancedGlist-Velocity:shadowJar'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
@@ -158,7 +158,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-Spigot-Bridge:shadowJar'
+                    sh './gradlew :EnhancedGlist-Spigot-Bridge:test :EnhancedGlist-Spigot-Bridge:shadowJar'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
