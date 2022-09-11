@@ -62,6 +62,15 @@ pipeline {
                     sh './gradlew cleanCompiledArtifactsFolder --no-daemon'
 
                     env.PUBLISH_PR_ID = 'none'
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = ''
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = ''
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = ''
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START = ''
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE = ''
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END = ''
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START = ''
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE = ''
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END = ''
                     
                     println("Branch: " + env.GIT_BRANCH)
                     switch(env.GIT_BRANCH) {
@@ -168,6 +177,46 @@ pipeline {
     }
     
     post {
+        always {
+            script {
+                if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START != '') {
+                    withCredentials([string(credentialsId: 'discord-webhook-maven-releases', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
+                        discordSend(
+                            description: env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END, 
+                            footer: "Jenkins - Build Pipeline", 
+                            link: env.BUILD_URL,
+                            result: "SUCCESS", 
+                            title: JOB_NAME, 
+                            webhookURL: NEXUS_DISCORD_WEBHOOK
+                        )
+                    }
+                }
+                if(env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START != '') {
+                    withCredentials([string(credentialsId: 'discord-webhook-maven-snapshots', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
+                        discordSend(
+                            description: env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END, 
+                            footer: "Jenkins - Build Pipeline", 
+                            link: env.BUILD_URL,
+                            result: "SUCCESS", 
+                            title: JOB_NAME, 
+                            webhookURL: NEXUS_DISCORD_WEBHOOK
+                        )
+                    }
+                }
+                if(env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START != '') {
+                    withCredentials([string(credentialsId: 'discord-webhook-github-pr', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
+                        discordSend(
+                            description: env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END, 
+                            footer: "Jenkins - Build Pipeline", 
+                            link: env.BUILD_URL,
+                            result: "SUCCESS", 
+                            title: JOB_NAME, 
+                            webhookURL: NEXUS_DISCORD_WEBHOOK
+                        )
+                    }
+                }
+            }
+        }
         success {
             script {
                 if(env.CI_SKIP == 'false') {
@@ -319,39 +368,24 @@ def nexusPublish(project) {
                 println("Release no encontrado en Nexus. Inesperado pero no se fallará el build debido a esta inconsistencia.")
             } else {
                 def maven2 = item['maven2']
-                def commitMessage = resolveCommitMessage()
-                def commitAuthor = resolveCommitAuthor()
-
-                withCredentials([string(credentialsId: 'discord-webhook-maven-releases', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
-                    discordSend(
-                        description: "Nexus Release\n\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
-                        footer: "Jenkins - Build Pipeline", 
-                        link: env.BUILD_URL, 
-                        result: currentBuild.currentResult, 
-                        title: JOB_NAME, 
-                        webhookURL: NEXUS_DISCORD_WEBHOOK,
-                        showChangeset: true
-                    )
+                
+                if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START == '') {
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Group:** `" + maven2['groupId']
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = "`**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`"
                 }
+                
+                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n`**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "\n"
             }
         } else {
             // Error, artifact already exists in Nexus
             def maven2 = item['maven2']
-            def commitMessage = resolveCommitMessage()
-            def commitAuthor = resolveCommitAuthor()
 
-            withCredentials([string(credentialsId: 'discord-webhook-maven-releases', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
-                discordSend(
-                    description: "Aborted nexus deploy, version `" + maven2['version'] + "`.\n\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
-                    footer: "Jenkins - Build Pipeline", 
-                    link: env.BUILD_URL, 
-                    result: "ABORTED", 
-                    title: JOB_NAME, 
-                    webhookURL: NEXUS_DISCORD_WEBHOOK,
-                    showChangeset: true
-                )
+            if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START == '') {
+                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Group:** `" + maven2['groupId']
+                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = "`**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`"
             }
-        }
+                
+            env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n`**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "\n"
     } else {
         println("Project to publish: " + project)
         sh (script: "./gradlew :${project}:publishMavenPublicationToNexusRepository --no-daemon") //execute gradle
@@ -363,35 +397,23 @@ def nexusPublish(project) {
             println("Snapshot not found, not expected but we will not fail build.")
         } else {
             def maven2 = item['maven2']
-            def commitMessage = resolveCommitMessage()
-            def commitAuthor = resolveCommitAuthor()
 
             if(env.PUBLISH_PR_ID == 'none') {
                 // Not in pull request
-                withCredentials([string(credentialsId: 'discord-webhook-maven-snapshots', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
-                    discordSend(
-                        description: "Nexus Snapshot\n\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
-                        footer: "Jenkins - Build Pipeline", 
-                        link: env.BUILD_URL, 
-                        result: currentBuild.currentResult, 
-                        title: JOB_NAME, 
-                        webhookURL: NEXUS_DISCORD_WEBHOOK,
-                        showChangeset: true
-                    )
+                if(env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START == '') {
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot\n\n**Group:** `" + maven2['groupId']
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END = "`**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`"
                 }
+                
+                env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n`**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "\n"
             } else {
                 // Pull request
-                withCredentials([string(credentialsId: 'discord-webhook-github-pr', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
-                    discordSend(
-                        description: "Pull Request **#" + env.PUBLISH_PR_ID + "**\n\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
-                        footer: "Jenkins - Build Pipeline", 
-                        link: env.BUILD_URL,
-                        result: currentBuild.currentResult, 
-                        title: JOB_NAME, 
-                        webhookURL: NEXUS_DISCORD_WEBHOOK,
-                        showChangeset: true
-                    )
+                if(env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START == '') {
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot\n\n**Group:** `" + maven2['groupId']
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END = "`**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`"
                 }
+                
+                env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n`**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "\n"
             }
         }
     }   
