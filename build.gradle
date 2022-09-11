@@ -8,6 +8,9 @@ def artifactVersion = System.getenv('ARTIFACT_VERSION') ?: '1.3.1'
 def artifactSnapshot = (System.getenv('ARTIFACT_PUBLISH_SNAPSHOT') != null)
 version artifactSnapshot ? artifactVersion + "-SNAPSHOT" : artifactVersion
 
+Properties localProperties = new Properties()
+localProperties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 repositories {
     mavenLocal()
     mavenCentral()
