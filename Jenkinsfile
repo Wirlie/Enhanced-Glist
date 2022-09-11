@@ -51,7 +51,7 @@ pipeline {
                         )
                     }
 
-                    configFileProvider([configFile(fileId: 'c7c45c59-b554-4020-a6a1-077b47beb945', variable: 'configFile')]) {
+                    configFileProvider([configFile(fileId: '91da0cee-34a7-41a4-b605-2998257e24ff', variable: 'configFile')]) {
                         script {
                             sh 'mv $configFile ./local.properties' // move file to root
                             println('local.properties file moved to root directory')
