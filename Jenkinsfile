@@ -305,6 +305,8 @@ def resolveCommitHash() {
 }
 
 def nexusPublish(project) {
+    sh (script: "ls compiled/")
+    
     if(env.PUBLISH_SNAPSHOT == 'false') {
         println("Project to publish: " + project)
         def item = nexusFetch('false', project)
