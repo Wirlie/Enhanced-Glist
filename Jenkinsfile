@@ -59,7 +59,7 @@ pipeline {
                     }
 
                     sh 'chmod +x ./gradlew' // give execution permission to gradlew file
-                    sh './gradlew cleanCompiledArtifactsFolder --no-daemon'
+                    sh './gradlew cleanCompiledArtifactsFolder'
 
                     env.PUBLISH_PR_ID = 'none'
                     env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = ''
@@ -114,7 +114,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-BungeeCord:shadowJar --no-daemon'
+                    sh './gradlew :EnhancedGlist-BungeeCord:shadowJar'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
@@ -136,7 +136,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-Velocity:shadowJar --no-daemon'
+                    sh './gradlew :EnhancedGlist-Velocity:shadowJar'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
@@ -158,7 +158,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-Spigot-Bridge:shadowJar --no-daemon'
+                    sh './gradlew :EnhancedGlist-Spigot-Bridge:shadowJar'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
@@ -359,7 +359,7 @@ def nexusPublish(project) {
         def item = nexusFetch('false', project)
 
         if(item == null) {
-            sh(script: "./gradlew :${project}:publishMavenPublicationToNexusRepository --no-daemon") //execute gradle
+            sh(script: "./gradlew :${project}:publishMavenPublicationToNexusRepository") //execute gradle
 
             // Fetch from Nexus
             item = nexusFetch('false', project)
@@ -370,26 +370,26 @@ def nexusPublish(project) {
                 def maven2 = item['maven2']
                 
                 if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START == '') {
-                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Group:** `" + maven2['groupId']
-                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = "`**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`"
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`\n"
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = ""
                 }
                 
-                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n`**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "\n"
+                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n"
             }
         } else {
             // Error, artifact already exists in Nexus
             def maven2 = item['maven2']
 
             if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START == '') {
-                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Group:** `" + maven2['groupId']
-                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = "`**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`"
+                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`\n"
+                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = ""
             }
                 
-            env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n`**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "\n"
+            env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n⚠️ __Not Published (duplicated)__\n**Group:** ~~`" + maven2['groupId'] + "`~~\n**Name:** ~~`" + maven2['artifactId'] + "`~~\n**Version:** ~~`" + maven2['version'] + "`~~\n"
         }
     } else {
         println("Project to publish: " + project)
-        sh (script: "./gradlew :${project}:publishMavenPublicationToNexusRepository --no-daemon") //execute gradle
+        sh (script: "./gradlew :${project}:publishMavenPublicationToNexusRepository") //execute gradle
 
         // Fetch from Nexus
         def item = nexusFetch('true', project)
@@ -402,19 +402,19 @@ def nexusPublish(project) {
             if(env.PUBLISH_PR_ID == 'none') {
                 // Not in pull request
                 if(env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START == '') {
-                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot\n\n**Group:** `" + maven2['groupId']
-                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END = "`**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`"
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot\n\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`\n"
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END = ""
                 }
                 
-                env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n`**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "\n"
+                env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n"
             } else {
                 // Pull request
                 if(env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START == '') {
-                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot\n\n**Group:** `" + maven2['groupId']
-                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END = "`**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`"
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot for Pull Request **#" + env.PUBLISH_PR_ID + "**\n\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`\n"
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END = ""
                 }
                 
-                env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n`**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "\n"
+                env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n"
             }
         }
     }   
