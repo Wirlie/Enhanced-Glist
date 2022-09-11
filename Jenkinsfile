@@ -126,7 +126,7 @@ pipeline {
             }
             steps {
                 script {
-                    nexusPublish("EnhancedGlist-BungeeCord")
+                    nexusPublish("EnhancedGlist-BungeeCord-API")
                 }
             }
         }
@@ -148,7 +148,7 @@ pipeline {
             }
             steps {
                 script {
-                    nexusPublish("EnhancedGlist-Velocity")
+                    nexusPublish("EnhancedGlist-Velocity-API")
                 }
             }
         }
@@ -170,7 +170,7 @@ pipeline {
             }
             steps {
                 script {
-                    nexusPublish("EnhancedGlist-Spigot-Bridge")
+                    //nexusPublish("EnhancedGlist-Spigot-Bridge-API")
                 }
             }
         }
