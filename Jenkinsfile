@@ -70,6 +70,7 @@ pipeline {
                             println("Environment variables set for master branch")
                             break
                         case "develop":
+                        case "2.0.0":
                             env.PUBLISH_TO_NEXUS = 'true'
                             env.PUBLISH_SNAPSHOT = 'true'
                             env.ARTIFACT_PUBLISH_SNAPSHOT = 'true'
