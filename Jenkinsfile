@@ -305,6 +305,7 @@ def resolveCommitHash() {
 }
 
 def nexusPublish(project) {
+    sh (script: "pwd")
     sh (script: "ls compiled/")
     
     if(env.PUBLISH_SNAPSHOT == 'false') {
