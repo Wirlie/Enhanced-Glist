@@ -171,6 +171,7 @@ pipeline {
             steps {
                 script {
                     //nexusPublish("EnhancedGlist-Spigot-Bridge-API")
+                    println("Skipped for now")
                 }
             }
         }
