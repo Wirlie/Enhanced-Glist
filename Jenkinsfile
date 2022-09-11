@@ -306,12 +306,11 @@ def resolveCommitHash() {
 
 def nexusPublish(project) {
     if(env.PUBLISH_SNAPSHOT == 'false') {
+        println("Project: " + project)
         def item = nexusFetch('false', project)
-        
-        projectForPublish = project
 
         if(item == null) {
-            sh "./gradlew :${projectForPublish}:publishPluginMavenPublicationToNexusRepository --no-daemon" //ejecutar gradle
+            sh(script: "./gradlew :${project}:publishPluginMavenPublicationToNexusRepository --no-daemon") //ejecutar gradle
 
             // Fetch from Nexus
             item = nexusFetch('false', project)
