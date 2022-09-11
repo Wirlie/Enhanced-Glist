@@ -34,7 +34,10 @@ dependencies {
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     destinationDirectory.set(file("$rootDir/compiled"))
-    archiveClassifier.set("")
+
+    if(archiveClassifier.get() == "all") {
+        archiveClassifier.set("")
+    }
 
     // Relocations for Configurate - Sponge
     relocate("org.spongepowered.configurate", "dev.wirlie.shaded.org.spongepowered.configurate")
