@@ -20,12 +20,15 @@ allprojects {
     version = if(artifactSnapshot) "$artifactVersion-SNAPSHOT" else artifactVersion
 }
 
+configure(subprojects.filter { !it.name.contains("-API") }) {
+    apply(plugin = "com.github.johnrengelman.shadow")
+}
+
 subprojects {
     val subProject = this
 
     apply(plugin = "kotlin")
     apply(plugin = "kotlin-kapt")
-    apply(plugin = "com.github.johnrengelman.shadow")
     apply(plugin = "maven-publish")
 
     val localProperties = Properties()
