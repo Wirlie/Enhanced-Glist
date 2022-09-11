@@ -103,7 +103,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-BungeeCord:clean :EnhancedGlist-BungeeCord:build --no-daemon'
+                    sh './gradlew :EnhancedGlist-BungeeCord:clean :EnhancedGlist-BungeeCord:shadowJar --no-daemon'
                 }
             }
         }
@@ -124,7 +124,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-Velocity:clean :EnhancedGlist-Velocity:build --no-daemon'
+                    sh './gradlew :EnhancedGlist-Velocity:clean :EnhancedGlist-Velocity:shadowJar --no-daemon'
                 }
             }
         }
@@ -145,7 +145,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-Spigot-Bridge:clean :EnhancedGlist-Spigot-Bridge:build --no-daemon'
+                    sh './gradlew :EnhancedGlist-Spigot-Bridge:clean :EnhancedGlist-Spigot-Bridge:shadowJar --no-daemon'
                 }
             }
         }
@@ -160,19 +160,14 @@ pipeline {
                 }
             }
         }
-        stage('Artifacts Save') {
-            when { 
-                environment name: 'CI_SKIP', value: 'false'
-            }
-            steps {
-                script {
-                    echo "todo"
-                }
-            }
-        }
     }
     
     post {
+        always {
+            script {
+                archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true   
+            }
+        }
         success {
             script {
                 if(env.CI_SKIP == 'false') {
