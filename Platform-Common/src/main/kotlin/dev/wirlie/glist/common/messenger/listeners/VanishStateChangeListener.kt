@@ -38,7 +38,22 @@ class VanishStateChangeListener<S>(
 ) {
 
     override fun onObjectReceive(dataObject: String, fromPlayer: PlatformExecutor<S>, fromServer: PlatformServer<S>) {
-        platform.playerManager.setVanishState(fromPlayer, JsonParser.parseString(dataObject).asBoolean)
+        val state = JsonParser.parseString(dataObject).asBoolean
+
+        if(
+            state && platform.playerManager.hasVanishState(fromPlayer.getUUID()) ||
+            !state && !platform.playerManager.hasVanishState(fromPlayer.getUUID())
+        ) {
+            return
+        }
+
+        platform.callVanishStateChangeEvent(fromPlayer, state).whenComplete { stateRes, ex ->
+            if(ex != null) {
+                ex.printStackTrace()
+                return@whenComplete
+            }
+            platform.playerManager.setVanishState(fromPlayer, stateRes)
+        }
     }
 
 }

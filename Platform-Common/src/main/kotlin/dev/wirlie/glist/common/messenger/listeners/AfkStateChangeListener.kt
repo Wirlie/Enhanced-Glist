@@ -38,7 +38,22 @@ class AfkStateChangeListener<S>(
 ) {
 
     override fun onObjectReceive(dataObject: String, fromPlayer: PlatformExecutor<S>, fromServer: PlatformServer<S>) {
-        platform.playerManager.setAFKState(fromPlayer, JsonParser.parseString(dataObject).asBoolean)
+        val state = JsonParser.parseString(dataObject).asBoolean
+
+        if(
+            state && platform.playerManager.hasAFKState(fromPlayer.getUUID()) ||
+            !state && !platform.playerManager.hasAFKState(fromPlayer.getUUID())
+        ) {
+            return
+        }
+
+        platform.callAFKStateChangeEvent(fromPlayer, state).whenComplete { stateRes, ex ->
+            if(ex != null) {
+                ex.printStackTrace()
+                return@whenComplete
+            }
+            platform.playerManager.setAFKState(fromPlayer, stateRes)
+        }
     }
 
 }

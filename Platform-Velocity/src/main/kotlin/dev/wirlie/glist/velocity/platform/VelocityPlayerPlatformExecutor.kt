@@ -32,7 +32,7 @@ import java.util.*
  */
 class VelocityPlayerPlatformExecutor(
     val platform: VelocityPlatform,
-    private val executor: Player
+    val executor: Player
 ): PlatformExecutor<RegisteredServer>() {
 
     override fun isConsole(): Boolean {

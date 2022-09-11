@@ -36,6 +36,7 @@ import dev.wirlie.glist.common.translation.TranslatorManager
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import java.io.File
+import java.util.concurrent.CompletableFuture
 
 abstract class Platform<S, P, C> {
 
@@ -194,6 +195,10 @@ abstract class Platform<S, P, C> {
 
         return matchedServers
     }
+
+    abstract fun callAFKStateChangeEvent(fromPlayer: PlatformExecutor<S>, state: Boolean): CompletableFuture<Boolean>
+
+    abstract fun callVanishStateChangeEvent(fromPlayer: PlatformExecutor<S>, state: Boolean): CompletableFuture<Boolean>
 
     companion object {
 

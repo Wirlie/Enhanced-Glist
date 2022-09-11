@@ -34,6 +34,12 @@ class PlayerManager(
     private val knowVanishState = mutableMapOf<UUID, Boolean>()
 
     /**
+     * Check if player has "AFK" state.
+     * @return true if player has state, false if not or if player state is not know.
+     */
+    fun hasAFKState(uuid: UUID) = getAFKState(uuid) ?: false
+
+    /**
      * Get AFK state of player.
      * @param executor Executor to get current AFK state.
      * @return true if executor is AFK, null if no state is know for provided player.

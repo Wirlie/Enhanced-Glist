@@ -27,6 +27,9 @@ import com.velocitypowered.api.proxy.server.RegisteredServer
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
+import dev.wirlie.glist.velocity.api.events.AFKStateChangeEvent
+import dev.wirlie.glist.velocity.api.events.VanishStateChangeEvent
+import java.util.concurrent.CompletableFuture
 
 /**
  * Main Velocity implementation
@@ -67,6 +70,20 @@ class VelocityPlatform(
         if(pluginManager.isLoaded("luckperms")) {
             hookManager.enableLuckPermsHook()
         }
+    }
+
+    override fun callAFKStateChangeEvent(
+        fromPlayer: PlatformExecutor<RegisteredServer>,
+        state: Boolean
+    ): CompletableFuture<Boolean> {
+        return server.eventManager.fire(AFKStateChangeEvent((fromPlayer as VelocityPlayerPlatformExecutor).executor, state)).thenApply { it.getNewState() }
+    }
+
+    override fun callVanishStateChangeEvent(
+        fromPlayer: PlatformExecutor<RegisteredServer>,
+        state: Boolean
+    ): CompletableFuture<Boolean> {
+        return server.eventManager.fire(VanishStateChangeEvent((fromPlayer as VelocityPlayerPlatformExecutor).executor, state)).thenApply { it.getNewState() }
     }
 
 }

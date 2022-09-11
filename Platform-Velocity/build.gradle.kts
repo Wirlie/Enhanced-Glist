@@ -17,6 +17,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.9.1")
 
     implementation(project(":EnhancedGlist-Common"))
+    implementation(project(":EnhancedGlist-Velocity-API"))
 
     // Caffeine for Cache
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")

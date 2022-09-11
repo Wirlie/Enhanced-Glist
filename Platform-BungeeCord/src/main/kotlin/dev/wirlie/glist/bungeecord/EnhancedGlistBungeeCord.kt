@@ -20,6 +20,7 @@
 
 package dev.wirlie.glist.bungeecord
 
+import dev.wirlie.glist.bungeecord.api.impl.EnhancedGlistAPIImpl
 import dev.wirlie.glist.bungeecord.listener.PlayerDisconnectListener
 import dev.wirlie.glist.bungeecord.platform.BungeeMessenger
 import dev.wirlie.glist.bungeecord.platform.BungeePlatform
@@ -47,6 +48,9 @@ class EnhancedGlistBungeeCord: Plugin() {
         val pluginManager = proxy.pluginManager
 
         pluginManager.registerListener(this, PlayerDisconnectListener(platform))
+
+        // Init API
+        EnhancedGlistAPIImpl(platform)
     }
 
     override fun onDisable() {

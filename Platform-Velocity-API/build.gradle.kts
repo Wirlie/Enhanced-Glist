@@ -1,36 +1,28 @@
 
 repositories {
     maven {
-        url = uri("https://papermc.io/repo/repository/maven-public/")
-    }
-    maven {
-        url = uri("https://jitpack.io")
-    }
-    maven {
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+        url = uri("https://repo.papermc.io/repository/maven-public/")
     }
 }
 
 dependencies {
-    compileOnly("net.md-5:bungeecord:1.19-R0.1-SNAPSHOT")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("com.github.LeonMangler:PremiumVanish:6.2.6-4")
 
-    implementation("net.kyori:adventure-api:4.11.0")
-    implementation("net.kyori:adventure-platform-bungeecord:4.1.2")
-    implementation("net.kyori:adventure-text-minimessage:4.11.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
+    compileOnly("com.velocitypowered:velocity-api:3.1.1")
+    kapt("com.velocitypowered:velocity-api:3.1.1")
+    compileOnly("net.kyori:adventure-text-serializer-legacy:4.11.0")
     compileOnly("net.luckperms:api:5.4")
-    implementation("com.google.code.gson:gson:2.9.1")
+    compileOnly("com.google.code.gson:gson:2.9.1")
 
-    implementation(project(":EnhancedGlist-Common"))
-    implementation(project(":EnhancedGlist-BungeeCord-API"))
+    compileOnly(project(":EnhancedGlist-Common"))
 
     // Caffeine for Cache
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
+    compileOnly("com.github.ben-manes.caffeine:caffeine:3.1.1")
 
     // Configurate - Sponge
-    implementation("org.spongepowered:configurate-yaml:4.1.2")
+    compileOnly("org.spongepowered:configurate-yaml:4.1.2")
+    compileOnly("org.spongepowered:configurate-hocon:4.1.2")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -47,5 +39,8 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("kotlin", "dev.wirlie.shaded.kotlin")
     relocate("com.google.gson", "dev.wirlie.shaded.com.google.gson")
     relocate("com.github.benmanes.caffeine", "dev.wirlie.shaded.com.github.benmanes.caffeine")
-    relocate("net.kyori", "dev.wirlie.shaded.net.kyori")
+}
+
+tasks.withType<org.gradle.jvm.tasks.Jar> {
+    destinationDirectory.set(file("$rootDir/compiled"))
 }

@@ -20,6 +20,8 @@
 
 package dev.wirlie.glist.bungeecord.platform
 
+import dev.wirlie.glist.bungeecord.api.events.AFKStateChangeEvent
+import dev.wirlie.glist.bungeecord.api.events.VanishStateChangeEvent
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
@@ -27,6 +29,7 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.command.ConsoleCommandSender
+import java.util.concurrent.CompletableFuture
 
 /**
  * Main BungeeCord implementation
@@ -64,6 +67,18 @@ class BungeePlatform: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>(
         if(pluginManager.getPlugin("LuckPerms") != null) {
             hookManager.enableLuckPermsHook()
         }
+    }
+
+    override fun callAFKStateChangeEvent(fromPlayer: PlatformExecutor<ServerInfo>, state: Boolean): CompletableFuture<Boolean> {
+        val event = AFKStateChangeEvent((fromPlayer as BungeePlayerPlatformExecutor).player, state)
+        ProxyServer.getInstance().pluginManager.callEvent(event)
+        return CompletableFuture.completedFuture(event.getNewState())
+    }
+
+    override fun callVanishStateChangeEvent(fromPlayer: PlatformExecutor<ServerInfo>, state: Boolean): CompletableFuture<Boolean> {
+        val event = VanishStateChangeEvent((fromPlayer as BungeePlayerPlatformExecutor).player, state)
+        ProxyServer.getInstance().pluginManager.callEvent(event)
+        return CompletableFuture.completedFuture(event.getNewState())
     }
 
 }
