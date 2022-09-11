@@ -77,7 +77,7 @@ subprojects {
 }
 
 // Clean, remove compiled folder
-tasks.withType<Delete> {
+tasks.register("cleanCompiledArtifactsFolder") {
     val folder = project.rootProject.file("compiled")
     if(folder.exists()) {
         folder.deleteRecursively()

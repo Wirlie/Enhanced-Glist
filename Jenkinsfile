@@ -59,6 +59,7 @@ pipeline {
                     }
 
                     sh 'chmod +x ./gradlew' // give execution permission to gradlew file
+                    sh './gradlew cleanCompiledArtifactsFolder --no-daemon'
 
                     env.PUBLISH_PR_ID = 'none'
                     
@@ -104,7 +105,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew clean :EnhancedGlist-BungeeCord:shadowJar --no-daemon'
+                    sh './gradlew :EnhancedGlist-BungeeCord:shadowJar --no-daemon'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
@@ -126,7 +127,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew clean :EnhancedGlist-Velocity:shadowJar --no-daemon'
+                    sh './gradlew :EnhancedGlist-Velocity:shadowJar --no-daemon'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
@@ -148,7 +149,7 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew clean :EnhancedGlist-Spigot-Bridge:shadowJar --no-daemon'
+                    sh './gradlew :EnhancedGlist-Spigot-Bridge:shadowJar --no-daemon'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
@@ -305,9 +306,6 @@ def resolveCommitHash() {
 }
 
 def nexusPublish(project) {
-    sh (script: "pwd")
-    sh (script: "ls compiled/")
-    
     if(env.PUBLISH_SNAPSHOT == 'false') {
         println("Project to publish: " + project)
         def item = nexusFetch('false', project)
