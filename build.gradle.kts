@@ -14,13 +14,15 @@ repositories {
 }
 
 allprojects {
-    group = "com.wirlie"
+    group = "net.wirlie"
     val artifactVersion = System.getenv("ARTIFACT_VERSION") ?: "1.2"
     val artifactSnapshot = (System.getenv("ARTIFACT_PUBLISH_SNAPSHOT") != null)
     version = if(artifactSnapshot) "$artifactVersion-SNAPSHOT" else artifactVersion
 }
 
 subprojects {
+    val subProject = this
+
     apply(plugin = "kotlin")
     apply(plugin = "kotlin-kapt")
     apply(plugin = "com.github.johnrengelman.shadow")
@@ -51,7 +53,7 @@ subprojects {
     publishing {
         publications {
             create<MavenPublication>("maven") {
-                artifact("$rootDir/compiled/${this.name}-${this.version}.jar") {
+                artifact("$rootDir/compiled/${subProject.name}-${subProject.version}.jar") {
                     extension = "jar"
                 }
             }
