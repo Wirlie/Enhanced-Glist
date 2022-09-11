@@ -234,9 +234,9 @@ def nexusFetch(snapshot, project) {
                 fetchRepository = "public-releases"
             }
 
-            fetchMavenGroupId = sh(script: "./gradlew :" + project + ":properties | grep ^group: | awk '{print  $2 }' | tr -d '\n'", returnStdout: true)
-            fetchMavenArtifactId = sh(script: "./gradlew :" + project + ":properties | grep ^name: | awk '{print  $2 }' | tr -d '\n'", returnStdout: true)
-            fetchMavenBaseVersion = sh(script: "./gradlew :" + project + ":properties | grep ^version: | awk '{print  $2 }' | tr -d '\n'", returnStdout: true)
+            fetchMavenGroupId = sh(script: "./gradlew :${project}:properties | grep ^group: | awk '{print  \$2 }' | tr -d '\n'", returnStdout: true)
+            fetchMavenArtifactId = sh(script: "./gradlew :${project}:properties | grep ^name: | awk '{print  \$2 }' | tr -d '\n'", returnStdout: true)
+            fetchMavenBaseVersion = sh(script: "./gradlew :${project}:properties | grep ^version: | awk '{print  \$2 }' | tr -d '\n'", returnStdout: true)
 
             println("Artifact to fetch -> " + fetchMavenGroupId + ":" + fetchMavenArtifactId + ":" + fetchMavenBaseVersion)
 
