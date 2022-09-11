@@ -97,111 +97,76 @@ pipeline {
                 }
             }
         }
-        stage('Project Compile') {
+        stage('BungeeCord Build') {
             when { 
                 environment name: 'CI_SKIP', value: 'false' 
             }
             steps {
                 script {
-                    sh './gradlew clean build --no-daemon'
+                    sh './gradlew :EnhancedGlist-BungeeCord:clean :EnhancedGlist-BungeeCord:build --no-daemon'
                 }
             }
         }
-        stage('Nexus Deploy') {
+        stage('BungeeCord Deploy') {
             when { 
-                environment name: 'CI_SKIP', value: 'false' 
+                environment name: 'CI_SKIP', value: 'false'
                 environment name: 'PUBLISH_TO_NEXUS', value: 'true'
             }
             steps {
                 script {
-                    if(env.PUBLISH_SNAPSHOT == 'false') {
-                        def item = nexusFetch('false')
-                        
-                        if(item == null) {
-                            sh './gradlew publishPluginMavenPublicationToNexusRepository --no-daemon' //ejecutar gradle
-                            
-                            // Fetch from Nexus
-                            item = nexusFetch('false')
-                            
-                            if(item == null) {
-                                println("Release no encontrado en Nexus. Inesperado pero no se fallará el build debido a esta inconsistencia.")
-                            } else {
-                                def maven2 = item['maven2']
-                                def commitMessage = resolveCommitMessage()
-                                def commitAuthor = resolveCommitAuthor()
-
-                                withCredentials([string(credentialsId: 'discord-webhook-maven-releases', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
-                                    discordSend(
-                                        description: "Nexus Release\n\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
-                                        footer: "Jenkins - Build Pipeline", 
-                                        link: env.BUILD_URL, 
-                                        result: currentBuild.currentResult, 
-                                        title: JOB_NAME, 
-                                        webhookURL: NEXUS_DISCORD_WEBHOOK,
-                                        showChangeset: true
-                                    )
-                                }
-                            }
-                        } else {
-                            // Error, artifact already exists in Nexus
-                            def maven2 = item['maven2']
-                            def commitMessage = resolveCommitMessage()
-                            def commitAuthor = resolveCommitAuthor()
-                            
-                            withCredentials([string(credentialsId: 'discord-webhook-maven-releases', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
-                                discordSend(
-                                    description: "Aborted nexus deploy, version `" + maven2['version'] + "`.\n\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
-                                    footer: "Jenkins - Build Pipeline", 
-                                    link: env.BUILD_URL, 
-                                    result: "ABORTED", 
-                                    title: JOB_NAME, 
-                                    webhookURL: NEXUS_DISCORD_WEBHOOK,
-                                    showChangeset: true
-                                )
-                            }
-                        }
-                    } else {
-                        sh './gradlew publishPluginMavenPublicationToNexusRepository --no-daemon' //ejecutar gradle
-                        
-                        // Fetch from Nexus
-                        def item = nexusFetch('true')
-                        
-                        if(item == null) {
-                            println("Snapshot not found, not expected but we will not fail build.")
-                        } else {
-                            def maven2 = item['maven2']
-                            def commitMessage = resolveCommitMessage()
-                            def commitAuthor = resolveCommitAuthor()
-
-                            if(env.PUBLISH_PR_ID == 'none') {
-                                // Not in pull request
-                                withCredentials([string(credentialsId: 'discord-webhook-maven-snapshots', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
-                                    discordSend(
-                                        description: "Nexus Snapshot\n\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
-                                        footer: "Jenkins - Build Pipeline", 
-                                        link: env.BUILD_URL, 
-                                        result: currentBuild.currentResult, 
-                                        title: JOB_NAME, 
-                                        webhookURL: NEXUS_DISCORD_WEBHOOK,
-                                        showChangeset: true
-                                    )
-                                }
-                            } else {
-                                // Pull request
-                                withCredentials([string(credentialsId: 'discord-webhook-github-pr', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
-                                    discordSend(
-                                        description: "Pull Request **#" + env.PUBLISH_PR_ID + "**\n\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
-                                        footer: "Jenkins - Build Pipeline", 
-                                        link: env.BUILD_URL,
-                                        result: currentBuild.currentResult, 
-                                        title: JOB_NAME, 
-                                        webhookURL: NEXUS_DISCORD_WEBHOOK,
-                                        showChangeset: true
-                                    )
-                                }
-                            }
-                        }
-                    }
+                    nexusPublish("EnhancedGlist-BungeeCord")
+                }
+            }
+        }
+        stage('Velocity Build') {
+            when { 
+                environment name: 'CI_SKIP', value: 'false' 
+            }
+            steps {
+                script {
+                    sh './gradlew :EnhancedGlist-Velocity:clean :EnhancedGlist-Velocity:build --no-daemon'
+                }
+            }
+        }
+        stage('Velocity Deploy') {
+            when { 
+                environment name: 'CI_SKIP', value: 'false'
+                environment name: 'PUBLISH_TO_NEXUS', value: 'true'
+            }
+            steps {
+                script {
+                    nexusPublish("EnhancedGlist-Velocity")
+                }
+            }
+        }
+        stage('Spigot Build') {
+            when { 
+                environment name: 'CI_SKIP', value: 'false' 
+            }
+            steps {
+                script {
+                    sh './gradlew :EnhancedGlist-Spigot-Bridge:clean :EnhancedGlist-Spigot-Bridge:build --no-daemon'
+                }
+            }
+        }
+        stage('Spigot Deploy') {
+            when { 
+                environment name: 'CI_SKIP', value: 'false'
+                environment name: 'PUBLISH_TO_NEXUS', value: 'true'
+            }
+            steps {
+                script {
+                    nexusPublish("EnhancedGlist-Spigot-Bridge")
+                }
+            }
+        }
+        stage('Artifacts Save') {
+            when { 
+                environment name: 'CI_SKIP', value: 'false'
+            }
+            steps {
+                script {
+                       
                 }
             }
         }
@@ -265,7 +230,7 @@ pipeline {
     }
 }
 
-def nexusFetch(snapshot) {
+def nexusFetch(snapshot, project) {
     withCredentials([string(credentialsId: 'nexus-jenkins-user-name', variable: 'NEXUS_FETCH_USERNAME'), string(credentialsId: 'nexus-jenkins-user-pass', variable: 'NEXUS_FETCH_USERPASS')]) {
         script {
             if(snapshot == 'true') {
@@ -274,9 +239,10 @@ def nexusFetch(snapshot) {
                 fetchRepository = "public-releases"
             }
 
-            fetchMavenGroupId = sh(script: './gradlew properties | grep ^group: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
-            fetchMavenArtifactId = sh(script: './gradlew properties | grep ^name: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
-            fetchMavenBaseVersion = sh(script: './gradlew properties | grep ^version: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
+            projectToUse = project
+            fetchMavenGroupId = sh(script: './gradlew :${projectToUse}:properties | grep ^group: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
+            fetchMavenArtifactId = sh(script: './gradlew :${projectToUse}:properties | grep ^name: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
+            fetchMavenBaseVersion = sh(script: './gradlew :${projectToUse}:properties | grep ^version: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
 
             println("Artifact to fetch -> " + fetchMavenGroupId + ":" + fetchMavenArtifactId + ":" + fetchMavenBaseVersion)
 
@@ -342,4 +308,97 @@ def resolveCommitHash() {
     } else {
         return sh(script: 'git log -1 --skip 1 --pretty=format:\'%h\' ${GIT_COMMIT} | tr -d \'\n\'', returnStdout: true).trim()
     }
+}
+
+def nexusPublish(project) {
+    if(env.PUBLISH_SNAPSHOT == 'false') {
+        def item = nexusFetch('false', project)
+        
+        projectForPublish = project
+
+        if(item == null) {
+            sh './gradlew :${projectForPublish}:publishPluginMavenPublicationToNexusRepository --no-daemon' //ejecutar gradle
+
+            // Fetch from Nexus
+            item = nexusFetch('false', project)
+
+            if(item == null) {
+                println("Release no encontrado en Nexus. Inesperado pero no se fallará el build debido a esta inconsistencia.")
+            } else {
+                def maven2 = item['maven2']
+                def commitMessage = resolveCommitMessage()
+                def commitAuthor = resolveCommitAuthor()
+
+                withCredentials([string(credentialsId: 'discord-webhook-maven-releases', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
+                    discordSend(
+                        description: "Nexus Release\n\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
+                        footer: "Jenkins - Build Pipeline", 
+                        link: env.BUILD_URL, 
+                        result: currentBuild.currentResult, 
+                        title: JOB_NAME, 
+                        webhookURL: NEXUS_DISCORD_WEBHOOK,
+                        showChangeset: true
+                    )
+                }
+            }
+        } else {
+            // Error, artifact already exists in Nexus
+            def maven2 = item['maven2']
+            def commitMessage = resolveCommitMessage()
+            def commitAuthor = resolveCommitAuthor()
+
+            withCredentials([string(credentialsId: 'discord-webhook-maven-releases', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
+                discordSend(
+                    description: "Aborted nexus deploy, version `" + maven2['version'] + "`.\n\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
+                    footer: "Jenkins - Build Pipeline", 
+                    link: env.BUILD_URL, 
+                    result: "ABORTED", 
+                    title: JOB_NAME, 
+                    webhookURL: NEXUS_DISCORD_WEBHOOK,
+                    showChangeset: true
+                )
+            }
+        }
+    } else {
+        sh './gradlew :${projectForPublish}:publishPluginMavenPublicationToNexusRepository --no-daemon' //ejecutar gradle
+
+        // Fetch from Nexus
+        def item = nexusFetch('true', project)
+
+        if(item == null) {
+            println("Snapshot not found, not expected but we will not fail build.")
+        } else {
+            def maven2 = item['maven2']
+            def commitMessage = resolveCommitMessage()
+            def commitAuthor = resolveCommitAuthor()
+
+            if(env.PUBLISH_PR_ID == 'none') {
+                // Not in pull request
+                withCredentials([string(credentialsId: 'discord-webhook-maven-snapshots', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
+                    discordSend(
+                        description: "Nexus Snapshot\n\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
+                        footer: "Jenkins - Build Pipeline", 
+                        link: env.BUILD_URL, 
+                        result: currentBuild.currentResult, 
+                        title: JOB_NAME, 
+                        webhookURL: NEXUS_DISCORD_WEBHOOK,
+                        showChangeset: true
+                    )
+                }
+            } else {
+                // Pull request
+                withCredentials([string(credentialsId: 'discord-webhook-github-pr', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
+                    discordSend(
+                        description: "Pull Request **#" + env.PUBLISH_PR_ID + "**\n\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n**Repository:** `" + item['repository'] + "`\n**Nexus URL:** `https://nexus.wirlie.net/`", 
+                        footer: "Jenkins - Build Pipeline", 
+                        link: env.BUILD_URL,
+                        result: currentBuild.currentResult, 
+                        title: JOB_NAME, 
+                        webhookURL: NEXUS_DISCORD_WEBHOOK,
+                        showChangeset: true
+                    )
+                }
+            }
+        }
+    }   
 }
