@@ -386,6 +386,7 @@ def nexusPublish(project) {
             }
                 
             env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n`**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "\n"
+        }
     } else {
         println("Project to publish: " + project)
         sh (script: "./gradlew :${project}:publishMavenPublicationToNexusRepository --no-daemon") //execute gradle
