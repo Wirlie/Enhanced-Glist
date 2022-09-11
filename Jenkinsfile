@@ -59,7 +59,6 @@ pipeline {
                     }
 
                     sh 'chmod +x ./gradlew' // give execution permission to gradlew file
-                    sh './gradlew clean --no-daemon' // Execute clean
 
                     env.PUBLISH_PR_ID = 'none'
                     
@@ -104,7 +103,8 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-BungeeCord:shadowJar --no-daemon'
+                    sh './gradlew clean :EnhancedGlist-BungeeCord:shadowJar --no-daemon'
+                    archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
         }
@@ -125,7 +125,8 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-Velocity:shadowJar --no-daemon'
+                    sh './gradlew clean :EnhancedGlist-Velocity:shadowJar --no-daemon'
+                    archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
         }
@@ -146,7 +147,8 @@ pipeline {
             }
             steps {
                 script {
-                    sh './gradlew :EnhancedGlist-Spigot-Bridge:shadowJar --no-daemon'
+                    sh './gradlew clean :EnhancedGlist-Spigot-Bridge:shadowJar --no-daemon'
+                    archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
         }
@@ -164,11 +166,6 @@ pipeline {
     }
     
     post {
-        always {
-            script {
-                archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true   
-            }
-        }
         success {
             script {
                 if(env.CI_SKIP == 'false') {
