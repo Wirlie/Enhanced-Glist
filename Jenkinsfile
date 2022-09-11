@@ -310,7 +310,7 @@ def nexusPublish(project) {
         def item = nexusFetch('false', project)
 
         if(item == null) {
-            sh(script: "./gradlew :${project}:publishPluginMavenPublicationToNexusRepository --no-daemon") //execute gradle
+            sh(script: "./gradlew :${project}:publishMavenPublicationToNexusRepository --no-daemon") //execute gradle
 
             // Fetch from Nexus
             item = nexusFetch('false', project)
@@ -354,7 +354,7 @@ def nexusPublish(project) {
         }
     } else {
         println("Project to publish: " + project)
-        sh (script: "./gradlew :${project}:publishPluginMavenPublicationToNexusRepository --no-daemon") //execute gradle
+        sh (script: "./gradlew :${project}:publishMavenPublicationToNexusRepository --no-daemon") //execute gradle
 
         // Fetch from Nexus
         def item = nexusFetch('true', project)
