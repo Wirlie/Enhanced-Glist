@@ -40,6 +40,8 @@ class PluginConfiguration {
 
         var vanishNoPacket = VanishNoPacketConfiguration()
 
+        var staffFacilities = StaffFacilitiesConfiguration()
+
         @ConfigSerializable
         class JetsAntiAfkProConfiguration {
 
@@ -85,6 +87,13 @@ class PluginConfiguration {
 
         @ConfigSerializable
         class VanishNoPacketConfiguration {
+
+            var enable = true
+
+        }
+
+        @ConfigSerializable
+        class StaffFacilitiesConfiguration {
 
             var enable = true
 

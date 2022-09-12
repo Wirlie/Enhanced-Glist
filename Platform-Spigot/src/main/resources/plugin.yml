@@ -8,6 +8,7 @@ softdepend:
   - SuperVanish
   - JetsAntiAFKPro
   - VanishNoPacket
+  - StaffFacilities
 commands:
   egls:
     usage: /<command>

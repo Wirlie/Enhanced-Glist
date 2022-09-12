@@ -115,6 +115,15 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
                 plugin.logger.info("[Hook] VanishNoPacket hook disabled by configuration.")
             }
         }
+
+        pluginManager.getPlugin("StaffFacilities")?.run {
+            if(config.hooks.staffFacilities.enable) {
+                plugin.logger.info("[Hook] StaffFacilities plugin found.")
+                hooks.add(StaffFacilitiesHook(plugin).also { pluginManager.registerEvents(it, plugin) })
+            } else {
+                plugin.logger.info("[Hook] StaffFacilities hook disabled by configuration.")
+            }
+        }
     }
 
     fun getHooks() = hooks.toList()
