@@ -28,4 +28,6 @@ interface AbstractHook {
 
     fun computePlayersVanishState(): Map<UUID, Boolean>
 
+    fun unregister()
+
 }

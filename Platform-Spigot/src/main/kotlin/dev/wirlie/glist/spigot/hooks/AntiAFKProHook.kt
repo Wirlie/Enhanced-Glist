@@ -31,6 +31,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 import java.util.*
 
 /**
@@ -43,6 +44,7 @@ class AntiAFKProHook(
     val plugin: EnhancedGlistSpigot
 ): AbstractHook, Listener {
 
+    private var task: BukkitTask? = null
     val api: AntiAFKProAPI = (externalPlugin as JetsAntiAFKPro).antiAFKProAPI
 
     // We need to track afk players manually due to AntiAFKPro limitations.
@@ -80,7 +82,7 @@ class AntiAFKProHook(
         val config = plugin.configurationManager.getConfiguration().hooks.jetsAntiAfkPro
 
         // Start a task that lookup players periodically
-        object: BukkitRunnable() {
+        task = object: BukkitRunnable() {
             override fun run() {
                 for(player in Bukkit.getOnlinePlayers()) {
                     val storedAFK = knowAFKPlayers.contains(player.uniqueId)
@@ -115,6 +117,10 @@ class AntiAFKProHook(
         }
 
         return false
+    }
+
+    override fun unregister() {
+        task?.cancel()
     }
 
 }

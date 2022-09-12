@@ -22,6 +22,8 @@ package dev.wirlie.glist.spigot.hooks
 
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
 import org.bukkit.Bukkit
+import org.bukkit.event.HandlerList
+import org.bukkit.event.Listener
 
 class HookManager(val plugin: EnhancedGlistSpigot) {
 
@@ -108,6 +110,12 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
 
     fun reload() {
         plugin.logger.info("Reloading hooks...")
+        hooks.forEach { hook ->
+            if(hook is Listener) {
+                HandlerList.unregisterAll(hook)
+            }
+            hook.unregister()
+        }
         hooks.clear()
         registerHooks()
         sendAllPlayersToProxy()

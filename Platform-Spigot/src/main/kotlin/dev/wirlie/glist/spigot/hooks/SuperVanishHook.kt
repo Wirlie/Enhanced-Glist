@@ -52,4 +52,8 @@ class SuperVanishHook(
         plugin.networkMessenger.sendVanishStateToProxy(event.player, true)
     }
 
+    override fun unregister() {
+
+    }
+
 }

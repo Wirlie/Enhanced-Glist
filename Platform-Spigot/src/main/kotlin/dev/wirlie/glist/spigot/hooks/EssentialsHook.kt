@@ -64,4 +64,8 @@ class EssentialsHook(
         plugin.networkMessenger.sendAfkStateToProxy(event.affected.base, event.value)
     }
 
+    override fun unregister() {
+
+    }
+
 }
