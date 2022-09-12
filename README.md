@@ -1,5 +1,5 @@
-[![Build Status](https://ci.wirlie.net/job/Enhanced%20Glist/badge/icon?subject=Stable%20Build)](https://ci.wirlie.net/job/Enhanced%20Glist/)
-[![Build Status](https://ci.wirlie.net/job/Enhanced%20Glist-DEV/badge/icon?subject=Snapshot%20Build)](https://ci.wirlie.net/job/Enhanced%20Glist-DEV/)
+[![Build Status](https://ci.wirlie.net/job/Enhanced-Glist/job/master/badge/icon?subject=last%20stable%20-%20build%20%23${buildNumber}&config=glistStatusBadge&style=flat-square)](https://ci.wirlie.net/job/Enhanced-Glist/job/master/)
+[![Build Status](https://ci.wirlie.net/job/Enhanced-Glist/job/develop/badge/icon?subject=last%20stable%20-%20build%20%23${buildNumber}&config=glistStatusBadge&style=flat-square)](https://ci.wirlie.net/job/Enhanced-Glist/job/develop/)
 
 # About
 Enhanced Glist is a high-configurable plugin that enhances the /glist command. Currently compatible with BungeeCord and Velocity.
