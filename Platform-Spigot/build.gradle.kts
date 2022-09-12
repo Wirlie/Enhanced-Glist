@@ -10,17 +10,20 @@ repositories {
 }
 
 dependencies {
-    compileOnly("net.essentialsx:EssentialsX:2.19.0")
     compileOnly("org.spigotmc:spigot:1.8.8-R0.1-SNAPSHOT")
-    compileOnly("com.github.LeonMangler:PremiumVanish:6.2.6-4")
+
     implementation("net.kyori:adventure-api:4.11.0")
     implementation("net.kyori:adventure-platform-bukkit:4.1.2")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
+
+    // Third Party libraries with public API
+    compileOnly("net.essentialsx:EssentialsX:2.19.0")
+    compileOnly("com.github.LeonMangler:PremiumVanish:6.2.6-4")
     compileOnly("com.github.mbax:VanishNoPacket:3.22")
     compileOnly("com.github.xtomyserrax:StaffFacilities:5.0.6.0")
 
-    // Third - Party libraries (only for compilation, allocated at our private repository for development purposes)
+    // Third Party libraries without public API (only for compilation, allocated at our private repository for development purposes)
     compileOnly("github.jet315:antiafkpro:3.6.3")
 
     // Configurate - Sponge
