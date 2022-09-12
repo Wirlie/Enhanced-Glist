@@ -37,7 +37,7 @@ class EnhancedGlistBungeeCord: Plugin() {
 
     override fun onEnable() {
         adventure = BungeeAudiences.create(this)
-        platform = BungeePlatform()
+        platform = BungeePlatform(this)
         platform.pluginFolder = dataFolder
         platform.console = adventure.console()
         platform.setup(

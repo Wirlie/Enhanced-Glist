@@ -20,8 +20,10 @@
 
 package dev.wirlie.glist.bungeecord.platform
 
+import dev.wirlie.glist.bungeecord.EnhancedGlistBungeeCord
 import dev.wirlie.glist.bungeecord.api.events.AFKStateChangeEvent
 import dev.wirlie.glist.bungeecord.api.events.VanishStateChangeEvent
+import dev.wirlie.glist.bungeecord.hooks.PremiumVanishListener
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
@@ -34,7 +36,9 @@ import java.util.concurrent.CompletableFuture
 /**
  * Main BungeeCord implementation
  */
-class BungeePlatform: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>() {
+class BungeePlatform(
+    val plugin: EnhancedGlistBungeeCord
+): Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>() {
 
     override fun toPlatformServer(server: ServerInfo): PlatformServer<ServerInfo> {
         return BungeePlatformServer(this, server)
@@ -66,6 +70,10 @@ class BungeePlatform: Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>(
 
         if(pluginManager.getPlugin("LuckPerms") != null) {
             hookManager.enableLuckPermsHook()
+        }
+
+        if(pluginManager.getPlugin("PremiumVanish") != null) {
+            pluginManager.registerListener(plugin, PremiumVanishListener(this))
         }
     }
 

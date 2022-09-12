@@ -5,4 +5,4 @@ main: dev.wirlie.glist.bungeecord.EnhancedGlistBungeeCord
 softdepends:
   - LuckPerms
   - PremiumVanish
-  - SuperVanish
+  - PremiumVanish
