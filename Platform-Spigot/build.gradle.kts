@@ -4,6 +4,9 @@ repositories {
     maven {
         url = uri("https://repo.essentialsx.net/releases/")
     }
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 
 dependencies {
@@ -14,6 +17,7 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.1.2")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
+    compileOnly("com.github.mbax:VanishNoPacket:3.22")
 
     // Third - Party libraries (only for compilation, allocated at our private repository for development purposes)
     compileOnly("github.jet315:antiafkpro:3.6.3")

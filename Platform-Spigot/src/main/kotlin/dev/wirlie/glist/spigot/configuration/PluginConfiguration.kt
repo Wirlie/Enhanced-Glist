@@ -38,6 +38,8 @@ class PluginConfiguration {
 
         var superVanish = SuperVanishConfiguration()
 
+        var vanishNoPacket = VanishNoPacketConfiguration()
+
         @ConfigSerializable
         class JetsAntiAfkProConfiguration {
 
@@ -76,6 +78,13 @@ class PluginConfiguration {
 
         @ConfigSerializable
         class SuperVanishConfiguration {
+
+            var enable = true
+
+        }
+
+        @ConfigSerializable
+        class VanishNoPacketConfiguration {
 
             var enable = true
 

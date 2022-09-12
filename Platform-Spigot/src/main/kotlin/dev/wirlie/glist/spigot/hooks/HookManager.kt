@@ -106,6 +106,15 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
                 plugin.logger.info("[Hook] PremiumVanish hook disabled by configuration.")
             }
         }
+
+        pluginManager.getPlugin("VanishNoPacket")?.run {
+            if(config.hooks.vanishNoPacket.enable) {
+                plugin.logger.info("[Hook] VanishNoPacket plugin found.")
+                hooks.add(VanishNoPacketHook(this, plugin).also { pluginManager.registerEvents(it, plugin) })
+            } else {
+                plugin.logger.info("[Hook] VanishNoPacket hook disabled by configuration.")
+            }
+        }
     }
 
     fun reload() {
