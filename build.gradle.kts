@@ -1,6 +1,9 @@
 import java.util.Properties
 import java.net.URI
 
+val localProperties = Properties()
+localProperties.load(project.rootProject.file("local.properties").inputStream())
+
 plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
     kotlin("jvm") version "1.6.21"
@@ -25,14 +28,9 @@ configure(subprojects.filter { !it.name.contains("-API") }) {
 }
 
 subprojects {
-    val subProject = this
-
     apply(plugin = "kotlin")
     apply(plugin = "kotlin-kapt")
     apply(plugin = "maven-publish")
-
-    val localProperties = Properties()
-    localProperties.load(project.rootProject.file("local.properties").inputStream())
 
     repositories {
         mavenLocal()
@@ -53,10 +51,16 @@ subprojects {
         targetCompatibility = "11"
     }
 
+}
+
+// Only add Publishing task to -API projects
+configure(subprojects.filter { it.name.contains("-API") }) {
+    val subProject = this
+
     publishing {
         publications {
             create<MavenPublication>("maven") {
-                artifact("$rootDir/compiled/${subProject.name}-${subProject.version}.jar") {
+                artifact("$rootDir/compiled-api/${subProject.name}-${subProject.version}.jar") {
                     extension = "jar"
                 }
             }
@@ -76,7 +80,6 @@ subprojects {
             }
         }
     }
-
 }
 
 // Clean, remove compiled folder
