@@ -28,6 +28,7 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
     private val hooks = mutableListOf<AbstractHook>()
 
     fun sendAllPlayersToProxy() {
+        plugin.logger.info("[Bridge] Sending afk/vanish state of ${Bukkit.getOnlinePlayers().size} players to Proxy...")
         // Compute all player states from all available hooks
         val afkPlayersState = Bukkit.getOnlinePlayers().associate { Pair(it.uniqueId, false) }.toMutableMap()
         val vanishPlayersState = Bukkit.getOnlinePlayers().associate { Pair(it.uniqueId, false) }.toMutableMap()
@@ -54,6 +55,7 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
                 vanishPlayersState[player.uniqueId] ?: false
             )
         }
+        plugin.logger.info("[Bridge] Operation done.")
     }
 
     fun registerHooks() {
@@ -90,6 +92,13 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
                 }
             }
         }
+    }
+
+    fun reload() {
+        plugin.logger.info("Reloading hooks...")
+        hooks.clear()
+        registerHooks()
+        sendAllPlayersToProxy()
     }
 
 }

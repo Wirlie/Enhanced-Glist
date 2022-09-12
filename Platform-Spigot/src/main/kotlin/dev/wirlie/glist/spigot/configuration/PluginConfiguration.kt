@@ -27,6 +27,8 @@ class PluginConfiguration {
 
     var hooks = HooksConfiguration()
 
+    var messages = MessagesConfiguration()
+
     @ConfigSerializable
     class HooksConfiguration {
 
@@ -80,6 +82,17 @@ class PluginConfiguration {
             var enable = true
 
         }
+
+    }
+
+    @ConfigSerializable
+    class MessagesConfiguration {
+
+        var noPermissionToUseCommand = ""
+
+        var configurationReloaded = ""
+
+        var usage = ""
 
     }
 

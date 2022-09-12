@@ -43,9 +43,7 @@ class ConfigurationManager(
         .build()
 
     init {
-        saveDefault()
-        load()
-        applyUpdates()
+        reload()
     }
 
     fun saveDefault() {
@@ -67,7 +65,10 @@ class ConfigurationManager(
     fun getConfiguration() = pluginConfiguration
 
     fun reload() {
+        plugin.logger.info("Reloading configuration...")
+        saveDefault()
         load()
+        applyUpdates()
     }
 
     fun save() {

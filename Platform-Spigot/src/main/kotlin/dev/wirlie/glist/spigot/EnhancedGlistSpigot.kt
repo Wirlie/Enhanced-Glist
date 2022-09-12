@@ -24,6 +24,8 @@ import dev.wirlie.glist.spigot.configuration.ConfigurationManager
 import dev.wirlie.glist.spigot.hooks.HookManager
 import dev.wirlie.glist.spigot.messenger.NetworkMessenger
 import dev.wirlie.glist.spigot.messenger.NetworkMessengerListener
+import dev.wirlie.glist.spigot.util.AdventureUtil
+import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -34,6 +36,8 @@ class EnhancedGlistSpigot: JavaPlugin() {
     lateinit var configurationManager: ConfigurationManager
 
     override fun onEnable() {
+        AdventureUtil.adventure = BukkitAudiences.create(this)
+
         configurationManager = ConfigurationManager(this)
 
         server.messenger.registerOutgoingPluginChannel(this, "enhanced-glist:general")
@@ -41,15 +45,20 @@ class EnhancedGlistSpigot: JavaPlugin() {
 
         networkMessenger = NetworkMessenger(this)
         hookManager = HookManager(this)
-        hookManager.registerHooks()
 
-        logger.info("[Bridge] Sending afk/vanish state of ${Bukkit.getOnlinePlayers().size} players to Proxy...")
+        hookManager.registerHooks()
         hookManager.sendAllPlayersToProxy()
-        logger.info("[Bridge] Operation done.")
+
+        getCommand("egls")!!.executor = GlistExecutor(this)
     }
 
     override fun onDisable() {
 
+    }
+
+    fun performReload() {
+        configurationManager.reload()
+        hookManager.reload()
     }
 
 }
