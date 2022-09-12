@@ -52,8 +52,6 @@ class PluginConfiguration {
 
                 var timeToTreatPlayerAsAfk = 300
 
-                var permissionToTreatPlayerAsAfk = "eglist.state.afk"
-
             }
 
         }

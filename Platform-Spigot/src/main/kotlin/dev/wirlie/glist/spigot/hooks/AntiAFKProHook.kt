@@ -106,13 +106,10 @@ class AntiAFKProHook(
         val config = plugin.configurationManager.getConfiguration().hooks.jetsAntiAfkPro
         val settings = config.settings
 
-        if(player.hasPermission(settings.permissionToTreatPlayerAsAfk)) {
-            return true
-        }
+        val afkPlayer = api.getAFKPlayer(player)
+        val afkTime = afkPlayer?.secondsAFK ?: 0
 
-        val afkTime = api.getAFKPlayer(player)?.secondsAFK ?: 0
-
-        if(afkTime >= settings.timeToTreatPlayerAsAfk) {
+        if(afkTime >= settings.timeToTreatPlayerAsAfk || afkPlayer != null && afkPlayer.isPlayerAFKByCommand) {
             return true
         }
 
