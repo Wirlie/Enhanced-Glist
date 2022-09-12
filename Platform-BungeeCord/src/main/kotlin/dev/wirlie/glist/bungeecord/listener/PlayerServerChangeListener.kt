@@ -18,21 +18,21 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.spigot.hooks
+package dev.wirlie.glist.bungeecord.listener
 
-import org.bukkit.entity.Player
-import java.util.UUID
+import dev.wirlie.glist.bungeecord.platform.BungeePlatform
+import net.md_5.bungee.api.event.ServerSwitchEvent
+import net.md_5.bungee.api.plugin.Listener
+import net.md_5.bungee.event.EventHandler
 
-interface AbstractHook {
+class PlayerServerChangeListener(
+    val platform: BungeePlatform
+): Listener {
 
-    fun computePlayersAfkState(): Map<UUID, Boolean>
-
-    fun computePlayersVanishState(): Map<UUID, Boolean>
-
-    fun isVanished(player: Player): Boolean?
-
-    fun isAFK(player: Player): Boolean?
-
-    fun unregister()
+    @EventHandler
+    fun event(event: ServerSwitchEvent) {
+        // Remove states
+        platform.playerManager.removeStates(event.player.uniqueId)
+    }
 
 }

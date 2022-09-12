@@ -22,6 +22,7 @@ package dev.wirlie.glist.spigot
 
 import dev.wirlie.glist.spigot.configuration.ConfigurationManager
 import dev.wirlie.glist.spigot.hooks.HookManager
+import dev.wirlie.glist.spigot.listeners.PlayerJoinListener
 import dev.wirlie.glist.spigot.messenger.NetworkMessenger
 import dev.wirlie.glist.spigot.messenger.NetworkMessengerListener
 import dev.wirlie.glist.spigot.util.AdventureUtil
@@ -50,6 +51,10 @@ class EnhancedGlistSpigot: JavaPlugin() {
         hookManager.sendAllPlayersToProxy()
 
         getCommand("egls")!!.executor = GlistExecutor(this)
+
+        server.pluginManager.also { pluginManager ->
+            pluginManager.registerEvents(PlayerJoinListener(this), this)
+        }
     }
 
     override fun onDisable() {

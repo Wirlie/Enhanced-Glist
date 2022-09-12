@@ -39,18 +39,18 @@ class EssentialsHook(
     private val essentials = essentialsPlugin as Essentials
 
     override fun computePlayersAfkState(): Map<UUID, Boolean> {
-        return Bukkit.getOnlinePlayers().associate { Pair(it.uniqueId, getAfkState(it)) }
+        return Bukkit.getOnlinePlayers().associate { Pair(it.uniqueId, isAFK(it)) }
     }
 
     override fun computePlayersVanishState(): Map<UUID, Boolean> {
-        return Bukkit.getOnlinePlayers().associate { Pair(it.uniqueId, getVanishState(it)) }
+        return Bukkit.getOnlinePlayers().associate { Pair(it.uniqueId, isVanished(it)) }
     }
 
-    private fun getAfkState(player: Player): Boolean {
+    override fun isAFK(player: Player): Boolean {
         return essentials.getUser(player).isAfk
     }
 
-    private fun getVanishState(player: Player): Boolean {
+    override fun isVanished(player: Player): Boolean {
         return essentials.getUser(player).isVanished
     }
 

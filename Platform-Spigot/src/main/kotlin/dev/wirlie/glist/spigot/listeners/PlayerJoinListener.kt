@@ -18,48 +18,34 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.spigot.hooks
+package dev.wirlie.glist.spigot.listeners
 
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
-import org.bukkit.Bukkit
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.plugin.Plugin
-import org.kitteh.vanish.VanishPlugin
-import org.kitteh.vanish.event.VanishStatusChangeEvent
-import java.util.*
+import org.bukkit.event.player.PlayerJoinEvent
 
-class VanishNoPacketHook(
-    externalPlugin: Plugin,
+class PlayerJoinListener(
     val plugin: EnhancedGlistSpigot
-): AbstractHook, Listener {
-
-    private val api = externalPlugin as VanishPlugin
-
-    override fun computePlayersVanishState(): Map<UUID, Boolean> {
-        return Bukkit.getOnlinePlayers().associate { Pair(it.uniqueId, isVanished(it)) }
-    }
-
-    override fun computePlayersAfkState(): Map<UUID, Boolean> {
-        return mapOf()
-    }
-
-    override fun unregister() {
-
-    }
-
-    override fun isVanished(player: Player): Boolean {
-        return api.manager.isVanished(player)
-    }
-
-    override fun isAFK(player: Player): Boolean? {
-        return null
-    }
+): Listener {
 
     @EventHandler
-    fun event(event: VanishStatusChangeEvent) {
-        plugin.networkMessenger.sendVanishStateToProxy(event.player, event.isVanishing)
+    fun event(event: PlayerJoinEvent) {
+        var isAFK = false
+        var isVanish = false
+
+        for(hook in plugin.hookManager.getHooks()) {
+            if(hook.isAFK(event.player) == true) {
+                isAFK = true
+            }
+            if(hook.isVanished(event.player) == true) {
+                isVanish = true
+            }
+        }
+
+        //Send to proxy
+        plugin.networkMessenger.sendAfkStateToProxy(event.player, isAFK)
+        plugin.networkMessenger.sendVanishStateToProxy(event.player, isVanish)
     }
 
 }

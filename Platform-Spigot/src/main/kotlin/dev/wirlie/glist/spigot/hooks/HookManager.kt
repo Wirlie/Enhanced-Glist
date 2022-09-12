@@ -117,6 +117,8 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
         }
     }
 
+    fun getHooks() = hooks.toList()
+
     fun reload() {
         plugin.logger.info("Reloading hooks...")
         hooks.forEach { hook ->

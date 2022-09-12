@@ -25,6 +25,7 @@ import de.myzelyam.api.vanish.PostPlayerShowEvent
 import de.myzelyam.api.vanish.VanishAPI
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import java.util.*
@@ -54,6 +55,14 @@ class SuperVanishHook(
 
     override fun unregister() {
 
+    }
+
+    override fun isVanished(player: Player): Boolean {
+        return VanishAPI.isInvisible(player)
+    }
+
+    override fun isAFK(player: Player): Boolean? {
+        return null
     }
 
 }

@@ -34,6 +34,15 @@ class PlayerManager(
     private val knowVanishState = mutableMapOf<UUID, Boolean>()
 
     /**
+     * Remove all states related to player.
+     * @param uuid Player UUID.
+     */
+    fun removeStates(uuid: UUID) {
+        knowAFKState.remove(uuid)
+        knowVanishState.remove(uuid)
+    }
+
+    /**
      * Check if player has "AFK" state.
      * @return true if player has state, false if not or if player state is not know.
      */

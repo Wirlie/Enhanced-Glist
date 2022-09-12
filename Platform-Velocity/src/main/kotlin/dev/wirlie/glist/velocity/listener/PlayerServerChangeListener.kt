@@ -18,21 +18,24 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.spigot.hooks
+package dev.wirlie.glist.velocity.listener
 
-import org.bukkit.entity.Player
-import java.util.UUID
+import com.velocitypowered.api.event.Subscribe
+import com.velocitypowered.api.event.player.ServerConnectedEvent
+import dev.wirlie.glist.velocity.platform.VelocityPlatform
 
-interface AbstractHook {
+/**
+ * Listener to handle player disconnection.
+ * @param platform Velocity platform instance
+ */
+class PlayerServerChangeListener(
+    val platform: VelocityPlatform
+) {
 
-    fun computePlayersAfkState(): Map<UUID, Boolean>
-
-    fun computePlayersVanishState(): Map<UUID, Boolean>
-
-    fun isVanished(player: Player): Boolean?
-
-    fun isAFK(player: Player): Boolean?
-
-    fun unregister()
+    @Subscribe
+    fun onPlayerDisconnect(event: ServerConnectedEvent) {
+        // Remove states
+        platform.playerManager.removeStates(event.player.uniqueId)
+    }
 
 }

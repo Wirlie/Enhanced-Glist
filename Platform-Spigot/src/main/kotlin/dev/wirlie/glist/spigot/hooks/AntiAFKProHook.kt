@@ -102,7 +102,7 @@ class AntiAFKProHook(
         }.runTaskTimer(plugin, config.settings.checkPeriod.toLong(), config.settings.checkPeriod.toLong())
     }
 
-    private fun isAFK(player: Player): Boolean {
+    override fun isAFK(player: Player): Boolean {
         val config = plugin.configurationManager.getConfiguration().hooks.jetsAntiAfkPro
         val settings = config.settings
 
@@ -114,6 +114,10 @@ class AntiAFKProHook(
         }
 
         return false
+    }
+
+    override fun isVanished(player: Player): Boolean? {
+        return null
     }
 
     override fun unregister() {
