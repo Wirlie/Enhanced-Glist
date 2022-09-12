@@ -21,6 +21,8 @@
 package dev.wirlie.glist.common.configuration
 
 import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.configurate.IntRangeSerializer
+import dev.wirlie.glist.common.configurate.RegexSerializer
 import dev.wirlie.glist.common.configuration.sections.ConfigurationSection
 import dev.wirlie.glist.common.util.ConfigurateUtil
 import net.kyori.adventure.text.Component
@@ -30,6 +32,9 @@ import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.io.File
 import java.nio.file.Files
 import dev.wirlie.glist.common.configuration.sections.*
+import org.spongepowered.configurate.ConfigurationOptions
+import org.spongepowered.configurate.objectmapping.ObjectMapper
+import org.spongepowered.configurate.serialize.TypeSerializerCollection
 
 /**
  * Plugin configuration.
@@ -114,10 +119,19 @@ class PlatformConfiguration(
      * Load configuration.
      */
     fun load() {
+        val customFactory: ObjectMapper.Factory = ObjectMapper.factoryBuilder().build()
+
         configurationLoader = HoconConfigurationLoader.builder()
             .emitComments(true)
             .prettyPrinting(true)
             .path(configurationFile.toPath())
+            .defaultOptions { opts: ConfigurationOptions ->
+                opts.serializers { build: TypeSerializerCollection.Builder ->
+                    build.registerAnnotatedObjects(customFactory)
+                    build.register(IntRange::class.java, IntRangeSerializer())
+                    build.register(Regex::class.java, RegexSerializer())
+                }
+            }
             .build()
 
         configuration = configurationLoader.load()
