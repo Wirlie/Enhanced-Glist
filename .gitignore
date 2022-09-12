@@ -175,5 +175,6 @@ gradle-app.setting
 
 #EBLC
 compiled/
+compiled-api/
 
 local.properties

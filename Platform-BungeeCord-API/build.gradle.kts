@@ -33,5 +33,5 @@ dependencies {
 }
 
 tasks.withType<org.gradle.jvm.tasks.Jar> {
-    destinationDirectory.set(file("$rootDir/compiled"))
+    destinationDirectory.set(file("$rootDir/compiled-api"))
 }
