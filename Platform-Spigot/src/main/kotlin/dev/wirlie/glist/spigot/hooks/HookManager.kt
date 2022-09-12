@@ -63,33 +63,45 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
         val config = plugin.configurationManager.getConfiguration()
 
         // Essentials Hook
-        if(config.hooks.essentials.enable) {
-            pluginManager.getPlugin("Essentials")?.run {
+        pluginManager.getPlugin("Essentials")?.run {
+            if(config.hooks.essentials.enable) {
                 plugin.logger.info("[Hook] Essentials plugin found.")
                 hooks.add(EssentialsHook(this, plugin).also { pluginManager.registerEvents(it, plugin) })
+            } else {
+                plugin.logger.info("[Hook] Essentials hook disabled by configuration.")
             }
         }
 
-        if(config.hooks.jetsAntiAfkPro.enable) {
-            // AntiAFKPro Hook
-            pluginManager.getPlugin("JetsAntiAFKPro")?.run {
+        // AntiAFKPro Hook
+        pluginManager.getPlugin("JetsAntiAFKPro")?.run {
+            if(config.hooks.jetsAntiAfkPro.enable) {
                 plugin.logger.info("[Hook] JetsAntiAFKPro plugin found.")
                 hooks.add(AntiAFKProHook(this, plugin).also { pluginManager.registerEvents(it, plugin) })
+            } else {
+                plugin.logger.info("[Hook] JetsAntiAFKPro hook disabled by configuration.")
             }
         }
 
-        if(config.hooks.superVanish.enable) {
-            // SuperVanish Hook
-            if (pluginManager.getPlugin("SuperVanish")?.run {
+        // SuperVanish Hook
+        if (pluginManager.getPlugin("SuperVanish")?.run {
+                if(config.hooks.superVanish.enable) {
                     plugin.logger.info("[Hook] SuperVanish plugin found.")
                     hooks.add(SuperVanishHook(plugin).also { pluginManager.registerEvents(it, plugin) })
                     this
-                } == null) {
+                } else {
+                    plugin.logger.info("[Hook] SuperVanish hook disabled by configuration.")
+                    null
+                }
+            } == null) {
+
+            if(config.hooks.superVanish.enable) {
                 // PremiumVanish Hook
                 pluginManager.getPlugin("PremiumVanish")?.run {
                     plugin.logger.info("[Hook] PremiumVanish plugin found.")
                     hooks.add(SuperVanishHook(plugin).also { pluginManager.registerEvents(it, plugin) })
                 }
+            } else {
+                plugin.logger.info("[Hook] PremiumVanish hook disabled by configuration.")
             }
         }
     }
