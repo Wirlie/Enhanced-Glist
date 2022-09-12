@@ -27,6 +27,7 @@ import net.ess3.api.events.VanishStatusChangeEvent
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import java.util.*
@@ -54,12 +55,12 @@ class EssentialsHook(
         return essentials.getUser(player).isVanished
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: VanishStatusChangeEvent) {
         plugin.networkMessenger.sendVanishStateToProxy(event.affected.base, event.value)
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: AfkStatusChangeEvent) {
         plugin.networkMessenger.sendAfkStateToProxy(event.affected.base, event.value)
     }

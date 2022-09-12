@@ -24,6 +24,7 @@ import dev.wirlie.glist.spigot.EnhancedGlistSpigot
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.kitteh.vanish.VanishPlugin
@@ -57,7 +58,7 @@ class VanishNoPacketHook(
         return null
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: VanishStatusChangeEvent) {
         plugin.networkMessenger.sendVanishStateToProxy(event.player, event.isVanishing)
     }

@@ -27,6 +27,7 @@ import dev.wirlie.glist.spigot.EnhancedGlistSpigot
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import java.util.*
 
@@ -43,12 +44,12 @@ class SuperVanishHook(
         return Bukkit.getOnlinePlayers().associate { Pair(it.uniqueId, VanishAPI.isInvisible(it)) }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: PostPlayerShowEvent) {
         plugin.networkMessenger.sendVanishStateToProxy(event.player, false)
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: PostPlayerHideEvent) {
         plugin.networkMessenger.sendVanishStateToProxy(event.player, true)
     }
