@@ -61,6 +61,7 @@ pipeline {
                     sh 'chmod +x ./gradlew' // give execution permission to gradlew file
                     sh './gradlew cleanCompiledArtifactsFolder'
 
+                    env.ARTIFACT_PUBLISH_SNAPSHOT = 'false'
                     env.PUBLISH_PR_ID = 'none'
                     env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = ''
                     env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = ''
