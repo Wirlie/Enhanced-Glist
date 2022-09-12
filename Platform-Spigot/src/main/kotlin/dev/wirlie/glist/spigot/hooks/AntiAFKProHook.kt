@@ -21,9 +21,11 @@
 package dev.wirlie.glist.spigot.hooks
 
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
+import dev.wirlie.glist.spigot.configuration.PluginConfiguration
 import me.jet315.antiafkpro.AntiAFKProAPI
 import me.jet315.antiafkpro.JetsAntiAFKPro
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
@@ -47,7 +49,6 @@ class AntiAFKProHook(
     private val knowAFKPlayers = mutableListOf<UUID>()
 
     init {
-        // Unfortunately, this plugin does not fire events when player is going to be AFK, so we need to handle this manually...
         detectAFKPlayers()
         startLookupTask()
     }
@@ -69,38 +70,51 @@ class AntiAFKProHook(
 
     private fun detectAFKPlayers() {
         for(player in Bukkit.getOnlinePlayers()) {
-            val afkPlayer = api.getAFKPlayer(player)
-            if(afkPlayer != null) {
-                // This player is afk
+            if(isAFK(player)) {
                 knowAFKPlayers.add(player.uniqueId)
             }
         }
     }
 
     private fun startLookupTask() {
+        val config = plugin.configurationManager.getConfiguration().hooks.jetsAntiAfkPro
+
         // Start a task that lookup players periodically
         object: BukkitRunnable() {
             override fun run() {
                 for(player in Bukkit.getOnlinePlayers()) {
-                    val afkPlayer = api.getAFKPlayer(player)
-                    val isCurrentAFK = knowAFKPlayers.contains(player.uniqueId)
+                    val storedAFK = knowAFKPlayers.contains(player.uniqueId)
+                    val currentAFK = isAFK(player)
 
-                    if(afkPlayer == null) {
-                        if(isCurrentAFK) {
-                            // Remove AFK state
-                            knowAFKPlayers.remove(player.uniqueId)
-                            plugin.networkMessenger.sendAfkStateToProxy(player, false)
-                        }
-                    } else {
-                        if (!isCurrentAFK) {
-                            // Add AFK state
-                            knowAFKPlayers.add(player.uniqueId)
-                            plugin.networkMessenger.sendAfkStateToProxy(player, true)
-                        }
+                    if(storedAFK && !currentAFK) {
+                        // Remove AFK state
+                        knowAFKPlayers.remove(player.uniqueId)
+                        plugin.networkMessenger.sendAfkStateToProxy(player, false)
+                    } else if(!storedAFK && currentAFK) {
+                        // Add AFK state
+                        knowAFKPlayers.add(player.uniqueId)
+                        plugin.networkMessenger.sendAfkStateToProxy(player, true)
                     }
                 }
             }
-        }.runTaskTimer(plugin, 20, 20)
+        }.runTaskTimer(plugin, config.settings.checkPeriod.toLong(), config.settings.checkPeriod.toLong())
+    }
+
+    private fun isAFK(player: Player): Boolean {
+        val config = plugin.configurationManager.getConfiguration().hooks.jetsAntiAfkPro
+        val settings = config.settings
+
+        if(player.hasPermission(settings.permissionToTreatPlayerAsAfk)) {
+            return true
+        }
+
+        val afkTime = api.getAFKPlayer(player)?.secondsAFK ?: 0
+
+        if(afkTime >= settings.timeToTreatPlayerAsAfk) {
+            return true
+        }
+
+        return false
     }
 
 }
