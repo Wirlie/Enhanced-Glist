@@ -18,38 +18,36 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.bungeecord.platform
+package dev.wirlie.glist.common.display
 
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configuration.sections.BehaviorSection
-import dev.wirlie.glist.common.configuration.sections.GeneralSection
+import dev.wirlie.glist.common.pageable.FilteredDataProvider
 import dev.wirlie.glist.common.platform.PlatformExecutor
-import dev.wirlie.glist.common.platform.PlatformServer
-import net.md_5.bungee.api.config.ServerInfo
 
-/**
- * BungeeCord implementation for server.
- * @param platform BungeeCord platform instance.
- * @param server BungeeCord server reference.
- */
-class BungeePlatformServer(
-    val platform: BungeePlatform,
-    server: ServerInfo
-): PlatformServer<ServerInfo>(
-    server
+class PlayersDataProvider<S>(
+    val executor: PlatformExecutor<S>,
+    val platform: Platform<*,*,*>,
+    data: List<PlatformExecutor<S>>
+): FilteredDataProvider<PlatformExecutor<S>>(
+    data
 ) {
 
-    override fun getName(): String {
-        val upperCase = platform.configuration.getSection(GeneralSection::class.java).displayServerNameUppercase
-        return if (upperCase) {
-            server.name.uppercase()
-        } else {
-            server.name
-        }
-    }
+    override fun applyFilter(element: PlatformExecutor<S>): Boolean {
+        val configuration = platform.configuration.getSection(BehaviorSection::class.java)
 
-    override fun getPlayers(): List<PlatformExecutor<ServerInfo>> {
-        return server.players.map { BungeePlayerPlatformExecutor(platform, it) }
+        return if (
+            !configuration.vanish.enable /* Vanish is not enabled */ ||
+            executor.isConsole() /* Console always have permission */
+        ) {
+            true
+        } else {
+            // Hide vanished players if executor does not have permission
+            val vanishBypassPermission = configuration.vanish.hideBypassPermission
+            val canSeeVanished = !configuration.vanish.hideVanishedUsers || executor.hasPermission(vanishBypassPermission)
+
+            canSeeVanished || !platform.playerManager.hasVanishState(element.getUUID())
+        }
     }
 
 }

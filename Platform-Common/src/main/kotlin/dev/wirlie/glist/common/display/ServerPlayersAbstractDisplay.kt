@@ -18,33 +18,22 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.common.pageable
+package dev.wirlie.glist.common.display
 
-/**
- * Pagination controller.
- * @param initialPageSize Page size.
- * @param initialData Data to use.
- */
-open class PageController<T>(
-    pageSize: Int,
-    dataProvider: DataProvider<T>
-): Pageable<T>(
-    pageSize,
-    dataProvider
-) {
+import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.pageable.PageDisplay
+import dev.wirlie.glist.common.platform.PlatformExecutor
+import dev.wirlie.glist.common.platform.PlatformServerGroup
+import net.kyori.adventure.audience.Audience
 
-    var currentPage = 0
-
-    fun tryNextPage(): Page<T>? {
-        if(currentPage >= calculateTotalPages()) return null
-        currentPage++
-        return getPage(currentPage)
-    }
-
-    fun tryPreviousPage(): Page<T>? {
-        if(currentPage <= 0) return null
-        currentPage--
-        return getPage(currentPage)
-    }
-
-}
+abstract class ServerPlayersAbstractDisplay<S>(
+    val platform: Platform<S, *, *>,
+    val serverGroup: PlatformServerGroup<S>,
+    val executor: PlatformExecutor<S>,
+    audience: Audience,
+    playersPerPage: Int
+) : PageDisplay<PlatformExecutor<S>>(
+    audience,
+    playersPerPage,
+    PlayersDataProvider(executor, platform, serverGroup.getPlayers())
+)

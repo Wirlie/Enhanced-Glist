@@ -25,7 +25,9 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
-import dev.wirlie.glist.common.display.ServerPlayersDisplay
+import dev.wirlie.glist.common.display.ServerPlayersAbstractDisplay
+import dev.wirlie.glist.common.display.ServerPlayersChatDisplay
+import dev.wirlie.glist.common.display.ServerPlayersGUIDisplay
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
@@ -53,7 +55,7 @@ class SlistCommand<S>(
     permission
 ) {
 
-    private var cache: Cache<String, ServerPlayersDisplay<S>>? = null
+    private var cache: Cache<String, ServerPlayersAbstractDisplay<S>>? = null
 
     init {
         platform.configuration.getSection(GeneralSection::class.java).also { config ->
@@ -106,7 +108,7 @@ class SlistCommand<S>(
             return
         }
 
-        if(server.getPlayers(executor).isEmpty()) {
+        if(server.getPlayers().isEmpty()) {
             // No players in server
             audience.sendMessage(
                 AdventureUtil.parseMiniMessage(
@@ -118,31 +120,45 @@ class SlistCommand<S>(
 
         val display = getDisplayFor(executor, server)
         var page = ((if(args.size > 1) args[1].toIntOrNull() else null) ?: 1) - 1
+        val totalPages = display.calculateTotalPages()
 
         if(page < 0) {
             page = 0
-        } else if(page >= display.totalPages) {
-            page = max(display.totalPages - 1, 0)
+        } else if(page >= totalPages) {
+            page = max(totalPages - 1, 0)
         }
 
         display.showPage(page)
     }
 
-    private fun getDisplayFor(executor: PlatformExecutor<S>, server: PlatformServerGroup<S>): ServerPlayersDisplay<S> {
+    private fun getDisplayFor(executor: PlatformExecutor<S>, server: PlatformServerGroup<S>): ServerPlayersAbstractDisplay<S> {
 
-        fun makeDisplay(): ServerPlayersDisplay<S> {
-            return ServerPlayersDisplay(
-                platform,
-                server,
-                executor,
-                executor.asAudience(),
-                platform.configuration.getSection(GeneralSection::class.java).playersPerPage
-            )
+        fun makeDisplay(executor: PlatformExecutor<S>): ServerPlayersAbstractDisplay<S> {
+            if(
+                !platform.configuration.getSection(CommandsSection::class.java).glist.useGuiMenu ||
+                executor.isConsole() // Console is not compatible with GUI
+            ) {
+                return ServerPlayersChatDisplay(
+                    platform,
+                    server,
+                    executor,
+                    executor.asAudience(),
+                    platform.configuration.getSection(GeneralSection::class.java).playersPerPage
+                )
+            } else {
+                return ServerPlayersGUIDisplay(
+                    platform,
+                    server,
+                    executor,
+                    executor.asAudience(),
+                    platform.configuration.getSection(GeneralSection::class.java).playersPerPage
+                )
+            }
         }
 
         if(cache == null) {
             // Cache disabled, always make a new instance.
-            return makeDisplay()
+            return makeDisplay(executor)
         }
 
         val key = if (executor.isConsole()) "console" else "player-${executor.getUUID()}"
@@ -154,7 +170,7 @@ class SlistCommand<S>(
         }
 
         // Cache not exists, or exists for another server...
-        val newDisplay = makeDisplay()
+        val newDisplay = makeDisplay(executor)
         cache!!.put(key, newDisplay)
 
         return newDisplay

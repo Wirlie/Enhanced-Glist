@@ -34,10 +34,8 @@ abstract class PlatformServer<S>(
 
     /**
      * Get players connected to this server.
-     * @param onlyReachableBy Optional executor to use to filter vanished players if executor does not have permission
-     * to see vanished players, if no executor is provided then all players will be returned.
      */
-    abstract fun getPlayers(onlyReachableBy: PlatformExecutor<S>? = null): List<PlatformExecutor<S>>
+    abstract fun getPlayers(): List<PlatformExecutor<S>>
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

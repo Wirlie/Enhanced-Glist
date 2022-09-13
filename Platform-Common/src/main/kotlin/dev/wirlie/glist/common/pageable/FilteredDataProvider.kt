@@ -20,31 +20,14 @@
 
 package dev.wirlie.glist.common.pageable
 
-/**
- * Pagination controller.
- * @param initialPageSize Page size.
- * @param initialData Data to use.
- */
-open class PageController<T>(
-    pageSize: Int,
-    dataProvider: DataProvider<T>
-): Pageable<T>(
-    pageSize,
-    dataProvider
-) {
+abstract class FilteredDataProvider<T>(
+    val data: List<T>
+): DataProvider<T> {
 
-    var currentPage = 0
+    abstract fun applyFilter(element: T): Boolean
 
-    fun tryNextPage(): Page<T>? {
-        if(currentPage >= calculateTotalPages()) return null
-        currentPage++
-        return getPage(currentPage)
-    }
-
-    fun tryPreviousPage(): Page<T>? {
-        if(currentPage <= 0) return null
-        currentPage--
-        return getPage(currentPage)
+    override fun provideData(): List<T> {
+        return data.filter { applyFilter(it) }
     }
 
 }

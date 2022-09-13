@@ -55,7 +55,7 @@ class GlistCommand<S>(
         val display = getDisplayFor(executor)
         val audience = executor.asAudience()
 
-        if(display.data.isEmpty()) {
+        if(display.dataProvider.provideData().isEmpty()) {
             audience.sendMessage(
                 AdventureUtil.parseMiniMessage(
                     platform.translatorManager.getTranslator().getMessages().glist.noServersToDisplay
@@ -70,8 +70,9 @@ class GlistCommand<S>(
             (args[0].toIntOrNull() ?: 1) - 1
         }
 
-        if(page >= display.totalPages) {
-            page = display.totalPages - 1
+        val totalPages = display.calculateTotalPages()
+        if(page >= totalPages) {
+            page = totalPages - 1
         }
 
         if(page < 0) {
@@ -99,7 +100,7 @@ class GlistCommand<S>(
             executor,
             executor.asAudience(),
             platform.configuration.getSection(GeneralSection::class.java).serversPerPage,
-            platform.getAllServersGrouped(executor).sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayers().size }.thenBy { it.getName() }).toMutableList()
+            platform.getAllServersGrouped().sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayers().size }.thenBy { it.getName() }).toMutableList()
         )
 
         cache.put(key, newDisplay)

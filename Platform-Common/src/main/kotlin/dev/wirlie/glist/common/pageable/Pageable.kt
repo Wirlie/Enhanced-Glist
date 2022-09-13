@@ -24,53 +24,17 @@ import kotlin.math.ceil
 
 /**
  * Utility class to paginate data in multiple pages.
- * @param initialPageSize Page size.
- * @param initialData Data to use.
+ * @param pageSize Page size.
+ * @param dataProvider Data to use.
  */
 open class Pageable<T>(
-    initialPageSize: Int,
-    initialData: MutableList<T> = mutableListOf()
+    var pageSize: Int,
+    var dataProvider: DataProvider<T>
 ) {
 
-    /**
-     * Page size.
-     */
-    var pageSize: Int = initialPageSize
-        set(value) {
-            field = value
-            calculateTotalPages()
-        }
-
-    /**
-     * Data to use for pagination.
-     */
-    var data: MutableList<T> = initialData
-        set(value) {
-            field = value
-            calculateTotalPages()
-        }
-
-    /**
-     * Total number of pages.
-     */
-    var totalPages = 0
-
-    init {
-        calculateTotalPages()
-    }
-
-    /**
-     * Calculate total number of pages.
-     */
-    private fun calculateTotalPages() {
-        totalPages = ceil(data.size / pageSize.toDouble()).toInt()
-    }
-
-    /**
-     * Refresh pagination, useful to recalculate total number of pages.
-     */
-    fun refresh() {
-        calculateTotalPages()
+    fun calculateTotalPages(): Int {
+        val data = dataProvider.provideData()
+        return ceil(data.size / this.pageSize.toDouble()).toInt()
     }
 
     /**
@@ -79,8 +43,11 @@ open class Pageable<T>(
      * @return Page.
      */
     fun getPage(pageNumber: Int): Page<T> {
+        val data = dataProvider.provideData()
+        val totalPages = calculateTotalPages()
+
         if(pageNumber < 0) throw IndexOutOfBoundsException("Page number cannot be less than 0.")
-        if(pageNumber >= totalPages) throw IndexOutOfBoundsException("Page number cannot be equals or greater than total number of pages.")
+        if(pageNumber >= calculateTotalPages()) throw IndexOutOfBoundsException("Page number cannot be equals or greater than total number of pages.")
 
         val start = pageSize * pageNumber
         var end = start + pageSize
@@ -91,7 +58,7 @@ open class Pageable<T>(
 
         val elements = data.subList(start, end).toList()
 
-        return Page(pageNumber, totalPages, elements, pageNumber > 0, pageNumber < totalPages - 1)
+        return Page(pageNumber, elements, pageNumber > 0, pageNumber < totalPages - 1)
     }
 
 }

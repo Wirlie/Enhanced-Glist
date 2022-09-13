@@ -38,18 +38,18 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
  * @param executor Command executor.
  * @param audience Audience to send the result of this display.
  * @param initialPageSize Elements per page.
- * @param initialData Data to use for pagination.
+ * @param data Data to use for pagination.
  */
 class ServersListDisplay<S>(
     val platform: Platform<S, *, *>,
     val executor: PlatformExecutor<S>,
     audience: Audience,
     initialPageSize: Int,
-    initialData: MutableList<PlatformServerGroup<S>> = mutableListOf()
+    data: MutableList<PlatformServerGroup<S>> = mutableListOf()
 ): PageDisplay<PlatformServerGroup<S>>(
     audience,
     initialPageSize,
-    initialData
+    ServersDataProvider(data)
 ) {
 
     override fun buildPageDisplay(page: Page<PlatformServerGroup<S>>) {
@@ -58,6 +58,7 @@ class ServersListDisplay<S>(
         val serversFormat = glistMessages.serversFormat
         val glistLabel = platform.configuration.getSection(CommandsSection::class.java).glist.label
         val slistLabel = platform.configuration.getSection(CommandsSection::class.java).slist.label
+        val totalPages = calculateTotalPages()
 
         val mainMessage = AdventureUtil.parseMiniMessage(
             AdventureUtil.groupListToString(
@@ -67,7 +68,7 @@ class ServersListDisplay<S>(
                 "page-number", Tag.selfClosingInserting(Component.text("${page.pageNumber + 1}"))
             ),
             TagResolver.resolver(
-                "total-pages", Tag.selfClosingInserting(Component.text("${page.totalPages}"))
+                "total-pages", Tag.selfClosingInserting(Component.text("${totalPages}"))
             ),
             TagResolver.resolver(
                 "players-amount", Tag.selfClosingInserting(Component.text("${platform.getConnectedPlayersAmount()}"))

@@ -27,7 +27,6 @@ import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.pageable.Page
 import dev.wirlie.glist.common.pageable.PageDisplay
 import dev.wirlie.glist.common.platform.PlatformExecutor
-import dev.wirlie.glist.common.platform.PlatformServer
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.translation.TranslationMessages
 import dev.wirlie.glist.common.util.AdventureUtil
@@ -36,7 +35,6 @@ import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.tag.Tag
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
-import java.util.*
 import kotlin.math.ceil
 
 /**
@@ -47,16 +45,14 @@ import kotlin.math.ceil
  * @param audience Audience to send the result of this display.
  * @param playersPerPage Players to display per page.
  */
-class ServerPlayersDisplay<S>(
-    val platform: Platform<S, *, *>,
-    val serverGroup: PlatformServerGroup<S>,
-    val executor: PlatformExecutor<S>,
+class ServerPlayersChatDisplay<S>(
+    platform: Platform<S, *, *>,
+    serverGroup: PlatformServerGroup<S>,
+    executor: PlatformExecutor<S>,
     audience: Audience,
     playersPerPage: Int
-): PageDisplay<PlatformExecutor<S>>(
-    audience,
-    playersPerPage,
-    serverGroup.getPlayers(executor).toMutableList()
+): ServerPlayersAbstractDisplay<S>(
+    platform, serverGroup, executor, audience, playersPerPage
 ) {
 
     override fun buildPageDisplay(page: Page<PlatformExecutor<S>>) {
@@ -70,6 +66,7 @@ class ServerPlayersDisplay<S>(
         }
 
         val pageControllerMessages = slistMessages.pageController
+        val totalPages = calculateTotalPages()
 
         val mainMessage = AdventureUtil.parseMiniMessage(
             AdventureUtil.groupListToString(messageToUse),
@@ -89,7 +86,7 @@ class ServerPlayersDisplay<S>(
                 "page-number", Tag.selfClosingInserting(Component.text("${page.pageNumber + 1}"))
             ),
             TagResolver.resolver(
-                "total-pages", Tag.selfClosingInserting(Component.text("${page.totalPages}"))
+                "total-pages", Tag.selfClosingInserting(Component.text("$totalPages"))
             ),
             TagResolver.resolver(
                 "page-controller",

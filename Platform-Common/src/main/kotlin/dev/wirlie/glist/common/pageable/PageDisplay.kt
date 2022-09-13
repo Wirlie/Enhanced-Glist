@@ -31,11 +31,11 @@ import kotlin.math.max
  */
 abstract class PageDisplay<T>(
     val audience: Audience,
-    initialPageSize: Int,
-    initialData: MutableList<T> = mutableListOf()
+    pageSize: Int,
+    dataProvider: DataProvider<T>
 ): PageController<T>(
-    initialPageSize,
-    initialData
+    pageSize,
+    dataProvider
 ) {
 
     abstract fun buildPageDisplay(page: Page<T>)
@@ -57,6 +57,8 @@ abstract class PageDisplay<T>(
     }
 
     fun showPage(pageNumber: Int) {
+        val totalPages = calculateTotalPages()
+
         currentPage = if(pageNumber < 0) {
             0
         } else if(pageNumber >= totalPages) {

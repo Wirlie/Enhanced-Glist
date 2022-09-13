@@ -140,9 +140,7 @@ abstract class Platform<S, P, C> {
         return PlatformServerGroup(groupConfiguration.serverName, servers)
     }
 
-    fun getAllServersGrouped(
-        executor: PlatformExecutor<S>
-    ): List<PlatformServerGroup<S>> {
+    fun getAllServersGrouped(): List<PlatformServerGroup<S>> {
         val ignoreServersConfiguration = configuration.getSection(IgnoreServersSection::class.java)
         val groupsConfiguration = configuration.getSection(GroupServersSection::class.java)
         val allServers = getAllServers()
@@ -172,7 +170,7 @@ abstract class Platform<S, P, C> {
                 if(minPlayers < 0) {
                     minPlayers = 0
                 }
-                this.filter { it.getPlayersCount(executor) <= minPlayers }
+                this.filter { it.getPlayersCount() <= minPlayers }
             } else {
                 this
             }

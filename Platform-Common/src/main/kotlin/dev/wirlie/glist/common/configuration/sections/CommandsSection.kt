@@ -42,6 +42,8 @@ class CommandsSection: ConfigurationSection {
         var permission: String = "egl.commands.glist"
 
         var aliases: Array<String> = arrayOf()
+
+        var useGuiMenu = true
     }
 
     @ConfigSerializable
@@ -52,6 +54,8 @@ class CommandsSection: ConfigurationSection {
         var permission: String = "egl.commands.slist"
 
         var aliases: Array<String> = arrayOf()
+
+        var useGuiMenu = true
     }
 
 }
