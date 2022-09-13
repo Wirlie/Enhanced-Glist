@@ -36,13 +36,13 @@ open class PageController<T>(
     var currentPage = 0
 
     fun tryNextPage(): Page<T>? {
-        if(currentPage >= calculateTotalPages()) return null
+        if((currentPage + 1) >= calculateTotalPages()) return null
         currentPage++
         return getPage(currentPage)
     }
 
     fun tryPreviousPage(): Page<T>? {
-        if(currentPage <= 0) return null
+        if((currentPage - 1) < 0) return null
         currentPage--
         return getPage(currentPage)
     }

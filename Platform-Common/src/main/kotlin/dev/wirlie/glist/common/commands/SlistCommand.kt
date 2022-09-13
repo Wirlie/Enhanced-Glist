@@ -25,6 +25,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
+import dev.wirlie.glist.common.display.PlayersDataProvider
 import dev.wirlie.glist.common.display.ServerPlayersAbstractDisplay
 import dev.wirlie.glist.common.display.ServerPlayersChatDisplay
 import dev.wirlie.glist.common.display.ServerPlayersGUIDisplay
@@ -35,7 +36,9 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.tag.Tag
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import java.util.concurrent.TimeUnit
+import kotlin.math.ceil
 import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Implementation for /slist command.
@@ -135,6 +138,7 @@ class SlistCommand<S>(
 
         fun makeDisplay(executor: PlatformExecutor<S>): ServerPlayersAbstractDisplay<S> {
             if(
+                !platform.guiSystemEnabled || // GUI System not enabled
                 !platform.configuration.getSection(CommandsSection::class.java).glist.useGuiMenu ||
                 executor.isConsole() // Console is not compatible with GUI
             ) {
@@ -146,12 +150,23 @@ class SlistCommand<S>(
                     platform.configuration.getSection(GeneralSection::class.java).playersPerPage
                 )
             } else {
+                var rows = platform.guiManager!!.slistConfig.rows
+
+                if(rows == -1) {
+                    // Calculate manually
+                    val temporalProvider = PlayersDataProvider(executor, platform, server.getPlayers())
+                    val data = temporalProvider.provideData()
+                    rows = ceil(data.size / 9.0).toInt()
+                }
+
+                rows = min(max(rows, 2), 6)
+
                 return ServerPlayersGUIDisplay(
                     platform,
                     server,
                     executor,
                     executor.asAudience(),
-                    platform.configuration.getSection(GeneralSection::class.java).playersPerPage
+                    rows
                 )
             }
         }

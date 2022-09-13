@@ -105,6 +105,8 @@ abstract class Platform<S, P, C> {
 
     abstract fun registerHooks()
 
+    abstract fun performCommandForPlayer(player: PlatformExecutor<S>, command: String)
+
     fun enableGUISystem() {
         if(!guiSystemEnabled) {
             guiSystemEnabled = true

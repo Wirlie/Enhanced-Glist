@@ -22,9 +22,11 @@ package dev.wirlie.glist.common.util
 
 import dev.wirlie.glist.common.Platform
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.minimessage.tag.Tag
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 
 object AdventureUtil {
@@ -32,6 +34,7 @@ object AdventureUtil {
     val miniMessage: MiniMessage = MiniMessage.miniMessage()
     val legacySectionSerializer = LegacyComponentSerializer.legacySection()
     val legacyAmpersandSerializer = LegacyComponentSerializer.legacyAmpersand()
+    val gsonSerializer = GsonComponentSerializer.colorDownsamplingGson()
 
     fun parseMiniMessage(text: String, vararg tagResolver: TagResolver): Component {
 
@@ -45,6 +48,12 @@ object AdventureUtil {
         )
 
         return miniMessage.deserialize(text, *resolvers.toTypedArray())
+    }
+
+    fun parseMiniMessageAndGsonSerialize(text: String, removeItalicDecoration: Boolean, vararg tagResolver: TagResolver): String {
+        return gsonSerializer.serialize(
+            parseMiniMessage(text, *tagResolver).decoration(TextDecoration.ITALIC, !removeItalicDecoration)
+        )
     }
 
     fun legacySectionSerialize(component: Component): String {

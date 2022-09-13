@@ -20,6 +20,7 @@
 
 package dev.wirlie.glist.common.gui.config
 
+import dev.simplix.protocolize.data.ItemType
 import dev.wirlie.glist.common.gui.config.toolbar.DefinitionsCustomConfig
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
@@ -35,18 +36,26 @@ class ToolBarConfig {
     @ConfigSerializable
     class PreviousPageItemConfig {
 
-        var slot = 2
+        var material = ItemType.ARROW
+
+        var amount = 1
 
         var displayName = "<yellow>« Go to the previous page"
+
+        var lore = mutableListOf<String>()
 
     }
 
     @ConfigSerializable
     class NextPageItemConfig {
 
-        var slot = 8
+        var material = ItemType.ARROW
+
+        var amount = 1
 
         var displayName = "<yellow>Go to the next page »"
+
+        var lore = mutableListOf<String>()
 
     }
 

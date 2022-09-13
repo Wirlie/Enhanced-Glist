@@ -109,7 +109,7 @@ class GUIManager(
             applyUpdates(glistConfigFile, it, glistConfigLoader)
         }.get(GuiGlistMenuConfig::class.java)!!
 
-        slistConfig = glistConfigLoader.load().also {
+        slistConfig = slistConfigLoader.load().also {
             applyUpdates(slistConfigFile, it, slistConfigLoader)
         }.get(GuiSlistMenuConfig::class.java)!!
     }

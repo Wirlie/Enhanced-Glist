@@ -28,11 +28,12 @@ class ItemDefinitionConfig(
     key: String,
     node: ConfigurationNode,
     var material: ConfigReference<ItemType>,
+    var amount: ConfigReference<Int>,
     var displayName: ConfigReference<String?>,
     var lore: ConfigReference<MutableList<String>?>,
     var onClick: ConfigReference<OnClickConfiguration?>
 ): AbstractDefinitionConfig(
-    key, node
+    key, key.toCharArray()[1], node
 ) {
 
     class OnClickConfiguration(

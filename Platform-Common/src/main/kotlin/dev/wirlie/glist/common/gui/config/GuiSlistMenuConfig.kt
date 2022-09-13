@@ -26,7 +26,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 @ConfigSerializable
 class GuiSlistMenuConfig {
 
-    var title = "Global List - Page <page>/<total-pages>"
+    var title = "Server <server-name> - <page>/<total-pages>"
 
     var rows = 1
 
@@ -48,11 +48,11 @@ class GuiSlistMenuConfig {
 
             var material: ItemType = ItemType.CHEST
 
-            var amount = -1
+            var amount = 1
 
-            var displayName = "<yellow>Server <white><server-name></white>"
+            var displayName = "<afk-status><player-prefix> <white><player-name></white> <vanish-status>"
 
-            var lore = mutableListOf("<player-count> <aqua>players online</aqua>", "<yellow>Click to view player list.")
+            var lore = mutableListOf<String>()
 
         }
 

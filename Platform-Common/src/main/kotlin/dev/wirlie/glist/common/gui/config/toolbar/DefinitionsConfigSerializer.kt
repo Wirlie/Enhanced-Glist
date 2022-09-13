@@ -27,6 +27,8 @@ import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.serialize.SerializationException
 import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
+import kotlin.math.max
+import kotlin.math.min
 
 class DefinitionsConfigSerializer: TypeSerializer<DefinitionsCustomConfig> {
 
@@ -36,6 +38,10 @@ class DefinitionsConfigSerializer: TypeSerializer<DefinitionsCustomConfig> {
         val definitions = mutableListOf<AbstractDefinitionConfig>()
 
         data.forEach {
+            if(it.key.length != 2) {
+                throw SerializationException("Not expected key definition \"${it.key}\": key should start with 'i' or 'm' and have a total length of two characters.")
+            }
+
             if(it.key.startsWith("i")) {
                 definitions.add(loadItemDefinition(it.key, it.value))
             } else if(it.key.startsWith("m")) {
@@ -65,6 +71,7 @@ class DefinitionsConfigSerializer: TypeSerializer<DefinitionsCustomConfig> {
 
         val displayName = node.node("display-name").run { ConfigReference(this, string) }
         val lore = node.node("lore").run { ConfigReference(this, if(this.virtual()) null else getList(String::class.java)) }
+        val amount = node.node("amount").run { ConfigReference(this, if(this.virtual()) 1 else min(max(1, int), 64)) }
         val onClick = if(node.hasChild("on-click")) {
             val onClickNode = node.node("on-click")
             val sendChat = onClickNode.node("send-chat").run { ConfigReference(this, string) }
@@ -77,7 +84,7 @@ class DefinitionsConfigSerializer: TypeSerializer<DefinitionsCustomConfig> {
             }
         } else ConfigReference<ItemDefinitionConfig.OnClickConfiguration?>(node.node("on-click"), null)
 
-        return ItemDefinitionConfig(key, node, material, displayName, lore, onClick)
+        return ItemDefinitionConfig(key, node, material, amount, displayName, lore, onClick)
     }
 
     private fun loadMenuDefinition(key: String, node: ConfigurationNode): MenuDefinitionConfig {

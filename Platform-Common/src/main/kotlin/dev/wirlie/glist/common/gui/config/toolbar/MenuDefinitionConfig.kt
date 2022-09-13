@@ -27,7 +27,7 @@ class MenuDefinitionConfig(
     node: ConfigurationNode,
     val value: String
 ): AbstractDefinitionConfig(
-    key, node
+    key, key.toCharArray()[1], node
 ) {
 
     override fun toString(): String {

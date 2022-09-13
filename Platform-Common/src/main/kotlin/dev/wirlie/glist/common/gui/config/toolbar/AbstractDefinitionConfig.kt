@@ -24,5 +24,6 @@ import org.spongepowered.configurate.ConfigurationNode
 
 abstract class AbstractDefinitionConfig(
     val key: String,
+    val definitionKey: Char,
     val node: ConfigurationNode
 )

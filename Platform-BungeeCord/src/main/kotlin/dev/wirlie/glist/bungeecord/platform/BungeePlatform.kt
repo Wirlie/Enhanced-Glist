@@ -96,4 +96,9 @@ class BungeePlatform(
         return CompletableFuture.completedFuture(event.getNewState())
     }
 
+    override fun performCommandForPlayer(player: PlatformExecutor<ServerInfo>, command: String) {
+        val playerBungee = (player as BungeePlayerPlatformExecutor).player
+        ProxyServer.getInstance().pluginManager.dispatchCommand(playerBungee, command)
+    }
+
 }

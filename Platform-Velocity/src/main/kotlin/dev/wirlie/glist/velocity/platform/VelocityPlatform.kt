@@ -93,4 +93,9 @@ class VelocityPlatform(
         return server.eventManager.fire(VanishStateChangeEvent((fromPlayer as VelocityPlayerPlatformExecutor).executor, state)).thenApply { it.getNewState() }
     }
 
+    override fun performCommandForPlayer(player: PlatformExecutor<RegisteredServer>, command: String) {
+        val playerVelocity = (player as VelocityPlayerPlatformExecutor).executor
+        server.commandManager.executeAsync(playerVelocity, command)
+    }
+
 }
