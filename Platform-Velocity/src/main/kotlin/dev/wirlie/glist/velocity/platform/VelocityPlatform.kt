@@ -29,6 +29,8 @@ import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 import dev.wirlie.glist.velocity.api.events.AFKStateChangeEvent
 import dev.wirlie.glist.velocity.api.events.VanishStateChangeEvent
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -69,6 +71,11 @@ class VelocityPlatform(
 
         if(pluginManager.isLoaded("luckperms")) {
             hookManager.enableLuckPermsHook()
+        }
+
+        if(pluginManager.isLoaded("protocolize")) {
+            logger.info(Component.text("Protocolize plugin found! GUI feature enabled.", NamedTextColor.GREEN))
+            enableGUISystem()
         }
     }
 

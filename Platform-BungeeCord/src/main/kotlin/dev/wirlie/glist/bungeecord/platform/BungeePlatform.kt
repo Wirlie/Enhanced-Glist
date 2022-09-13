@@ -27,6 +27,8 @@ import dev.wirlie.glist.bungeecord.hooks.PremiumVanishListener
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
@@ -74,6 +76,11 @@ class BungeePlatform(
 
         if(pluginManager.getPlugin("PremiumVanish") != null) {
             pluginManager.registerListener(plugin, PremiumVanishListener(this))
+        }
+
+        if(pluginManager.getPlugin("Protocolize") != null) {
+            logger.info(Component.text("Protocolize plugin found! GUI feature enabled.", NamedTextColor.GREEN))
+            enableGUISystem()
         }
     }
 

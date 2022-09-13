@@ -26,6 +26,7 @@ import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.configuration.sections.GroupServersSection
 import dev.wirlie.glist.common.configuration.sections.IgnoreServersSection
 import dev.wirlie.glist.common.extensions.miniMessage
+import dev.wirlie.glist.common.gui.GUIManager
 import dev.wirlie.glist.common.hooks.HookManager
 import dev.wirlie.glist.common.messenger.NetworkMessenger
 import dev.wirlie.glist.common.platform.PlatformExecutor
@@ -35,6 +36,7 @@ import dev.wirlie.glist.common.player.PlayerManager
 import dev.wirlie.glist.common.translation.TranslatorManager
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import java.io.File
 import java.util.concurrent.CompletableFuture
 
@@ -48,6 +50,8 @@ abstract class Platform<S, P, C> {
     lateinit var hookManager: HookManager
     lateinit var playerManager: PlayerManager
     lateinit var messenger: NetworkMessenger<S>
+    var guiManager: GUIManager? = null
+    var guiSystemEnabled = false
 
     val gsonInstance = GsonBuilder().create()
 
@@ -100,6 +104,13 @@ abstract class Platform<S, P, C> {
     abstract fun getConnectedPlayersAmount(): Int
 
     abstract fun registerHooks()
+
+    fun enableGUISystem() {
+        if(!guiSystemEnabled) {
+            guiSystemEnabled = true
+            guiManager = GUIManager(this)
+        }
+    }
 
     fun getServerGrouped(name: String): PlatformServerGroup<S>? {
         val ignoreServers = configuration.getSection(IgnoreServersSection::class.java)
