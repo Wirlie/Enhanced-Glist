@@ -26,6 +26,7 @@ import dev.simplix.protocolize.api.item.ItemStack
 import dev.simplix.protocolize.data.ItemType
 import dev.simplix.protocolize.data.inventory.InventoryType
 import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.gui.config.toolbar.ItemDefinitionConfig
 import dev.wirlie.glist.common.gui.config.toolbar.MenuDefinitionConfig
 import dev.wirlie.glist.common.pageable.Page
@@ -148,7 +149,13 @@ class ServersListGUIDisplay<S>(
                     itemSet
                 }
 
-                inventory.item(i, item)
+                @Suppress("UnnecessaryVariable") val finalSlot = i
+                inventory.item(i, item).onClick {
+                    if (it.slot() == finalSlot) {
+                        val label = platform.configuration.getSection(CommandsSection::class.java).slist.label
+                        platform.performCommandForPlayer(executor, "$label ${serverItem.getName().lowercase()}")
+                    }
+                }
             } else {
                 val item = ItemStack(emptyItem.material, emptyItem.amount)
 
