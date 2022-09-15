@@ -31,7 +31,7 @@ class RegexSerializer: TypeSerializer<Regex> {
 
     override fun deserialize(type: Type, node: ConfigurationNode): Regex {
         val value = node.string!!
-        return Regex(value)
+        return Regex(value, RegexOption.IGNORE_CASE)
     }
 
     override fun serialize(type: Type, obj: Regex?, node: ConfigurationNode) {
