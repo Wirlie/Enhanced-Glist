@@ -42,7 +42,7 @@ import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
-
+// TODO: Inventories should be notified when toolbar configuration is changed to prevent visual inconsistencies
 /**
  * Display for connected players (server).
  * @param platform Platform instance.
@@ -63,7 +63,11 @@ class ServerPlayersGUIDisplay<S>(
 
     val configuration = platform.guiManager!!.slistConfig
 
-    val inventory = Inventory(InventoryType.chestInventoryWithRows(menuRows)).also {
+    // Optimization, prevent multiple page calculations and only calculate once per update
+    private var temporalTotalPages = 0
+    private var shouldRegisterClickActions = false
+
+    val inventory : Inventory = Inventory(InventoryType.chestInventoryWithRows(menuRows)).also {
         it.title(
             AdventureUtil.parseMiniMessage(
                 configuration.title,
@@ -74,8 +78,8 @@ class ServerPlayersGUIDisplay<S>(
     val protocolPlayer = Protocolize.playerProvider().player(executor.getUUID())
 
     override fun buildPageDisplay(page: Page<PlatformExecutor<S>>) {
-        inventory.clickConsumers().clear()
-        inventory.closeConsumers().clear()
+        temporalTotalPages = calculateTotalPages()
+
         inventory.title(
             AdventureUtil.parseMiniMessage(
                 configuration.title,
@@ -138,6 +142,7 @@ class ServerPlayersGUIDisplay<S>(
         }
 
         fillToolbar()
+        shouldRegisterClickActions = false
 
         protocolPlayer.openInventory(inventory)
     }
@@ -165,42 +170,54 @@ class ServerPlayersGUIDisplay<S>(
 
                 if(definition.displayName.data != null) {
                     item.displayName(
-                        AdventureUtil.parseMiniMessage(definition.displayName.data!!)
+                        AdventureUtil.parseMiniMessage(
+                            definition.displayName.data!!,
+                            *commonTagResolvers(null),
+                            *playerTagResolvers(executor)
+                        )
                     )
                 }
 
                 if(definition.lore.data != null) {
                     item.lore(
                         definition.lore.data!!.map {
-                            AdventureUtil.parseMiniMessage(it)
+                            AdventureUtil.parseMiniMessage(
+                                it,
+                                *commonTagResolvers(null),
+                                *playerTagResolvers(executor)
+                            )
                         },
                         false
                     )
                 }
 
                 val finalSlot = slot + i
-                inventory.item(finalSlot, item).onClick {
-                    if(it.slot() != finalSlot) return@onClick
+                inventory.item(finalSlot, item).also { inv ->
+                    if(shouldRegisterClickActions) {
+                        inv.onClick {
+                            if(it.slot() != finalSlot) return@onClick
 
-                    if(definition.onClick.data != null) {
-                        val onClick = definition.onClick.data!!
+                            if(definition.onClick.data != null) {
+                                val onClick = definition.onClick.data!!
 
-                        if(onClick.closeMenu.data == true) {
-                            protocolPlayer.closeInventory()
-                        }
+                                if(onClick.closeMenu.data == true) {
+                                    protocolPlayer.closeInventory()
+                                }
 
-                        if(onClick.runCommand.data != null) {
-                            platform.performCommandForPlayer(executor, onClick.runCommand.data!!)
-                        }
+                                if(onClick.runCommand.data != null) {
+                                    platform.performCommandForPlayer(executor, onClick.runCommand.data!!)
+                                }
 
-                        if(onClick.sendChat.data != null) {
-                            executor.asAudience().sendMessage(
-                                AdventureUtil.parseMiniMessage(
-                                    onClick.sendChat.data!!,
-                                    *commonTagResolvers(null),
-                                    *playerTagResolvers(executor)
-                                )
-                            )
+                                if(onClick.sendChat.data != null) {
+                                    executor.asAudience().sendMessage(
+                                        AdventureUtil.parseMiniMessage(
+                                            onClick.sendChat.data!!,
+                                            *commonTagResolvers(null),
+                                            *playerTagResolvers(executor)
+                                        )
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -229,10 +246,18 @@ class ServerPlayersGUIDisplay<S>(
                     )
 
                     val finalSlot = slot + i
-                    inventory.item(finalSlot, item).onClick {
-                        if(it.slot() == finalSlot) {
-                            tryPreviousPage()?.also { page ->
-                                buildPageDisplay(page)
+                    inventory.item(finalSlot, item).also { inv ->
+                        if(shouldRegisterClickActions) {
+                            inv.onClick {
+                                if(it.slot() == finalSlot) {
+                                    tryPreviousPage()?.also { page ->
+                                        protocolPlayer.closeInventory()
+                                        val start = System.currentTimeMillis()
+                                        buildPageDisplay(page)
+                                        val end = System.currentTimeMillis()
+                                        println("BUILD TIME: ${end - start}ms")
+                                    }
+                                }
                             }
                         }
                     }
@@ -260,10 +285,18 @@ class ServerPlayersGUIDisplay<S>(
                     )
 
                     val finalSlot = slot + i
-                    inventory.item(finalSlot, item).onClick {
-                        if(it.slot() == finalSlot) {
-                            tryNextPage()?.also { page ->
-                                buildPageDisplay(page)
+                    inventory.item(finalSlot, item).also { inv ->
+                        if(shouldRegisterClickActions) {
+                            inv.onClick {
+                                if(it.slot() == finalSlot) {
+                                    tryNextPage()?.also { page ->
+                                        protocolPlayer.closeInventory()
+                                        val start = System.currentTimeMillis()
+                                        buildPageDisplay(page)
+                                        val end = System.currentTimeMillis()
+                                        println("BUILD TIME: ${end - start}ms")
+                                    }
+                                }
                             }
                         }
                     }
@@ -273,16 +306,15 @@ class ServerPlayersGUIDisplay<S>(
     }
 
     private fun commonTagResolvers(page: Page<PlatformExecutor<S>>?): Array<TagResolver> {
-        val totalPages = calculateTotalPages()
         return mutableListOf(
             TagResolver.resolver("server-name", Tag.inserting(Component.text(serverGroup.getName()))),
             TagResolver.resolver("player", Tag.inserting(Component.text(executor.getName()))),
-            TagResolver.resolver("total-pages", Tag.inserting(Component.text(totalPages))),
+            TagResolver.resolver("total-pages", Tag.inserting(Component.text(temporalTotalPages))),
         ).also {
             if(page != null) {
                 it.add(TagResolver.resolver("page", Tag.inserting(Component.text(page.pageNumber + 1))))
                 it.add(TagResolver.resolver("prev-page", Tag.inserting(Component.text(max(1, page.pageNumber + 1)))))
-                it.add(TagResolver.resolver("next-page", Tag.inserting(Component.text(min(totalPages, page.pageNumber + 1)))))
+                it.add(TagResolver.resolver("next-page", Tag.inserting(Component.text(min(temporalTotalPages, page.pageNumber + 1)))))
             }
         }.toTypedArray()
     }

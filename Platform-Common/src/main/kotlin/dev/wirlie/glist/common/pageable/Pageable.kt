@@ -47,7 +47,7 @@ open class Pageable<T>(
         val totalPages = calculateTotalPages()
 
         if(pageNumber < 0) throw IndexOutOfBoundsException("Page number cannot be less than 0.")
-        if(pageNumber >= calculateTotalPages()) throw IndexOutOfBoundsException("Page number cannot be equals or greater than total number of pages.")
+        if(pageNumber >= totalPages) throw IndexOutOfBoundsException("Page number cannot be equals or greater than total number of pages.")
 
         val start = pageSize * pageNumber
         var end = start + pageSize

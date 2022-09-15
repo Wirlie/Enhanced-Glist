@@ -35,5 +35,15 @@ abstract class ServerPlayersAbstractDisplay<S>(
 ) : PageDisplay<PlatformExecutor<S>>(
     audience,
     playersPerPage,
-    PlayersDataProvider(executor, platform, serverGroup.getPlayers())
+    PlayersDataProvider(executor, platform, serverGroup.getPlayers().toMutableList().also {
+        it.addAll(it)
+        it.addAll(it)
+        it.addAll(it)
+        it.addAll(it)
+        it.addAll(it)
+        it.addAll(it)
+        it.addAll(it)
+        it.addAll(it)
+        it.addAll(it)
+    })
 )
