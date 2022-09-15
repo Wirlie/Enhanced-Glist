@@ -130,6 +130,9 @@ class Translator(
 
             Files.delete(temporalFile.toPath())
             platform.logger.info(Component.text("Translation updated.", NamedTextColor.GREEN))
+
+            // Load messages again
+            translationMessages = configuration.get(TranslationMessages::class.java)!!
         } else {
             // Delete temporal file, no longer needed.
             Files.delete(temporalFile.toPath())
