@@ -139,7 +139,7 @@ class SlistCommand<S>(
         fun makeDisplay(executor: PlatformExecutor<S>): ServerPlayersAbstractDisplay<S> {
             if(
                 !platform.guiSystemEnabled || // GUI System not enabled
-                !platform.configuration.getSection(CommandsSection::class.java).glist.useGuiMenu ||
+                !platform.configuration.getSection(CommandsSection::class.java).slist.useGuiMenu ||
                 executor.isConsole() // Console is not compatible with GUI
             ) {
                 return ServerPlayersChatDisplay(

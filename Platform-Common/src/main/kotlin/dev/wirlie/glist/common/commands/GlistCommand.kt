@@ -22,12 +22,19 @@ package dev.wirlie.glist.common.commands
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
+import dev.wirlie.glist.common.display.PlayersDataProvider
 import dev.wirlie.glist.common.display.ServersListDisplay
+import dev.wirlie.glist.common.display.ServersListGUIDisplay
+import dev.wirlie.glist.common.pageable.PageDisplay
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
 import java.util.concurrent.TimeUnit
+import kotlin.math.ceil
+import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Implementation for /glist command.
@@ -49,7 +56,7 @@ class GlistCommand<S>(
 
     private val cache = Caffeine.newBuilder()
         .expireAfterAccess(5, TimeUnit.MINUTES)
-        .build<String, ServersListDisplay<S>>()
+        .build<String, PageDisplay<PlatformServerGroup<S>>>()
 
     override fun tryExecution(executor: PlatformExecutor<S>, args: Array<String>) {
         val display = getDisplayFor(executor)
@@ -87,7 +94,7 @@ class GlistCommand<S>(
      * @param executor Command Executor.
      * @return Display instance.
      */
-    private fun getDisplayFor(executor: PlatformExecutor<S>): ServersListDisplay<S> {
+    private fun getDisplayFor(executor: PlatformExecutor<S>): PageDisplay<PlatformServerGroup<S>> {
         val key = if (executor.isConsole()) "console" else "player-${executor.getUUID()}"
         val current = cache.getIfPresent(key)
 
@@ -95,13 +102,46 @@ class GlistCommand<S>(
             return current
         }
 
-        val newDisplay = ServersListDisplay(
-            platform,
-            executor,
-            executor.asAudience(),
-            platform.configuration.getSection(GeneralSection::class.java).serversPerPage,
-            platform.getAllServersGrouped().sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayers().size }.thenBy { it.getName() }).toMutableList()
-        )
+        val newDisplay = if(
+            !platform.guiSystemEnabled || // GUI System not enabled
+            !platform.configuration.getSection(CommandsSection::class.java).glist.useGuiMenu ||
+            executor.isConsole() // Console is not compatible with GUI
+        ) {
+            ServersListDisplay(
+                platform,
+                executor,
+                executor.asAudience(),
+                platform.configuration.getSection(GeneralSection::class.java).serversPerPage,
+                platform.getAllServersGrouped()
+                    .sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayers().size }.thenBy { it.getName() })
+                    .toMutableList()
+            )
+        } else {
+            var rows = platform.guiManager!!.glistConfig.rows
+            val servers = platform.getAllServersGrouped()
+                .sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayers().size }.thenBy { it.getName() })
+                .toMutableList()
+
+            servers.addAll(servers)
+            servers.addAll(servers)
+            servers.addAll(servers)
+            servers.addAll(servers)
+
+            if(rows == -1) {
+                // Calculate manually
+                rows = ceil(servers.size / 9.0).toInt()
+            }
+
+            rows = min(max(rows, 2), 6)
+
+            ServersListGUIDisplay(
+                platform,
+                executor,
+                executor.asAudience(),
+                servers,
+                rows
+            )
+        }
 
         cache.put(key, newDisplay)
 

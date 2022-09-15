@@ -28,7 +28,7 @@ class CustomItemConfig {
 
     var byName = mutableListOf<String>()
 
-    var byRegex = mutableListOf<String>()
+    var byRegex = mutableListOf<Regex>()
 
     var material = ItemType.NETHER_STAR
 
