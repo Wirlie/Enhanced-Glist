@@ -250,7 +250,6 @@ class ServerPlayersGUIDisplay<S>(
                                         val start = System.currentTimeMillis()
                                         buildPageDisplay(page)
                                         val end = System.currentTimeMillis()
-                                        println("BUILD TIME: ${end - start}ms")
                                     }
                                 }
                             }
@@ -288,7 +287,6 @@ class ServerPlayersGUIDisplay<S>(
                                         val start = System.currentTimeMillis()
                                         buildPageDisplay(page)
                                         val end = System.currentTimeMillis()
-                                        println("BUILD TIME: ${end - start}ms")
                                     }
                                 }
                             }
