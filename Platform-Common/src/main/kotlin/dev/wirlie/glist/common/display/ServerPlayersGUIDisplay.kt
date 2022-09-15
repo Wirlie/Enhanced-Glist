@@ -247,9 +247,7 @@ class ServerPlayersGUIDisplay<S>(
                             inv.onClick {
                                 if(it.slot() == finalSlot) {
                                     tryPreviousPage()?.also { page ->
-                                        val start = System.currentTimeMillis()
                                         buildPageDisplay(page)
-                                        val end = System.currentTimeMillis()
                                     }
                                 }
                             }
@@ -284,9 +282,7 @@ class ServerPlayersGUIDisplay<S>(
                             inv.onClick {
                                 if(it.slot() == finalSlot) {
                                     tryNextPage()?.also { page ->
-                                        val start = System.currentTimeMillis()
                                         buildPageDisplay(page)
-                                        val end = System.currentTimeMillis()
                                     }
                                 }
                             }
