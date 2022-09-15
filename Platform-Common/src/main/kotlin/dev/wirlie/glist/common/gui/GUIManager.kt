@@ -106,12 +106,14 @@ class GUIManager(
     }
 
     private fun load() {
-        glistConfig = glistConfigLoader.load().also {
-            applyUpdates(glistConfigFile, it, glistConfigLoader)
+        glistConfig = glistConfigLoader.load().run {
+            applyUpdates(glistConfigFile, this, glistConfigLoader)
+            glistConfigLoader.load() // Load again, to ensure application of updates
         }.get(GuiGlistMenuConfig::class.java)!!
 
-        slistConfig = slistConfigLoader.load().also {
-            applyUpdates(slistConfigFile, it, slistConfigLoader)
+        slistConfig = slistConfigLoader.load().run {
+            applyUpdates(slistConfigFile, this, slistConfigLoader)
+            slistConfigLoader.load() // Load again, to ensure application of updates
         }.get(GuiSlistMenuConfig::class.java)!!
     }
 
