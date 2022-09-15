@@ -52,18 +52,24 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
 tasks.withType<ProcessResources> {
 
     val props = mutableMapOf(
-        Pair("build-version", version),
-        Pair("version", version),
-        Pair("build-job-name", System.getenv("JOB_NAME")),
-        Pair("build-id", System.getenv("BUILD_ID")),
-        Pair("build-full-hash", System.getenv("GIT_COMMIT")),
-        Pair("build-branch", System.getenv("GIT_BRANCH")),
-        Pair("build-timestamp", System.currentTimeMillis()),
+        Pair("build_version", version),
+        Pair("build_job_name", System.getenv("JOB_NAME") ?: "unknown"),
+        Pair("build_id", System.getenv("BUILD_ID") ?: "unknown"),
+        Pair("build_full_hash", System.getenv("GIT_COMMIT") ?: "unknown"),
+        Pair("build_branch", System.getenv("GIT_BRANCH") ?: "unknown"),
+        Pair("build_timestamp", System.currentTimeMillis()),
+    )
+
+    val pluginProps = mutableMapOf(
+        Pair("version", version)
     )
 
     inputs.properties(props)
     filteringCharset = "UTF-8"
-    filesMatching(listOf("metadata.conf", "plugin.yml")) {
+    filesMatching(listOf("metadata.conf")) {
         expand(props)
+    }
+    filesMatching(listOf("plugin.yml")) {
+        expand(pluginProps)
     }
 }

@@ -33,3 +33,21 @@ dependencies {
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
 }
+
+tasks.withType<ProcessResources> {
+
+    val props = mutableMapOf(
+        Pair("build_version", version),
+        Pair("build_job_name", System.getenv("JOB_NAME") ?: "unknown"),
+        Pair("build_id", System.getenv("BUILD_ID") ?: "unknown"),
+        Pair("build_full_hash", System.getenv("GIT_COMMIT") ?: "unknown"),
+        Pair("build_branch", System.getenv("GIT_BRANCH") ?: "unknown"),
+        Pair("build_timestamp", System.currentTimeMillis()),
+    )
+
+    inputs.properties(props)
+    filteringCharset = "UTF-8"
+    filesMatching("metadata.conf") {
+        expand(props)
+    }
+}

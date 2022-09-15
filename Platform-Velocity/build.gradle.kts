@@ -42,21 +42,3 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("com.google.gson", "dev.wirlie.shaded.com.google.gson")
     relocate("com.github.benmanes.caffeine", "dev.wirlie.shaded.com.github.benmanes.caffeine")
 }
-
-tasks.withType<ProcessResources> {
-
-    val props = mutableMapOf(
-        Pair("build-version", version),
-        Pair("build-job-name", System.getenv("JOB_NAME")),
-        Pair("build-id", System.getenv("BUILD_ID")),
-        Pair("build-full-hash", System.getenv("GIT_COMMIT")),
-        Pair("build-branch", System.getenv("GIT_BRANCH")),
-        Pair("build-timestamp", System.currentTimeMillis()),
-    )
-
-    inputs.properties(props)
-    filteringCharset = "UTF-8"
-    filesMatching("metadata.conf") {
-        expand(props)
-    }
-}
