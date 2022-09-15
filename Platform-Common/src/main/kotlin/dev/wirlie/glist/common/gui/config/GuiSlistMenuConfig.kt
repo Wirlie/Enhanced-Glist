@@ -67,6 +67,8 @@ class GuiSlistMenuConfig {
 
             var lore = mutableListOf<String>()
 
+            var playerHead: PlayerHeadConfig? = null
+
         }
 
     }

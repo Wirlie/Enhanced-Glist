@@ -44,6 +44,8 @@ class ToolBarConfig {
 
         var lore = mutableListOf<String>()
 
+        var playerHead : PlayerHeadConfig? = null
+
     }
 
     @ConfigSerializable
@@ -56,6 +58,8 @@ class ToolBarConfig {
         var displayName = "<yellow>Go to the next page »"
 
         var lore = mutableListOf<String>()
+
+        var playerHead : PlayerHeadConfig? = null
 
     }
 

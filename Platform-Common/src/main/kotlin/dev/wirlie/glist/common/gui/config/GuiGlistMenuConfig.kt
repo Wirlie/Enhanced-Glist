@@ -54,6 +54,8 @@ class GuiGlistMenuConfig {
 
             var lore = mutableListOf("<player-count> <aqua>players online</aqua>", "<yellow>Click to view player list.")
 
+            var playerHead: PlayerHeadConfig? = null
+
         }
 
         @ConfigSerializable
@@ -66,6 +68,8 @@ class GuiGlistMenuConfig {
             var displayName = " "
 
             var lore = mutableListOf<String>()
+
+            var playerHead: PlayerHeadConfig? = null
 
         }
 

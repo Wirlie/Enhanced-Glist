@@ -172,7 +172,7 @@ abstract class Platform<S, P, C> {
                 if(minPlayers < 0) {
                     minPlayers = 0
                 }
-                this.filter { it.getPlayersCount() <= minPlayers }
+                this.filter { it.getPlayersCount() >= minPlayers }
             } else {
                 this
             }

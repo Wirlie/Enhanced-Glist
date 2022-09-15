@@ -23,6 +23,7 @@ package dev.wirlie.glist.common.display
 import dev.simplix.protocolize.api.Protocolize
 import dev.simplix.protocolize.api.inventory.Inventory
 import dev.simplix.protocolize.api.item.ItemStack
+import dev.simplix.protocolize.data.ItemType
 import dev.simplix.protocolize.data.inventory.InventoryType
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.gui.config.toolbar.ItemDefinitionConfig
@@ -32,6 +33,7 @@ import dev.wirlie.glist.common.pageable.PageDisplay
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
+import dev.wirlie.glist.common.util.ProtocolizeUtil
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
@@ -89,7 +91,7 @@ class ServersListGUIDisplay<S>(
                 }
 
                 val item = if(customIcon == null) {
-                    val itemSet = ItemStack(generalItem.material, min(max(generalItem.amount, 1), 64))
+                    val itemSet = ItemStack(generalItem.material, min(max(if(generalItem.amount == -1) serverItem.getPlayersCount() else generalItem.amount, 1), 64))
 
                     itemSet.displayName(
                         AdventureUtil.parseMiniMessage(
@@ -111,9 +113,13 @@ class ServersListGUIDisplay<S>(
                         false
                     )
 
+                    if(itemSet.itemType() == ItemType.PLAYER_HEAD) {
+                        ProtocolizeUtil.setHeadProperties(itemSet, generalItem.playerHead)
+                    }
+
                     itemSet
                 } else {
-                    val itemSet = ItemStack(customIcon.material, min(max(customIcon.amount, 1), 64))
+                    val itemSet = ItemStack(customIcon.material, min(max(if(customIcon.amount == -1) serverItem.getPlayersCount() else customIcon.amount, 1), 64))
 
                     itemSet.displayName(
                         AdventureUtil.parseMiniMessage(
@@ -134,6 +140,10 @@ class ServersListGUIDisplay<S>(
                         },
                         false
                     )
+
+                    if(itemSet.itemType() == ItemType.PLAYER_HEAD) {
+                        ProtocolizeUtil.setHeadProperties(itemSet, customIcon.playerHead)
+                    }
 
                     itemSet
                 }
@@ -159,6 +169,10 @@ class ServersListGUIDisplay<S>(
                     },
                     false
                 )
+
+                if(item.itemType() == ItemType.PLAYER_HEAD) {
+                    ProtocolizeUtil.setHeadProperties(item, emptyItem.playerHead)
+                }
 
                 inventory.item(i, item)
             }
@@ -189,6 +203,10 @@ class ServersListGUIDisplay<S>(
 
             if(definition is ItemDefinitionConfig) {
                 val item = ItemStack(definition.material.data, definition.amount.data)
+
+                if(item.itemType() == ItemType.PLAYER_HEAD) {
+                    ProtocolizeUtil.setHeadProperties(item, definition.playerHead.data)
+                }
 
                 if(definition.displayName.data != null) {
                     item.displayName(
@@ -246,6 +264,10 @@ class ServersListGUIDisplay<S>(
                     val config = toolbarConfig.previousPageItem
                     val item = ItemStack(config.material, min(max(config.amount, 1), 64))
 
+                    if(item.itemType() == ItemType.PLAYER_HEAD) {
+                        ProtocolizeUtil.setHeadProperties(item, config.playerHead)
+                    }
+
                     item.displayName(
                         AdventureUtil.parseMiniMessage(
                             config.displayName,
@@ -278,6 +300,10 @@ class ServersListGUIDisplay<S>(
                 } else if(definition.value.equals("next-page-item", true)) {
                     val config = toolbarConfig.nextPageItem
                     val item = ItemStack(config.material, min(max(config.amount, 1), 64))
+
+                    if(item.itemType() == ItemType.PLAYER_HEAD) {
+                        ProtocolizeUtil.setHeadProperties(item, config.playerHead)
+                    }
 
                     item.displayName(
                         AdventureUtil.parseMiniMessage(

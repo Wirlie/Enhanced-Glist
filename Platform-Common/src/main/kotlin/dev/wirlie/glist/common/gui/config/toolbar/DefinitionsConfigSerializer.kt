@@ -22,6 +22,7 @@ package dev.wirlie.glist.common.gui.config.toolbar
 
 import dev.simplix.protocolize.data.ItemType
 import dev.wirlie.glist.common.gui.config.ConfigReference
+import dev.wirlie.glist.common.gui.config.PlayerHeadConfig
 import io.leangen.geantyref.TypeToken
 import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.serialize.SerializationException
@@ -83,8 +84,14 @@ class DefinitionsConfigSerializer: TypeSerializer<DefinitionsCustomConfig> {
                 ConfigReference<ItemDefinitionConfig.OnClickConfiguration?>(onClickNode, ItemDefinitionConfig.OnClickConfiguration(sendChat, runCommand, closeMenu))
             }
         } else ConfigReference<ItemDefinitionConfig.OnClickConfiguration?>(node.node("on-click"), null)
+        val playerHead = if(node.hasChild("player-head")) {
+            ConfigReference<PlayerHeadConfig?>(node.node("player-head"), PlayerHeadConfig().also {
+                it.skullOwner = node.node("player-head", "skull-owner").string
+                it.skinHash = node.node("player-head", "skin-hash").string
+            })
+        } else ConfigReference<PlayerHeadConfig?>(node.node("player-head"), null)
 
-        return ItemDefinitionConfig(key, node, material, amount, displayName, lore, onClick)
+        return ItemDefinitionConfig(key, node, material, amount, displayName, lore, onClick, playerHead)
     }
 
     private fun loadMenuDefinition(key: String, node: ConfigurationNode): MenuDefinitionConfig {

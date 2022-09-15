@@ -32,6 +32,7 @@ import dev.wirlie.glist.common.pageable.Page
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
+import dev.wirlie.glist.common.util.ProtocolizeUtil
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextDecoration
@@ -117,6 +118,10 @@ class ServerPlayersGUIDisplay<S>(
             } else {
                 val item = ItemStack(emptyItem.material, emptyItem.amount)
 
+                if(item.itemType() == ItemType.PLAYER_HEAD) {
+                    ProtocolizeUtil.setHeadProperties(item, emptyItem.playerHead)
+                }
+
                 item.displayName(
                     AdventureUtil.parseMiniMessage(
                         emptyItem.displayName,
@@ -163,6 +168,10 @@ class ServerPlayersGUIDisplay<S>(
 
             if(definition is ItemDefinitionConfig) {
                 val item = ItemStack(definition.material.data, definition.amount.data)
+
+                if(item.itemType() == ItemType.PLAYER_HEAD) {
+                    ProtocolizeUtil.setHeadProperties(item, definition.playerHead.data)
+                }
 
                 if(definition.displayName.data != null) {
                     item.displayName(
@@ -222,6 +231,10 @@ class ServerPlayersGUIDisplay<S>(
                     val config = toolbarConfig.previousPageItem
                     val item = ItemStack(config.material, min(max(config.amount, 1), 64))
 
+                    if(item.itemType() == ItemType.PLAYER_HEAD) {
+                        ProtocolizeUtil.setHeadProperties(item, config.playerHead)
+                    }
+
                     item.displayName(
                         AdventureUtil.parseMiniMessage(
                             config.displayName,
@@ -256,6 +269,10 @@ class ServerPlayersGUIDisplay<S>(
                 } else if(definition.value.equals("next-page-item", true)) {
                     val config = toolbarConfig.nextPageItem
                     val item = ItemStack(config.material, min(max(config.amount, 1), 64))
+
+                    if(item.itemType() == ItemType.PLAYER_HEAD) {
+                        ProtocolizeUtil.setHeadProperties(item, config.playerHead)
+                    }
 
                     item.displayName(
                         AdventureUtil.parseMiniMessage(

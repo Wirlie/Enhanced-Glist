@@ -20,24 +20,13 @@
 
 package dev.wirlie.glist.common.gui.config
 
-import dev.simplix.protocolize.data.ItemType
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 @ConfigSerializable
-class CustomItemConfig {
+class PlayerHeadConfig {
 
-    var byName = mutableListOf<String>()
+    var skullOwner: String? = null
 
-    var byRegex = mutableListOf<Regex>()
-
-    var material = ItemType.NETHER_STAR
-
-    var amount = -1
-
-    var displayName = "<yellow>Lobby Server <white><server-name></white>"
-
-    var lore = mutableListOf("<player-count> <aqua>players online</aqua>", "<yellow>Click to view player list.")
-
-    var playerHead: PlayerHeadConfig? = null
+    var skinHash: String? = null
 
 }

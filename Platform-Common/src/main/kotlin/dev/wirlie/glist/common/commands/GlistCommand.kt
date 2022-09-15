@@ -101,6 +101,9 @@ class GlistCommand<S>(
         if(current != null) {
             return current
         }
+        val servers = platform.getAllServersGrouped()
+            .sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayers().size }.thenBy { it.getName() })
+            .toMutableList()
 
         val newDisplay = if(
             !platform.guiSystemEnabled || // GUI System not enabled
@@ -112,20 +115,10 @@ class GlistCommand<S>(
                 executor,
                 executor.asAudience(),
                 platform.configuration.getSection(GeneralSection::class.java).serversPerPage,
-                platform.getAllServersGrouped()
-                    .sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayers().size }.thenBy { it.getName() })
-                    .toMutableList()
+                servers
             )
         } else {
             var rows = platform.guiManager!!.glistConfig.rows
-            val servers = platform.getAllServersGrouped()
-                .sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayers().size }.thenBy { it.getName() })
-                .toMutableList()
-
-            servers.addAll(servers)
-            servers.addAll(servers)
-            servers.addAll(servers)
-            servers.addAll(servers)
 
             if(rows == -1) {
                 // Calculate manually

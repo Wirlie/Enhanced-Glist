@@ -22,6 +22,7 @@ package dev.wirlie.glist.common.gui.config.toolbar
 
 import dev.simplix.protocolize.data.ItemType
 import dev.wirlie.glist.common.gui.config.ConfigReference
+import dev.wirlie.glist.common.gui.config.PlayerHeadConfig
 import org.spongepowered.configurate.ConfigurationNode
 
 class ItemDefinitionConfig(
@@ -31,7 +32,8 @@ class ItemDefinitionConfig(
     var amount: ConfigReference<Int>,
     var displayName: ConfigReference<String?>,
     var lore: ConfigReference<MutableList<String>?>,
-    var onClick: ConfigReference<OnClickConfiguration?>
+    var onClick: ConfigReference<OnClickConfiguration?>,
+    var playerHead: ConfigReference<PlayerHeadConfig?>
 ): AbstractDefinitionConfig(
     key, key.toCharArray()[1], node
 ) {
