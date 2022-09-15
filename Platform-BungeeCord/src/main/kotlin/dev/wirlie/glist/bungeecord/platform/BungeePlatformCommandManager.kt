@@ -21,6 +21,7 @@
 package dev.wirlie.glist.bungeecord.platform
 
 import dev.wirlie.glist.bungeecord.EnhancedGlistBungeeCord
+import dev.wirlie.glist.bungeecord.commands.EglExecutor
 import dev.wirlie.glist.bungeecord.commands.GlistExecutor
 import dev.wirlie.glist.bungeecord.commands.SlistExecutor
 import dev.wirlie.glist.common.Platform
@@ -47,6 +48,11 @@ class BungeePlatformCommandManager(
     override fun registerCommands() {
         pluginManager.registerCommand(plugin, GlistExecutor(platformInstance, glistCommand))
         pluginManager.registerCommand(plugin, SlistExecutor(platformInstance, slistCommand))
+        pluginManager.registerCommand(plugin, EglExecutor(platformInstance, eglCommand))
+    }
+
+    override fun unregisterCommands() {
+        pluginManager.unregisterCommands(plugin)
     }
 
 }

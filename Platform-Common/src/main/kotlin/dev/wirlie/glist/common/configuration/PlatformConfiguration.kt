@@ -72,11 +72,13 @@ class PlatformConfiguration(
      * Save default configuration.
      */
     fun saveDefault() {
-        platform.logger.info(Component.text("Configuration not found, saving default configuration..."))
-        if(!configurationFile.parentFile.exists()) {
-            Files.createDirectories(configurationFile.parentFile.toPath())
+        if (!configurationFile.exists()) {
+            platform.logger.info(Component.text("Configuration not found, saving default configuration..."))
+            if (!configurationFile.parentFile.exists()) {
+                Files.createDirectories(configurationFile.parentFile.toPath())
+            }
+            Files.copy(this::class.java.getResourceAsStream("/config.conf")!!, configurationFile.toPath())
         }
-        Files.copy(this::class.java.getResourceAsStream("/config.conf")!!, configurationFile.toPath())
     }
 
     private fun applyUpdates() {
@@ -198,6 +200,12 @@ class PlatformConfiguration(
         val rootPath = rootAnnotation.path
 
         configuration.node(rootPath).set(section)
+    }
+
+    fun reload() {
+        saveDefault()
+        load()
+        applyUpdates()
     }
 
 }

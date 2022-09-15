@@ -21,11 +21,13 @@
 package dev.wirlie.glist.velocity.platform
 
 import com.velocitypowered.api.command.CommandManager
+import com.velocitypowered.api.command.CommandMeta
 import com.velocitypowered.api.proxy.ConsoleCommandSource
 import com.velocitypowered.api.proxy.Player
 import com.velocitypowered.api.proxy.server.RegisteredServer
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.PlatformCommandManager
+import dev.wirlie.glist.velocity.commands.EglExecutor
 import dev.wirlie.glist.velocity.commands.GlistExecutor
 import dev.wirlie.glist.velocity.commands.SlistExecutor
 
@@ -41,12 +43,16 @@ class VelocityPlatformCommandManager(
     platformInstance
 ) {
 
+    private val registeredMeta = mutableListOf<CommandMeta>()
+
     override fun registerCommands() {
         commandManager.register(
             commandManager
                 .metaBuilder(glistCommand.name)
                 .aliases(*glistCommand.aliases.toTypedArray())
-                .build(),
+                .build().also {
+                  registeredMeta.add(it)
+                },
             GlistExecutor(platformInstance, glistCommand)
         )
 
@@ -54,9 +60,27 @@ class VelocityPlatformCommandManager(
             commandManager
                 .metaBuilder(slistCommand.name)
                 .aliases(*slistCommand.aliases.toTypedArray())
-                .build(),
+                .build().also {
+                    registeredMeta.add(it)
+                },
             SlistExecutor(platformInstance, slistCommand)
         )
+
+        commandManager.register(
+            commandManager
+                .metaBuilder(eglCommand.name)
+                .aliases(*eglCommand.aliases.toTypedArray())
+                .build().also {
+                    registeredMeta.add(it)
+                },
+            EglExecutor(platformInstance, eglCommand)
+        )
+    }
+
+    override fun unregisterCommands() {
+        for(meta in registeredMeta) {
+            commandManager.unregister(meta)
+        }
     }
 
 }

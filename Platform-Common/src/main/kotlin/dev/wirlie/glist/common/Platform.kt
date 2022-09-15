@@ -36,7 +36,6 @@ import dev.wirlie.glist.common.player.PlayerManager
 import dev.wirlie.glist.common.translation.TranslatorManager
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import java.io.File
 import java.util.concurrent.CompletableFuture
 
@@ -84,11 +83,24 @@ abstract class Platform<S, P, C> {
     }
 
     fun disable() {
-
+        // Close inventories from Protocolize
+        guiManager?.disable()
     }
 
     fun reload() {
-
+        // Reload Configuration
+        configuration.reload()
+        // Reload Hooks
+        hookManager.reload()
+        registerHooks()
+        // Reload Translator
+        translatorManager.reload()
+        // Reload Commands
+        platformCommandManager.reload()
+        // Reload Protocolize
+        guiManager?.reload()
+        // Reload prefix
+        pluginPrefix = configuration.getSection(GeneralSection::class.java).prefix.miniMessage()
     }
 
     abstract fun toPlatformServer(server: S): PlatformServer<S>
@@ -106,6 +118,8 @@ abstract class Platform<S, P, C> {
     abstract fun registerHooks()
 
     abstract fun performCommandForPlayer(player: PlatformExecutor<S>, command: String)
+
+    abstract fun getAllPlayers(): List<PlatformExecutor<S>>
 
     fun enableGUISystem() {
         if(!guiSystemEnabled) {

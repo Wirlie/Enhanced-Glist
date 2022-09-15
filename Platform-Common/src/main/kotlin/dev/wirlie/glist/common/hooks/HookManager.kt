@@ -59,4 +59,9 @@ class HookManager(
         return enabledHooks.contains(type)
     }
 
+    fun reload() {
+        enabledHooks.clear()
+        luckPermsHook = null
+    }
+
 }

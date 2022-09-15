@@ -103,4 +103,8 @@ class VelocityPlatform(
         return component
     }
 
+    override fun getAllPlayers(): List<PlatformExecutor<RegisteredServer>> {
+        return server.allPlayers.map { VelocityPlayerPlatformExecutor(this, it) }
+    }
+
 }

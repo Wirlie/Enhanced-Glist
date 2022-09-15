@@ -42,6 +42,10 @@ class TranslationMessages {
 
     var slist: SlistMessages = SlistMessages()
 
+    var egl: EglMessages = EglMessages()
+
+    var gui: GuiMessages = GuiMessages()
+
     @ConfigSerializable
     class DoNotEditShitSection {
 
@@ -375,6 +379,22 @@ class TranslationMessages {
                 )
             )
         }
+
+    }
+
+    @ConfigSerializable
+    class EglMessages {
+
+        var usage = mutableListOf<String>()
+
+        var pluginReloaded = ""
+
+    }
+
+    @ConfigSerializable
+    class GuiMessages {
+
+        var closedByReload = ""
 
     }
 

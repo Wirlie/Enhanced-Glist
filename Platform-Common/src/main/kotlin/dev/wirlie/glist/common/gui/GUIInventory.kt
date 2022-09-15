@@ -18,34 +18,14 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.common.translation
+package dev.wirlie.glist.common.gui
 
-import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.configuration.sections.GeneralSection
+import dev.simplix.protocolize.api.inventory.Inventory
+import dev.simplix.protocolize.data.inventory.InventoryType
 
-class TranslatorManager(
-    val platform: Platform<*, *, *>
-) {
-
-    private var code: String = platform.configuration.getSection(GeneralSection::class.java).language
-    private var translator: Translator? = null
-
-    fun setup() {
-        getTranslator()
-    }
-
-    fun getTranslator(): Translator {
-        if(translator != null) {
-            return translator!!
-        }
-
-        translator = Translator(platform, code)
-        return translator!!
-    }
-
-    fun reload() {
-        translator = null
-        getTranslator()
-    }
-
-}
+/**
+ * Utility class to know what inventories of Protocolize comes from EnhancedGlist
+ */
+class GUIInventory(
+    type: InventoryType
+) : Inventory(type)

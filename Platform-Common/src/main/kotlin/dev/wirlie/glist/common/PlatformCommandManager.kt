@@ -20,6 +20,7 @@
 
 package dev.wirlie.glist.common
 
+import dev.wirlie.glist.common.commands.EglCommand
 import dev.wirlie.glist.common.commands.GlistCommand
 import dev.wirlie.glist.common.commands.SlistCommand
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
@@ -30,6 +31,7 @@ abstract class PlatformCommandManager<S>(
 
     lateinit var glistCommand: GlistCommand<S>
     lateinit var slistCommand: SlistCommand<S>
+    lateinit var eglCommand: EglCommand<S>
 
     fun setup() {
         glistCommand = platform.configuration.getSection(CommandsSection::class.java).run {
@@ -49,8 +51,25 @@ abstract class PlatformCommandManager<S>(
                 this.slist.permission
             )
         }
+
+        eglCommand = platform.configuration.getSection(CommandsSection::class.java).run {
+            EglCommand(
+                platform,
+                this.egl.label,
+                this.egl.aliases.toMutableList(),
+                this.egl.permission
+            )
+        }
+    }
+
+    fun reload() {
+        unregisterCommands()
+        setup()
+        registerCommands()
     }
 
     abstract fun registerCommands()
+
+    abstract fun unregisterCommands()
 
 }

@@ -34,6 +34,8 @@ class CommandsSection: ConfigurationSection {
 
     var slist: SlistSection = SlistSection()
 
+    var egl: EglSection = EglSection()
+
     @ConfigSerializable
     class GlistSection {
 
@@ -56,6 +58,17 @@ class CommandsSection: ConfigurationSection {
         var aliases: Array<String> = arrayOf()
 
         var useGuiMenu = true
+    }
+
+    @ConfigSerializable
+    class EglSection {
+
+        var label: String = "egl"
+
+        var permission: String = "egl.commands.egl"
+
+        var aliases: Array<String> = arrayOf()
+
     }
 
 }

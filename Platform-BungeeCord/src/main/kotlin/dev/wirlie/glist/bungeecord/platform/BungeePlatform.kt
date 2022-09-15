@@ -115,4 +115,8 @@ class BungeePlatform(
         }
     }
 
+    override fun getAllPlayers(): List<PlatformExecutor<ServerInfo>> {
+        return ProxyServer.getInstance().players.map { BungeePlayerPlatformExecutor(this, it) }
+    }
+
 }

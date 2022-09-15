@@ -20,16 +20,22 @@
 
 package dev.wirlie.glist.common.gui
 
+import dev.simplix.protocolize.api.Protocolize
+import dev.simplix.protocolize.data.packets.CloseWindow
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configurate.IntRangeSerializer
 import dev.wirlie.glist.common.configurate.RegexSerializer
+import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.gui.config.GuiGlistMenuConfig
 import dev.wirlie.glist.common.gui.config.GuiSlistMenuConfig
 import dev.wirlie.glist.common.gui.config.toolbar.DefinitionsConfigSerializer
 import dev.wirlie.glist.common.gui.config.toolbar.DefinitionsCustomConfig
+import dev.wirlie.glist.common.util.AdventureUtil
 import dev.wirlie.glist.common.util.ConfigurateUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.minimessage.tag.Tag
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.ConfigurationOptions
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
@@ -195,6 +201,43 @@ class GUIManager(
         } else {
             // Delete temporal file, no longer needed.
             Files.delete(temporalFile.toPath())
+        }
+    }
+
+    fun reload() {
+        load()
+        closeProtocolizeInventories()
+    }
+
+    fun disable() {
+        closeProtocolizeInventories()
+    }
+
+    private fun closeProtocolizeInventories() {
+        // Reload Protocolize, close inventories
+        for(player in platform.getAllPlayers()) {
+            val protocolizePlayer = Protocolize.playerProvider().player(player.getUUID())
+            // Get inventories opened by EnhancedGlist
+            var sendCloseMessage = false
+            for(inventory in protocolizePlayer.registeredInventories()) {
+                if(inventory.value is GUIInventory) {
+                    // EnhancedGlist Inventory, remove and send close packet
+                    protocolizePlayer.registerInventory(inventory.key, null)
+                    protocolizePlayer.sendPacket(CloseWindow(inventory.key))
+                    sendCloseMessage = true
+                }
+            }
+
+            if(sendCloseMessage) {
+                player.asAudience().sendMessage(
+                    AdventureUtil.parseMiniMessage(
+                        platform.translatorManager.getTranslator().getMessages().gui.closedByReload,
+                        TagResolver.resolver("prefix",
+                            Tag.selfClosingInserting(Platform.pluginPrefix)
+                        )
+                    )
+                )
+            }
         }
     }
 

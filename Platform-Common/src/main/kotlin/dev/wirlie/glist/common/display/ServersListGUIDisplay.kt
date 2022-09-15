@@ -27,6 +27,7 @@ import dev.simplix.protocolize.data.ItemType
 import dev.simplix.protocolize.data.inventory.InventoryType
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
+import dev.wirlie.glist.common.gui.GUIInventory
 import dev.wirlie.glist.common.gui.config.toolbar.ItemDefinitionConfig
 import dev.wirlie.glist.common.gui.config.toolbar.MenuDefinitionConfig
 import dev.wirlie.glist.common.pageable.Page
@@ -68,7 +69,7 @@ class ServersListGUIDisplay<S>(
     val protocolPlayer = Protocolize.playerProvider().player(executor.getUUID())
 
     override fun buildPageDisplay(page: Page<PlatformServerGroup<S>>) {
-        inventory = Inventory(InventoryType.chestInventoryWithRows(menuRows)).also {
+        inventory = GUIInventory(InventoryType.chestInventoryWithRows(menuRows)).also {
             it.title(
                 platform.toPlatformComponent(
                     AdventureUtil.parseMiniMessage(
