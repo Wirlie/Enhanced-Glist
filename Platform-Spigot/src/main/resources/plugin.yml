@@ -1,6 +1,6 @@
 name: EnhancedGlistBridge
 author: Wirlie
-version: "2.0.0"
+version: "${version}"
 main: dev.wirlie.glist.spigot.EnhancedGlistSpigot
 softdepend:
   - Essentials
