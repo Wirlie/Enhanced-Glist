@@ -204,6 +204,14 @@ abstract class Platform<S, P, C> {
             }
         }
 
+        // In case that a server matches the group name...
+        val server = allServers.firstOrNull { it.getName().equals(serverConfig.serverName, true) }
+
+        if(server != null && !matchedServers.contains(server)) {
+            // Ok, add it to the group
+            matchedServers.add(server)
+        }
+
         return matchedServers
     }
 
