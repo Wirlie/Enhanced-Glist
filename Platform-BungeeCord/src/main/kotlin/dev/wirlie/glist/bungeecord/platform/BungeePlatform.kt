@@ -27,9 +27,11 @@ import dev.wirlie.glist.bungeecord.hooks.PremiumVanishListener
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
+import dev.wirlie.glist.common.util.AdventureUtil
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.md_5.bungee.api.ProxyServer
+import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.command.ConsoleCommandSender
@@ -99,6 +101,18 @@ class BungeePlatform(
     override fun performCommandForPlayer(player: PlatformExecutor<ServerInfo>, command: String) {
         val playerBungee = (player as BungeePlayerPlatformExecutor).player
         ProxyServer.getInstance().pluginManager.dispatchCommand(playerBungee, command)
+    }
+
+    override fun toPlatformComponent(component: Component): Any {
+        // Adventure to legacy string
+        val legacyString = AdventureUtil.legacySectionSerialize(component)
+        // Really unsafe and inconsistent, but we do not have another option...
+        return TextComponent.fromLegacyText(legacyString).also {
+            for(com in it) {
+                // Unfortunately, we cannot track what components are italic by the user and what components are italic due BungeeCord implementation...
+                com.isItalic = false
+            }
+        }
     }
 
 }

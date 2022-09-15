@@ -70,10 +70,12 @@ class ServersListGUIDisplay<S>(
     override fun buildPageDisplay(page: Page<PlatformServerGroup<S>>) {
         inventory = Inventory(InventoryType.chestInventoryWithRows(menuRows)).also {
             it.title(
-                AdventureUtil.parseMiniMessage(
-                    configuration.title,
-                    *commonTagResolvers(page),
-                    *playerTagResolvers(executor)
+                platform.toPlatformComponent(
+                    AdventureUtil.parseMiniMessage(
+                        configuration.title,
+                        *commonTagResolvers(page),
+                        *playerTagResolvers(executor)
+                    )
                 )
             )
         }
@@ -95,21 +97,25 @@ class ServersListGUIDisplay<S>(
                     val itemSet = ItemStack(generalItem.material, min(max(if(generalItem.amount == -1) serverItem.getPlayersCount() else generalItem.amount, 1), 64))
 
                     itemSet.displayName(
-                        AdventureUtil.parseMiniMessage(
-                            generalItem.displayName,
-                            *commonTagResolvers(page),
-                            *serverTagResolvers(serverItem),
-                            *playerTagResolvers(executor)
-                        ).decoration(TextDecoration.ITALIC, false)
-                    )
-                    itemSet.lore(
-                        generalItem.lore.map {
+                        platform.toPlatformComponent(
                             AdventureUtil.parseMiniMessage(
-                                it,
+                                generalItem.displayName,
                                 *commonTagResolvers(page),
                                 *serverTagResolvers(serverItem),
                                 *playerTagResolvers(executor)
                             ).decoration(TextDecoration.ITALIC, false)
+                        )
+                    )
+                    itemSet.lore(
+                        generalItem.lore.map {
+                            platform.toPlatformComponent(
+                                AdventureUtil.parseMiniMessage(
+                                    it,
+                                    *commonTagResolvers(page),
+                                    *serverTagResolvers(serverItem),
+                                    *playerTagResolvers(executor)
+                                ).decoration(TextDecoration.ITALIC, false)
+                            )
                         },
                         false
                     )
@@ -123,21 +129,25 @@ class ServersListGUIDisplay<S>(
                     val itemSet = ItemStack(customIcon.material, min(max(if(customIcon.amount == -1) serverItem.getPlayersCount() else customIcon.amount, 1), 64))
 
                     itemSet.displayName(
-                        AdventureUtil.parseMiniMessage(
-                            customIcon.displayName,
-                            *commonTagResolvers(page),
-                            *serverTagResolvers(serverItem),
-                            *playerTagResolvers(executor)
-                        ).decoration(TextDecoration.ITALIC, false)
-                    )
-                    itemSet.lore(
-                        customIcon.lore.map {
+                        platform.toPlatformComponent(
                             AdventureUtil.parseMiniMessage(
-                                it,
+                                customIcon.displayName,
                                 *commonTagResolvers(page),
                                 *serverTagResolvers(serverItem),
                                 *playerTagResolvers(executor)
                             ).decoration(TextDecoration.ITALIC, false)
+                        )
+                    )
+                    itemSet.lore(
+                        customIcon.lore.map {
+                            platform.toPlatformComponent(
+                                AdventureUtil.parseMiniMessage(
+                                    it,
+                                    *commonTagResolvers(page),
+                                    *serverTagResolvers(serverItem),
+                                    *playerTagResolvers(executor)
+                                ).decoration(TextDecoration.ITALIC, false)
+                            )
                         },
                         false
                     )
@@ -160,19 +170,23 @@ class ServersListGUIDisplay<S>(
                 val item = ItemStack(emptyItem.material, emptyItem.amount)
 
                 item.displayName(
-                    AdventureUtil.parseMiniMessage(
-                        emptyItem.displayName,
-                        *commonTagResolvers(page),
-                        *playerTagResolvers(executor)
-                    ).decoration(TextDecoration.ITALIC, false)
-                )
-                item.lore(
-                    emptyItem.lore.map {
+                    platform.toPlatformComponent(
                         AdventureUtil.parseMiniMessage(
-                            it,
+                            emptyItem.displayName,
                             *commonTagResolvers(page),
                             *playerTagResolvers(executor)
                         ).decoration(TextDecoration.ITALIC, false)
+                    )
+                )
+                item.lore(
+                    emptyItem.lore.map {
+                        platform.toPlatformComponent(
+                            AdventureUtil.parseMiniMessage(
+                                it,
+                                *commonTagResolvers(page),
+                                *playerTagResolvers(executor)
+                            ).decoration(TextDecoration.ITALIC, false)
+                        )
                     },
                     false
                 )
@@ -217,10 +231,12 @@ class ServersListGUIDisplay<S>(
 
                 if(definition.displayName.data != null) {
                     item.displayName(
-                        AdventureUtil.parseMiniMessage(
-                            definition.displayName.data!!,
-                            *commonTagResolvers(null),
-                            *playerTagResolvers(executor)
+                        platform.toPlatformComponent(
+                            AdventureUtil.parseMiniMessage(
+                                definition.displayName.data!!,
+                                *commonTagResolvers(null),
+                                *playerTagResolvers(executor)
+                            )
                         )
                     )
                 }
@@ -228,10 +244,12 @@ class ServersListGUIDisplay<S>(
                 if(definition.lore.data != null) {
                     item.lore(
                         definition.lore.data!!.map {
-                            AdventureUtil.parseMiniMessage(
-                                it,
-                                *commonTagResolvers(null),
-                                *playerTagResolvers(executor)
+                            platform.toPlatformComponent(
+                                AdventureUtil.parseMiniMessage(
+                                    it,
+                                    *commonTagResolvers(null),
+                                    *playerTagResolvers(executor)
+                                )
                             )
                         },
                         false
@@ -276,20 +294,24 @@ class ServersListGUIDisplay<S>(
                     }
 
                     item.displayName(
-                        AdventureUtil.parseMiniMessage(
-                            config.displayName,
-                            *commonTagResolvers(null),
-                            *playerTagResolvers(executor)
-                        ).decoration(TextDecoration.ITALIC, false)
+                        platform.toPlatformComponent(
+                            AdventureUtil.parseMiniMessage(
+                                config.displayName,
+                                *commonTagResolvers(null),
+                                *playerTagResolvers(executor)
+                            ).decoration(TextDecoration.ITALIC, false)
+                        )
                     )
 
                     item.lore(
                         config.lore.map {
-                            AdventureUtil.parseMiniMessage(
-                                it,
-                                *commonTagResolvers(null),
-                                *playerTagResolvers(executor)
-                            ).decoration(TextDecoration.ITALIC, false)
+                            platform.toPlatformComponent(
+                                AdventureUtil.parseMiniMessage(
+                                    it,
+                                    *commonTagResolvers(null),
+                                    *playerTagResolvers(executor)
+                                ).decoration(TextDecoration.ITALIC, false)
+                            )
                         },
                         false
                     )
@@ -313,20 +335,24 @@ class ServersListGUIDisplay<S>(
                     }
 
                     item.displayName(
-                        AdventureUtil.parseMiniMessage(
-                            config.displayName,
-                            *commonTagResolvers(null),
-                            *playerTagResolvers(executor)
-                        ).decoration(TextDecoration.ITALIC, false)
+                        platform.toPlatformComponent(
+                            AdventureUtil.parseMiniMessage(
+                                config.displayName,
+                                *commonTagResolvers(null),
+                                *playerTagResolvers(executor)
+                            ).decoration(TextDecoration.ITALIC, false)
+                        )
                     )
 
                     item.lore(
                         config.lore.map {
-                            AdventureUtil.parseMiniMessage(
-                                it,
-                                *commonTagResolvers(null),
-                                *playerTagResolvers(executor)
-                            ).decoration(TextDecoration.ITALIC, false)
+                            platform.toPlatformComponent(
+                                AdventureUtil.parseMiniMessage(
+                                    it,
+                                    *commonTagResolvers(null),
+                                    *playerTagResolvers(executor)
+                                ).decoration(TextDecoration.ITALIC, false)
+                            )
                         },
                         false
                     )

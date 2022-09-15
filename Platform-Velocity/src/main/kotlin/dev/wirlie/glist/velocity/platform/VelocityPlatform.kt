@@ -98,4 +98,9 @@ class VelocityPlatform(
         server.commandManager.executeAsync(playerVelocity, command)
     }
 
+    override fun toPlatformComponent(component: Component): Any {
+        // Velocity already supports Adventure components (hurra!! BungeeCord is another story...)
+        return component
+    }
+
 }

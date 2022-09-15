@@ -219,6 +219,8 @@ abstract class Platform<S, P, C> {
 
     abstract fun callVanishStateChangeEvent(fromPlayer: PlatformExecutor<S>, state: Boolean): CompletableFuture<Boolean>
 
+    abstract fun toPlatformComponent(component: Component): Any
+
     companion object {
 
         var pluginPrefix: Component = Component.empty()

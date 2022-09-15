@@ -76,10 +76,12 @@ class ServerPlayersGUIDisplay<S>(
 
         inventory = Inventory(InventoryType.chestInventoryWithRows(menuRows)).also {
             it.title(
-                AdventureUtil.parseMiniMessage(
-                    configuration.title,
-                    *commonTagResolvers(page),
-                    *playerTagResolvers(executor)
+                platform.toPlatformComponent(
+                    AdventureUtil.parseMiniMessage(
+                        configuration.title,
+                        *commonTagResolvers(page),
+                        *playerTagResolvers(executor)
+                    )
                 )
             )
         }
@@ -93,19 +95,23 @@ class ServerPlayersGUIDisplay<S>(
                 val item = ItemStack(generalItem.material, min(max(generalItem.amount, 1), 64))
 
                 item.displayName(
-                    AdventureUtil.parseMiniMessage(
-                        generalItem.displayName,
-                        *commonTagResolvers(page),
-                        *playerTagResolvers(playerItem)
-                    ).decoration(TextDecoration.ITALIC, false)
-                )
-                item.lore(
-                    generalItem.lore.map {
+                    platform.toPlatformComponent(
                         AdventureUtil.parseMiniMessage(
-                            it,
+                            generalItem.displayName,
                             *commonTagResolvers(page),
                             *playerTagResolvers(playerItem)
                         ).decoration(TextDecoration.ITALIC, false)
+                    )
+                )
+                item.lore(
+                    generalItem.lore.map {
+                        platform.toPlatformComponent(
+                            AdventureUtil.parseMiniMessage(
+                                it,
+                                *commonTagResolvers(page),
+                                *playerTagResolvers(playerItem)
+                            ).decoration(TextDecoration.ITALIC, false)
+                        )
                     },
                     false
                 )
@@ -123,17 +129,21 @@ class ServerPlayersGUIDisplay<S>(
                 }
 
                 item.displayName(
-                    AdventureUtil.parseMiniMessage(
-                        emptyItem.displayName,
-                        *commonTagResolvers(page)
-                    ).decoration(TextDecoration.ITALIC, false)
+                    platform.toPlatformComponent(
+                        AdventureUtil.parseMiniMessage(
+                            emptyItem.displayName,
+                            *commonTagResolvers(page)
+                        ).decoration(TextDecoration.ITALIC, false)
+                    )
                 )
                 item.lore(
                     emptyItem.lore.map {
-                        AdventureUtil.parseMiniMessage(
-                            it,
-                            *commonTagResolvers(page)
-                        ).decoration(TextDecoration.ITALIC, false)
+                        platform.toPlatformComponent(
+                            AdventureUtil.parseMiniMessage(
+                                it,
+                                *commonTagResolvers(page)
+                            ).decoration(TextDecoration.ITALIC, false)
+                        )
                     },
                     false
                 )
@@ -175,10 +185,12 @@ class ServerPlayersGUIDisplay<S>(
 
                 if(definition.displayName.data != null) {
                     item.displayName(
-                        AdventureUtil.parseMiniMessage(
-                            definition.displayName.data!!,
-                            *commonTagResolvers(null),
-                            *playerTagResolvers(executor)
+                        platform.toPlatformComponent(
+                            AdventureUtil.parseMiniMessage(
+                                definition.displayName.data!!,
+                                *commonTagResolvers(null),
+                                *playerTagResolvers(executor)
+                            )
                         )
                     )
                 }
@@ -186,10 +198,12 @@ class ServerPlayersGUIDisplay<S>(
                 if(definition.lore.data != null) {
                     item.lore(
                         definition.lore.data!!.map {
-                            AdventureUtil.parseMiniMessage(
-                                it,
-                                *commonTagResolvers(null),
-                                *playerTagResolvers(executor)
+                            platform.toPlatformComponent(
+                                AdventureUtil.parseMiniMessage(
+                                    it,
+                                    *commonTagResolvers(null),
+                                    *playerTagResolvers(executor)
+                                )
                             )
                         },
                         false
@@ -236,20 +250,24 @@ class ServerPlayersGUIDisplay<S>(
                     }
 
                     item.displayName(
-                        AdventureUtil.parseMiniMessage(
-                            config.displayName,
-                            *commonTagResolvers(null),
-                            *playerTagResolvers(executor)
-                        ).decoration(TextDecoration.ITALIC, false)
+                        platform.toPlatformComponent(
+                            AdventureUtil.parseMiniMessage(
+                                config.displayName,
+                                *commonTagResolvers(null),
+                                *playerTagResolvers(executor)
+                            ).decoration(TextDecoration.ITALIC, false)
+                        )
                     )
 
                     item.lore(
                         config.lore.map {
-                            AdventureUtil.parseMiniMessage(
-                                it,
-                                *commonTagResolvers(null),
-                                *playerTagResolvers(executor)
-                            ).decoration(TextDecoration.ITALIC, false)
+                            platform.toPlatformComponent(
+                                AdventureUtil.parseMiniMessage(
+                                    it,
+                                    *commonTagResolvers(null),
+                                    *playerTagResolvers(executor)
+                                ).decoration(TextDecoration.ITALIC, false)
+                            )
                         },
                         false
                     )
@@ -275,20 +293,24 @@ class ServerPlayersGUIDisplay<S>(
                     }
 
                     item.displayName(
-                        AdventureUtil.parseMiniMessage(
-                            config.displayName,
-                            *commonTagResolvers(null),
-                            *playerTagResolvers(executor)
-                        ).decoration(TextDecoration.ITALIC, false)
+                        platform.toPlatformComponent(
+                            AdventureUtil.parseMiniMessage(
+                                config.displayName,
+                                *commonTagResolvers(null),
+                                *playerTagResolvers(executor)
+                            ).decoration(TextDecoration.ITALIC, false)
+                        )
                     )
 
                     item.lore(
                         config.lore.map {
-                            AdventureUtil.parseMiniMessage(
-                                it,
-                                *commonTagResolvers(null),
-                                *playerTagResolvers(executor)
-                            ).decoration(TextDecoration.ITALIC, false)
+                            platform.toPlatformComponent(
+                                AdventureUtil.parseMiniMessage(
+                                    it,
+                                    *commonTagResolvers(null),
+                                    *playerTagResolvers(executor)
+                                ).decoration(TextDecoration.ITALIC, false)
+                            )
                         },
                         false
                     )
