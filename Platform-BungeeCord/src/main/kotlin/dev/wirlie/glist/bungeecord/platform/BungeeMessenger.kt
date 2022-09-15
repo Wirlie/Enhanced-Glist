@@ -101,17 +101,6 @@ class BungeeMessenger(
                 platformBungee.toPlatformExecutorPlayer(event.receiver as ProxiedPlayer),
                 platformBungee.toPlatformServer((event.sender as Server).info)
             )
-        } else {
-            //TODO: REMOVE THIS!!!
-            platform.logger.warning(
-                Component.text("NOT HANDLED MESSAGE")
-                    .append(Component.newline())
-                    .append(Component.text("id = ${event.tag}"))
-                    .append(Component.newline())
-                    .append(Component.text("event.receiver = ${event.receiver}"))
-                    .append(Component.newline())
-                    .append(Component.text("event.sender = ${event.sender}"))
-            )
         }
     }
 
