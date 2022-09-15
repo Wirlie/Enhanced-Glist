@@ -36,13 +36,14 @@ import java.nio.file.Files
 
 class Translator(
     val platform: Platform<*, *, *>,
-    private val code: String
+    val code: String
 ) {
 
     private val fileName = "$code.conf"
     private val configurationFile = File(platform.pluginFolder, fileName)
     private val configuration: ConfigurationNode
     private val configurationLoader: HoconConfigurationLoader
+    var realCode = code
 
     private var translationMessages: TranslationMessages
 
@@ -85,6 +86,7 @@ class Translator(
             platform.logger.warning(Component.text("New file generated '$code.conf', you can edit this file and make your own translation.", NamedTextColor.YELLOW))
             platform.logger.warning(Component.text("If this is not intentional, please read the documentation to view the list of supported languages.", NamedTextColor.YELLOW))
             input = this::class.java.getResourceAsStream("/messages/en.conf")!!
+            realCode = "en"
         }
 
         Files.copy(input, configurationFile.toPath())

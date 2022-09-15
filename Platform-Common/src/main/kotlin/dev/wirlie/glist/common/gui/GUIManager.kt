@@ -89,7 +89,8 @@ class GUIManager(
     private fun saveDefaults() {
         fun trySave(file: File) {
             if (!file.exists()) {
-                val resource = this::class.java.getResourceAsStream("/${file.name}")!!
+                val code = platform.translatorManager.getTranslator().realCode
+                val resource = this::class.java.getResourceAsStream("/$code/${file.name}")!!
                 val parent = file.parentFile
 
                 if (!parent.exists()) {
@@ -115,13 +116,55 @@ class GUIManager(
     }
 
     private fun applyUpdates(file: File, currentConfiguration: ConfigurationNode, loader: HoconConfigurationLoader) {
-        val temporalFile = File(platform.pluginFolder, "tempo-${file.name}")
+        val currentTranslatorCode = platform.translatorManager.getTranslator().realCode
+        val currentConfigurationCode = currentConfiguration.node("do-not-edit-this", "code").string
+
+        // Check if we can replace current configuration with original translated configuration
+        if(currentConfigurationCode != null && currentConfigurationCode != currentTranslatorCode) {
+            // Check if current configuration matches original
+            val input = this::class.java.getResourceAsStream("/$currentConfigurationCode/${file.name}")
+
+            if(input != null) {
+                // Check...
+                val temporalCodeFile = File(platform.pluginFolder, "temp-$currentConfigurationCode-${file.name}")
+                Files.copy(input, temporalCodeFile.toPath())
+
+                val originalConfig = HoconConfigurationLoader.builder()
+                    .emitComments(true)
+                    .prettyPrinting(true)
+                    .path(temporalCodeFile.toPath())
+                    .build()
+                    .load()
+
+                if(originalConfig.equals(currentConfiguration)) {
+                    // Matches! So we can safely remove current file and replace with original.
+                    // Remove current file
+                    file.delete()
+                    // Remove temporal to file
+                    temporalCodeFile.delete()
+                    // Regenerate
+                    saveDefaults()
+                    // Done
+                    platform.logger.info(Component.text("Changed language of '${file.name}' from '$currentConfigurationCode' to '$currentTranslatorCode'", NamedTextColor.GREEN))
+                    // We do not need to apply updates, at this point file is up-to-date
+                    return
+                } else {
+                    // Done
+                    platform.logger.info(Component.text("Cannot change the language of '${file.name}' from '$currentConfigurationCode' to '$currentTranslatorCode' because you have modified this file manually, file skipped.", NamedTextColor.YELLOW))
+                    // Remove this file
+                    temporalCodeFile.delete()
+                }
+            }
+        }
+
+        // Okay, check if configurations are up-to-date
+        val temporalFile = File(platform.pluginFolder, "temp-${file.name}")
 
         if(temporalFile.exists()) {
             Files.delete(temporalFile.toPath())
         }
 
-        val input = this::class.java.getResourceAsStream("/${file.name}")!!
+        val input = this::class.java.getResourceAsStream("/$currentTranslatorCode/${file.name}")!!
 
         Files.copy(input, temporalFile.toPath())
 
