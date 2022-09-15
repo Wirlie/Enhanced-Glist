@@ -65,27 +65,23 @@ class ServerPlayersGUIDisplay<S>(
 
     // Optimization, prevent multiple page calculations and only calculate once per update
     private var temporalTotalPages = 0
-    private var shouldRegisterClickActions = false
+    private var shouldRegisterClickActions = true
 
-    val inventory : Inventory = Inventory(InventoryType.chestInventoryWithRows(menuRows)).also {
-        it.title(
-            AdventureUtil.parseMiniMessage(
-                configuration.title,
-                *commonTagResolvers(null)
-            )
-        )
-    }
+    lateinit var inventory : Inventory
     val protocolPlayer = Protocolize.playerProvider().player(executor.getUUID())
 
     override fun buildPageDisplay(page: Page<PlatformExecutor<S>>) {
         temporalTotalPages = calculateTotalPages()
 
-        inventory.title(
-            AdventureUtil.parseMiniMessage(
-                configuration.title,
-                *commonTagResolvers(page)
+        inventory = Inventory(InventoryType.chestInventoryWithRows(menuRows)).also {
+            it.title(
+                AdventureUtil.parseMiniMessage(
+                    configuration.title,
+                    *commonTagResolvers(page),
+                    *playerTagResolvers(executor)
+                )
             )
-        )
+        }
 
         val generalItem = configuration.dataFormat.generalItem
         val emptyItem = configuration.dataFormat.emptySlotItem
@@ -142,7 +138,7 @@ class ServerPlayersGUIDisplay<S>(
         }
 
         fillToolbar()
-        shouldRegisterClickActions = false
+        shouldRegisterClickActions = true
 
         protocolPlayer.openInventory(inventory)
     }
@@ -251,7 +247,6 @@ class ServerPlayersGUIDisplay<S>(
                             inv.onClick {
                                 if(it.slot() == finalSlot) {
                                     tryPreviousPage()?.also { page ->
-                                        protocolPlayer.closeInventory()
                                         val start = System.currentTimeMillis()
                                         buildPageDisplay(page)
                                         val end = System.currentTimeMillis()
@@ -290,7 +285,6 @@ class ServerPlayersGUIDisplay<S>(
                             inv.onClick {
                                 if(it.slot() == finalSlot) {
                                     tryNextPage()?.also { page ->
-                                        protocolPlayer.closeInventory()
                                         val start = System.currentTimeMillis()
                                         buildPageDisplay(page)
                                         val end = System.currentTimeMillis()
