@@ -36,6 +36,7 @@ import dev.wirlie.glist.common.player.PlayerManager
 import dev.wirlie.glist.common.translation.TranslatorManager
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import java.io.File
 import java.util.concurrent.CompletableFuture
 
@@ -89,16 +90,49 @@ abstract class Platform<S, P, C> {
 
     fun reload() {
         // Reload Configuration
+        logger.info(
+            Component.text("Reloading ", NamedTextColor.GREEN)
+                .append(Component.text("Configuration", NamedTextColor.WHITE))
+                .append(Component.text(".", NamedTextColor.GREEN))
+        )
         configuration.reload()
         // Reload Hooks
+        logger.info(
+            Component.text("Reloading ", NamedTextColor.GREEN)
+                .append(Component.text("Hooks", NamedTextColor.WHITE))
+                .append(Component.text(".", NamedTextColor.GREEN))
+        )
         hookManager.reload()
+        logger.info(
+            Component.text("Registering ", NamedTextColor.GREEN)
+                .append(Component.text("Hooks", NamedTextColor.WHITE))
+                .append(Component.text(".", NamedTextColor.GREEN))
+        )
         registerHooks()
         // Reload Translator
+        logger.info(
+            Component.text("Reloading ", NamedTextColor.GREEN)
+                .append(Component.text("Translator", NamedTextColor.WHITE))
+                .append(Component.text(".", NamedTextColor.GREEN))
+        )
         translatorManager.reload()
         // Reload Commands
+        logger.info(
+            Component.text("Reloading ", NamedTextColor.GREEN)
+                .append(Component.text("Commands", NamedTextColor.WHITE))
+                .append(Component.text(".", NamedTextColor.GREEN))
+        )
         platformCommandManager.reload()
+        logger.info(
+            Component.text("Reloading ", NamedTextColor.GREEN)
+                .append(Component.text("Protocolize (GUI System)", NamedTextColor.WHITE))
+                .append(Component.text(".", NamedTextColor.GREEN))
+        )
         // Reload Protocolize
         guiManager?.reload()
+        logger.info(
+            Component.text("Plugin reloaded!", NamedTextColor.GREEN)
+        )
         // Reload prefix
         pluginPrefix = configuration.getSection(GeneralSection::class.java).prefix.miniMessage()
     }
