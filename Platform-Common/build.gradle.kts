@@ -42,6 +42,7 @@ tasks.withType<ProcessResources> {
         Pair("build_version", version),
         Pair("build_job_name", System.getenv("JOB_NAME") ?: "unknown"),
         Pair("build_id", System.getenv("BUILD_ID") ?: "unknown"),
+        Pair("target_release", System.getenv("BUILD_TARGET_RELEASE") ?: "unknown"),
         Pair("build_full_hash", System.getenv("GIT_COMMIT") ?: "unknown"),
         Pair("build_branch", System.getenv("GIT_BRANCH") ?: "unknown"),
         Pair("build_timestamp", System.currentTimeMillis()),
