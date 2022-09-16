@@ -183,7 +183,7 @@ class GUIManager(
             .build()
             .load()
 
-        if(newConfig.node("do-not-edit-this", "config-version").getInt(1) != currentConfiguration.node("do-not-edit-this", "config-version").getInt(0)) {
+        if(newConfig.node("do-not-edit-this", "config-version").getString("unknown") != currentConfiguration.node("do-not-edit-this", "config-version").getString("unknown2")) {
             platform.logger.info(Component.text("Updating GUI configuration file (${file.name})...", NamedTextColor.YELLOW))
 
             // Remove dynamic nodes, only if exists

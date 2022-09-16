@@ -92,7 +92,7 @@ class ConfigurationManager(
             .build()
             .load()
 
-        if(newConfig.node("do-not-edit-this", "config-version").getInt(1) != configuration.node("do-not-edit-this", "config-version").getInt(0)) {
+        if(newConfig.node("do-not-edit-this", "config-version").getString("unknown") != configuration.node("do-not-edit-this", "config-version").getString("unknown2")) {
             logger.info("Updating configuration...")
 
             configuration.mergeFrom(newConfig)

@@ -115,7 +115,7 @@ class Translator(
             .build()
             .load()
 
-        if(newConfig.node("do-not-edit-this", "config-version").getInt(1) != configuration.node("do-not-edit-this", "config-version").getInt(0)) {
+        if(newConfig.node("do-not-edit-this", "config-version").getString("unknown") != configuration.node("do-not-edit-this", "config-version").getString("unknown2")) {
             platform.logger.info(Component.text("Updating translation file ($code)...", NamedTextColor.YELLOW))
 
             // Remove dynamic nodes, only if exists
