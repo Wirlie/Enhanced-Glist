@@ -51,3 +51,17 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("com.github.benmanes.caffeine", "dev.wirlie.shaded.com.github.benmanes.caffeine")
     relocate("net.kyori", "dev.wirlie.shaded.net.kyori")
 }
+
+
+tasks.withType<ProcessResources> {
+
+    val props = mutableMapOf(
+        Pair("version", version)
+    )
+
+    inputs.properties(props)
+    filteringCharset = "UTF-8"
+    filesMatching(listOf("bungee.yml")) {
+        expand(props)
+    }
+}

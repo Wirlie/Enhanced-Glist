@@ -9,6 +9,8 @@ plugins {
     kotlin("jvm") version "1.6.21"
     kotlin("kapt") version "1.6.21"
     `maven-publish`
+    idea
+    id("org.jetbrains.gradle.plugin.idea-ext") version "1.0.1"
 }
 
 repositories {

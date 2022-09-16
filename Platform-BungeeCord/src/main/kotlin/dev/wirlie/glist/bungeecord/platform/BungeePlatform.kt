@@ -47,6 +47,7 @@ class BungeePlatform(
 ): Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>() {
 
     private var updateCheckTask: ScheduledTask? = null
+    private var consoleNotificationTask: ScheduledTask? = null
 
     override fun toPlatformServer(server: ServerInfo): PlatformServer<ServerInfo> {
         return BungeePlatformServer(this, server)
@@ -124,11 +125,19 @@ class BungeePlatform(
     }
 
     override fun scheduleUpdaterCheckTask(task: Runnable, periodSeconds: Int) {
-        updateCheckTask = ProxyServer.getInstance().scheduler.schedule(plugin, task, periodSeconds.toLong(), periodSeconds.toLong(), TimeUnit.SECONDS)
+        updateCheckTask = ProxyServer.getInstance().scheduler.schedule(plugin, task, 0L, periodSeconds.toLong(), TimeUnit.SECONDS)
     }
 
     override fun stopUpdaterCheckTask() {
         updateCheckTask?.cancel()
+    }
+
+    override fun scheduleConsoleNotificationTask(task: Runnable, periodSeconds: Int) {
+        consoleNotificationTask = ProxyServer.getInstance().scheduler.schedule(plugin, task, periodSeconds.toLong(), periodSeconds.toLong(), TimeUnit.SECONDS)
+    }
+
+    override fun stopConsoleNotificationTask() {
+        consoleNotificationTask?.cancel()
     }
 
 }

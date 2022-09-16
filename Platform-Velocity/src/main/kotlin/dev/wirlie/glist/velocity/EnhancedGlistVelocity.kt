@@ -29,7 +29,6 @@ import com.velocitypowered.api.plugin.Dependency
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
-import dev.wirlie.glist.velocity.api.EnhancedGlistAPI
 import dev.wirlie.glist.velocity.api.impl.EnhancedGlistAPIImpl
 import dev.wirlie.glist.velocity.listener.PlayerDisconnectListener
 import dev.wirlie.glist.velocity.listener.PlayerServerChangeListener
@@ -41,7 +40,7 @@ import java.nio.file.Path
 @Plugin(
     id = "enhanced-glist-velocity",
     name = "EnhancedGlist",
-    version = "2.0.0",
+    version = BuildConstants.VERSION,
     url = "https://www.spigotmc.org/resources/enhancedbungeelist.53295/",
     description = "Enhanced Glist is a high-configurable plugin that enhances /glist command.",
     authors = ["Wirlie"],

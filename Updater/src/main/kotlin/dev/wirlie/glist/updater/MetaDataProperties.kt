@@ -30,6 +30,8 @@ class MetaDataProperties {
     @ConfigSerializable
     class BuildProperties {
 
+        var targetRelease = "unknown"
+
         var project = "unknown"
 
         var number = "unknown"

@@ -18,16 +18,10 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.updater
+package dev.wirlie.glist.velocity;
 
-interface UpdaterScheduler {
+// The constants are replaced before compilation
+public class BuildConstants {
 
-    fun scheduleUpdaterCheckTask(task: Runnable, periodSeconds: Int)
-
-    fun stopUpdaterCheckTask()
-
-    fun scheduleConsoleNotificationTask(task: Runnable, periodSeconds: Int)
-
-    fun stopConsoleNotificationTask()
-
+    public static final String VERSION = "${version}";
 }

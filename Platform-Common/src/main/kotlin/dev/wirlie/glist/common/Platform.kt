@@ -86,8 +86,14 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
         networkMessenger.register()
         networkMessenger.registerListeners()
         val updaterConfig = configuration.getSection(UpdatesSection::class.java)
-        pluginUpdater = PluginUpdater(this, updaterConfig.checkInterval, updaterConfig.notify.console.notificationInterval)
-        pluginUpdater.setup(logger, pluginFolder)
+        pluginUpdater = PluginUpdater(
+            this,
+            updaterConfig.checkInterval,
+            updaterConfig.notify.console.notificationInterval,
+            logger,
+            pluginFolder
+        )
+        pluginUpdater.setup()
     }
 
     fun disable() {
@@ -141,7 +147,15 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
                 .append(Component.text("Updater", NamedTextColor.WHITE))
                 .append(Component.text(".", NamedTextColor.GREEN))
         )
-        pluginUpdater.reload()
+        pluginUpdater.stop()
+        val updaterConfig = configuration.getSection(UpdatesSection::class.java)
+        pluginUpdater = PluginUpdater(
+            this,
+            updaterConfig.checkInterval,
+            updaterConfig.notify.console.notificationInterval,
+            logger,
+            pluginFolder
+        )
         // Reload Protocolize
         guiManager?.reload()
         logger.info(

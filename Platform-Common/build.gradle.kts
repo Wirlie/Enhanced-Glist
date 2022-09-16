@@ -50,7 +50,12 @@ tasks.withType<ProcessResources> {
 
     inputs.properties(props)
     filteringCharset = "UTF-8"
-    filesMatching("metadata.conf") {
+    filesMatching(
+        listOf(
+            "metadata.conf", "config.conf", "en/gui-glist-menu.conf", "es/gui-glist-menu.conf",
+            "en/gui-slist-menu.conf", "es/gui-slist-menu.conf", "messages/es.conf", "messages/en.conf"
+        )
+    ) {
         expand(props)
     }
 }

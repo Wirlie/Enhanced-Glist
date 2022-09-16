@@ -20,6 +20,7 @@
 
 package dev.wirlie.glist.updater
 
+import com.google.gson.JsonParser
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -37,19 +38,18 @@ import javax.xml.parsers.DocumentBuilderFactory
 class PluginUpdater(
     val updaterScheduler: UpdaterScheduler,
     val checkInterval: Int,
-    val consoleNotificationInterval: Int
+    val consoleNotificationInterval: Int,
+    val logger: SimpleLogger,
+    val pluginFolder: File
 ) {
 
-    private lateinit var logger: SimpleLogger
     private val fileName = "metadata.conf"
     private lateinit var metaDataProperties: MetaDataProperties
 
     var updateAvailable = false
     var updateDownloadURL = ""
 
-    fun setup(logger: SimpleLogger, pluginFolder: File) {
-        this.logger = logger
-
+    fun setup() {
         val inputFile = this::class.java.getResourceAsStream("/$fileName")
         if(inputFile == null) {
             logger.severe("Cannot get $fileName from plugin .jar!! This file is required, Updater will not be enabled.")
@@ -94,6 +94,7 @@ class PluginUpdater(
             metaDataProperties.build.number.equals("unknown", true) ||
             metaDataProperties.build.branch.equals("unknown", true) ||
             metaDataProperties.build.fullHash.equals("unknown", true) ||
+            metaDataProperties.build.targetRelease.equals("unknown", true) ||
             metaDataProperties.build.timestamp.equals("unknown", true)
         ) {
             logger.severe("[Updater] MetaData is corrupted or invalid, updater disabled.")
@@ -101,39 +102,7 @@ class PluginUpdater(
             return
         }
 
-        getLatestBuildFromJenkins { latestBuildNumber ->
-            // Ignore if -1 is received from resolver
-            if (latestBuildNumber == -1) return@getLatestBuildFromJenkins
-
-            if(metaDataProperties.build.number.toInt() < latestBuildNumber) {
-                updateAvailable = true
-
-                updateDownloadURL = if(metaDataProperties.build.branch == "master") {
-                    // Redirect to SpigotMC, because this build is a Release Build
-                    "https://www.spigotmc.org/resources/enhanced-glist-bungeecord-velocity.53295/"
-                } else {
-                    val project = metaDataProperties.build.project.split('/')
-                    val rootJobName = project[0]
-                    // Redirect to CI Server, because this build is a Beta Build
-                    "https://ci.wirlie.net/job/$rootJobName/job/${metaDataProperties.build.branch}/lastSuccessfulBuild/"
-                }
-
-                // Update found
-                logger.warning("======================= UPDATE AVAILABLE =======================")
-                logger.warning("[Updater] A new update is available.")
-                logger.warning("[Updater] Current Build: #${metaDataProperties.build.number}")
-                logger.warning("[Updater] Remote Build: #${latestBuildNumber}")
-                logger.warning("[Updater] Download the latest update from:")
-                logger.warning("[Updater] $updateDownloadURL")
-                logger.warning("=================================================================")
-            } else {
-                // No updates
-                logger.info("[Updater] Your plugin is up-to-date (current Build #${metaDataProperties.build.number}, remote latest Build #${latestBuildNumber})")
-
-                // Schedule update checks
-                scheduleCheck()
-            }
-        }
+        scheduleCheck()
     }
 
     private fun getLatestBuildFromJenkins(
@@ -210,12 +179,48 @@ class PluginUpdater(
         }
     }
 
-    fun reload() {
+    private fun checkIfPublishedAtSpigot() {
+        val client = HttpClient.newBuilder().build()
+        val request = HttpRequest.newBuilder(URI.create("https://api.spiget.org/v2/resources/53295/versions?sort=-releaseDate")).build()
+        val response = client.send(request, BodyHandlers.ofString(Charsets.UTF_8))
 
+        // Deprecated, but Spigot 1.8 uses this...
+        @Suppress("DEPRECATION")
+        val json = JsonParser().parse(response.body())
+        val jsonArray = json.asJsonArray
+
+        for(element in jsonArray) {
+            val jsonObject = element.asJsonObject
+            if(jsonObject.has("name")) {
+                if(jsonObject.get("name").asString.equals(metaDataProperties.build.targetRelease, true)) {
+                    updateAvailable = true
+                    // Redirect to Spigot to download the release instead of the beta build
+                    updateDownloadURL = "https://www.spigotmc.org/resources/enhanced-glist-bungeecord-velocity.53295/"
+                    break
+                }
+            }
+        }
     }
 
-    fun scheduleCheck() {
+    fun stop() {
+        updaterScheduler.stopUpdaterCheckTask()
+        updaterScheduler.stopConsoleNotificationTask()
+    }
+
+    private fun scheduleCheck() {
         updaterScheduler.scheduleUpdaterCheckTask({
+            if(metaDataProperties.build.branch != "master") {
+                // Check if target release is not published at SpigotMC
+                checkIfPublishedAtSpigot()
+                // Release is published, stop
+                if (updateAvailable) {
+                    updaterScheduler.stopUpdaterCheckTask()
+                    printUpdateMessage()
+                    scheduleConsoleNotificationTask()
+                    return@scheduleUpdaterCheckTask
+                }
+            }
+
             // Check for updates
             getLatestBuildFromJenkins {latestBuildNumber ->
                 if (latestBuildNumber == -1) return@getLatestBuildFromJenkins
@@ -235,16 +240,25 @@ class PluginUpdater(
                     }
 
                     // Update found
-                    logger.warning("======================= UPDATE AVAILABLE =======================")
-                    logger.warning("[Updater] A new update is available.")
-                    logger.warning("[Updater] Current Build: #${metaDataProperties.build.number}")
-                    logger.warning("[Updater] Remote Build: #${latestBuildNumber}")
-                    logger.warning("[Updater] Download the latest update from:")
-                    logger.warning("[Updater] $updateDownloadURL")
-                    logger.warning("=================================================================")
+                    printUpdateMessage()
+                    scheduleConsoleNotificationTask()
                 }
             }
         }, checkInterval)
+    }
+
+    private fun printUpdateMessage() {
+        logger.warning("======================= UPDATE AVAILABLE =======================")
+        logger.warning("[Updater] A new update is available.")
+        logger.warning("[Updater] Download the latest update from:")
+        logger.warning("[Updater] $updateDownloadURL")
+        logger.warning("=================================================================")
+    }
+
+    private fun scheduleConsoleNotificationTask() {
+        updaterScheduler.scheduleConsoleNotificationTask({
+            printUpdateMessage()
+        }, consoleNotificationInterval)
     }
 
 }

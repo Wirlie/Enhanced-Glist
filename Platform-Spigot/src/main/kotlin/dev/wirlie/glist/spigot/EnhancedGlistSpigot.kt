@@ -41,6 +41,7 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
     lateinit var configurationManager: ConfigurationManager
     lateinit var pluginUpdater: PluginUpdater
     var updaterCheckTask: BukkitTask? = null
+    var consoleNotificationTask: BukkitTask? = null
 
     override fun onEnable() {
         AdventureUtil.adventure = BukkitAudiences.create(this)
@@ -57,8 +58,8 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
         hookManager.sendAllPlayersToProxy()
 
         //TODO: Configurable
-        pluginUpdater = PluginUpdater(this, 300, 300)
-        pluginUpdater.setup(this, dataFolder)
+        pluginUpdater = PluginUpdater(this, 300, 300, this, dataFolder)
+        pluginUpdater.setup()
 
         getCommand("egls")!!.executor = GlistExecutor(this)
 
@@ -74,6 +75,9 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
     fun performReload() {
         configurationManager.reload()
         hookManager.reload()
+        pluginUpdater.stop()
+        //TODO: Configurable
+        pluginUpdater = PluginUpdater(this, 300, 300, this, dataFolder)
     }
 
     override fun info(message: String) {
@@ -98,6 +102,18 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
 
     override fun stopUpdaterCheckTask() {
         updaterCheckTask?.cancel()
+    }
+
+    override fun scheduleConsoleNotificationTask(task: Runnable, periodSeconds: Int) {
+        consoleNotificationTask = object: BukkitRunnable() {
+            override fun run() {
+                task.run()
+            }
+        }.runTaskTimer(this, periodSeconds * 20L, periodSeconds * 20L)
+    }
+
+    override fun stopConsoleNotificationTask() {
+        consoleNotificationTask?.cancel()
     }
 
 }

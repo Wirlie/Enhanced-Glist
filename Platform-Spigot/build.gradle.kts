@@ -55,6 +55,7 @@ tasks.withType<ProcessResources> {
 
     val props = mutableMapOf(
         Pair("build_version", version),
+        Pair("version", version),
         Pair("build_job_name", System.getenv("JOB_NAME") ?: "unknown"),
         Pair("build_id", System.getenv("BUILD_ID") ?: "unknown"),
         Pair("target_release", System.getenv("BUILD_TARGET_RELEASE") ?: "unknown"),
@@ -63,16 +64,9 @@ tasks.withType<ProcessResources> {
         Pair("build_timestamp", System.currentTimeMillis()),
     )
 
-    val pluginProps = mutableMapOf(
-        Pair("version", version)
-    )
-
     inputs.properties(props)
     filteringCharset = "UTF-8"
-    filesMatching(listOf("metadata.conf")) {
+    filesMatching(listOf("metadata.conf", "config.conf", "plugin.yml")) {
         expand(props)
-    }
-    filesMatching(listOf("plugin.yml")) {
-        expand(pluginProps)
     }
 }

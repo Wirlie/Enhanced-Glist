@@ -46,6 +46,7 @@ class VelocityPlatform(
 ): Platform<RegisteredServer, Player, ConsoleCommandSource>() {
 
     private var updaterCheckTask: ScheduledTask? = null
+    private var consoleNotificationTask: ScheduledTask? = null
 
     override fun toPlatformServer(server: RegisteredServer): PlatformServer<RegisteredServer> {
         return VelocityPlatformServer(this, server)
@@ -114,11 +115,19 @@ class VelocityPlatform(
     }
 
     override fun scheduleUpdaterCheckTask(task: Runnable, periodSeconds: Int) {
-        updaterCheckTask = server.scheduler.buildTask(plugin, task).repeat(periodSeconds.toLong(), TimeUnit.SECONDS).schedule()
+        updaterCheckTask = server.scheduler.buildTask(plugin, task).delay(0, TimeUnit.SECONDS).repeat(periodSeconds.toLong(), TimeUnit.SECONDS).schedule()
     }
 
     override fun stopUpdaterCheckTask() {
         updaterCheckTask?.cancel()
+    }
+
+    override fun scheduleConsoleNotificationTask(task: Runnable, periodSeconds: Int) {
+        consoleNotificationTask = server.scheduler.buildTask(plugin, task).delay(periodSeconds.toLong(), TimeUnit.SECONDS).repeat(periodSeconds.toLong(), TimeUnit.SECONDS).schedule()
+    }
+
+    override fun stopConsoleNotificationTask() {
+        consoleNotificationTask?.cancel()
     }
 
 }

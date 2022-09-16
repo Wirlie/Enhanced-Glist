@@ -1,3 +1,5 @@
+apply(plugin = "idea")
+apply(plugin = "org.jetbrains.gradle.plugin.idea-ext")
 
 repositories {
     maven {
@@ -42,4 +44,38 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("kotlin", "dev.wirlie.shaded.kotlin")
     relocate("com.google.gson", "dev.wirlie.shaded.com.google.gson")
     relocate("com.github.benmanes.caffeine", "dev.wirlie.shaded.com.github.benmanes.caffeine")
+}
+
+val templateSource = file("src/main/templates")
+val templateDest = layout.buildDirectory.dir("generated/sources/templates")
+val generateTemplates = tasks.register<Copy>("generateTemplates") {
+    val props = mutableMapOf(Pair("version", project.version))
+
+    println(templateDest.get().asFile.absolutePath)
+
+    inputs.properties(props)
+    from(templateSource)
+    into(templateDest)
+    expand(props)
+}
+
+sourceSets.main.get().java.srcDir(generateTemplates.map { it.outputs })
+
+fun org.gradle.plugins.ide.idea.model.IdeaProject.settings(block: org.jetbrains.gradle.ext.ProjectSettings.() -> Unit) =
+    (this@settings as ExtensionAware).extensions.configure(block)
+
+fun org.jetbrains.gradle.ext.ProjectSettings.taskTriggers(block: org.jetbrains.gradle.ext.TaskTriggersConfig.() -> Unit) =
+    (this@taskTriggers as ExtensionAware).extensions.configure("taskTriggers", block)
+
+fun Project.idea(block: org.gradle.plugins.ide.idea.model.IdeaModel.() -> Unit) =
+    (this as ExtensionAware).extensions.configure("idea", block)
+
+rootProject.idea {
+    project {
+        settings {
+            taskTriggers {
+                afterSync(generateTemplates)
+            }
+        }
+    }
 }
