@@ -122,7 +122,7 @@ pipeline {
                     switch(branchName) {
                         case "develop":
                         case "2.0.0":
-                            env.BUILD_TARGET_RELEASE = '2.0.0'
+                            env.BUILD_TARGET_RELEASE = '1.3.1'
                             break
                         case "master":
                             break
@@ -460,6 +460,8 @@ def validateSpigotMC() {
     println("Fetching latest publications from SpigotMC...")
     
     for(element in jsonObj) {
-        println(element["name"])   
+        if(element["name"] == env.BUILD_TARGET_RELEASE) {
+            error("Target release " + env.BUILD_TARGET_RELEASE + " is already published at SpigotMC!! Update Jenkinsfile and set a highest target release.")   
+        }
     }
 }
