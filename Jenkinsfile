@@ -111,6 +111,7 @@ pipeline {
                     
                     // Target release version
                     env.BUILD_TARGET_RELEASE = 'none'
+                    env.BUILD_TARGET_RELEASE_BYPASS = 'no' // Set this to yes to prevent build failing when target release is published at SpigotMC
                     
                     def branchName = env.CHANGE_BRANCH
                     
@@ -122,7 +123,7 @@ pipeline {
                     switch(branchName) {
                         case "develop":
                         case "2.0.0":
-                            env.BUILD_TARGET_RELEASE = '1.3.1'
+                            env.BUILD_TARGET_RELEASE = '2.0.0'
                             break
                         case "master":
                             break
@@ -137,7 +138,9 @@ pipeline {
                     println("Target release for branch " + branchName + " is " + env.BUILD_TARGET_RELEASE)
                     
                     // Validate that this target release is not published at SpigotMC
-                    validateSpigotMC()
+                    if(env.BUILD_TARGET_RELEASE_BYPASS == 'no') { 
+                        validateSpigotMC()
+                    }
                 }
             }
         }
