@@ -78,6 +78,7 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
         pluginUpdater.stop()
         //TODO: Configurable
         pluginUpdater = PluginUpdater(this, 300, 300, this, dataFolder)
+        pluginUpdater.setup()
     }
 
     override fun info(message: String) {

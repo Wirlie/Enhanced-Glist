@@ -156,6 +156,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             logger,
             pluginFolder
         )
+        pluginUpdater.setup()
         // Reload Protocolize
         guiManager?.reload()
         logger.info(
