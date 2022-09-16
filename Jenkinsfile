@@ -134,7 +134,10 @@ pipeline {
                         error("Only master branch is allowed to not have a target release, edit Jenkinsfile to fix this.")   
                     }
                     
-                    println("Target release for branch " + env.CHANGE_BRANCH + " is " + env.BUILD_TARGET_RELEASE)
+                    println("Target release for branch " + branchName + " is " + env.BUILD_TARGET_RELEASE)
+                    
+                    // Validate that this target release is not published at SpigotMC
+                    validateSpigotMC()
                 }
             }
         }
@@ -449,4 +452,14 @@ def nexusPublish(project) {
             }
         }
     }   
+}
+
+def validateSpigotMC() {
+    def data = sh(script: "curl -X GET \"https://api.spiget.org/v2/resources/53295/versions?sort=-releaseDate\"", returnStdout: true)
+    def jsonObj = readJSON text: data
+    println("Fetching latest publications from SpigotMC...")
+    
+    for(element in jsonObj) {
+        println(element["name"])   
+    }
 }
