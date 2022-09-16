@@ -49,7 +49,7 @@ class TranslationMessages {
     @ConfigSerializable
     class DoNotEditShitSection {
 
-        var configVersion: Int = -1
+        var configVersion: String = "unknown"
 
     }
 

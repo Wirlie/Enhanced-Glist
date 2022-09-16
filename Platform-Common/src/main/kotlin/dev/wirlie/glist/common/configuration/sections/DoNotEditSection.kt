@@ -30,6 +30,6 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 @ConfigRootPath("dot-not-edit-this")
 class DoNotEditSection: ConfigurationSection {
 
-    var configVersion: Int = -1
+    var configVersion: String = "unknown"
 
 }
