@@ -44,6 +44,7 @@ class TranslatorManager(
     }
 
     fun reload() {
+        code = platform.configuration.getSection(GeneralSection::class.java).language
         translator = null
         getTranslator()
     }
