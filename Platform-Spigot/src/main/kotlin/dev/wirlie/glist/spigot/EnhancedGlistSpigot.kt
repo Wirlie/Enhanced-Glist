@@ -57,9 +57,18 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
         hookManager.registerHooks()
         hookManager.sendAllPlayersToProxy()
 
-        //TODO: Configurable
-        pluginUpdater = PluginUpdater(this, 300, 300, this, dataFolder)
-        pluginUpdater.setup()
+        val updaterConfiguration = configurationManager.getConfiguration().updates
+        pluginUpdater = PluginUpdater(
+            this,
+            updaterConfiguration.checkInterval,
+            updaterConfiguration.notify.console.notificationInterval,
+            this,
+            dataFolder,
+            updaterConfiguration.notify.console.enable
+        )
+        if(updaterConfiguration.checkForUpdates) {
+            pluginUpdater.setup()
+        }
 
         getCommand("egls")!!.executor = GlistExecutor(this)
 
@@ -76,9 +85,18 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
         configurationManager.reload()
         hookManager.reload()
         pluginUpdater.stop()
-        //TODO: Configurable
-        pluginUpdater = PluginUpdater(this, 300, 300, this, dataFolder)
-        pluginUpdater.setup()
+        val updaterConfiguration = configurationManager.getConfiguration().updates
+        pluginUpdater = PluginUpdater(
+            this,
+            updaterConfiguration.checkInterval,
+            updaterConfiguration.notify.console.notificationInterval,
+            this,
+            dataFolder,
+            updaterConfiguration.notify.console.enable
+        )
+        if(updaterConfiguration.checkForUpdates) {
+            pluginUpdater.setup()
+        }
     }
 
     override fun info(message: String) {

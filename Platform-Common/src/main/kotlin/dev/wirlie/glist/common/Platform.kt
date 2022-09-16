@@ -91,9 +91,13 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             updaterConfig.checkInterval,
             updaterConfig.notify.console.notificationInterval,
             logger,
-            pluginFolder
+            pluginFolder,
+            updaterConfig.notify.console.enable
         )
-        pluginUpdater.setup()
+        if(updaterConfig.checkForUpdates) {
+            // Only check for updates if enabled
+            pluginUpdater.setup()
+        }
     }
 
     fun disable() {
@@ -154,9 +158,13 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             updaterConfig.checkInterval,
             updaterConfig.notify.console.notificationInterval,
             logger,
-            pluginFolder
+            pluginFolder,
+            updaterConfig.notify.console.enable
         )
-        pluginUpdater.setup()
+        if(updaterConfig.checkForUpdates) {
+            // Only check for updates if enabled
+            pluginUpdater.setup()
+        }
         // Reload Protocolize
         guiManager?.reload()
         logger.info(

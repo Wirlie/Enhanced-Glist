@@ -29,6 +29,8 @@ class PluginConfiguration {
 
     var messages = MessagesConfiguration()
 
+    var updates = UpdatesConfiguration()
+
     @ConfigSerializable
     class HooksConfiguration {
 
@@ -111,5 +113,33 @@ class PluginConfiguration {
         var usage = ""
 
     }
+
+    @ConfigSerializable
+    class UpdatesConfiguration {
+
+        var checkForUpdates = true
+
+        var checkInterval = 300
+
+        var notify = NotifySection()
+
+        @ConfigSerializable
+        class NotifySection {
+
+            var console = ConsoleSection()
+
+            @ConfigSerializable
+            class ConsoleSection {
+
+                var enable = true
+
+                var notificationInterval = 600
+
+            }
+
+        }
+
+    }
+
 
 }

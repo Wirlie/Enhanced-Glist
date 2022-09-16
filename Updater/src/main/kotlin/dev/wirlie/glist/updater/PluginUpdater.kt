@@ -40,7 +40,8 @@ class PluginUpdater(
     val checkInterval: Int,
     val consoleNotificationInterval: Int,
     val logger: SimpleLogger,
-    val pluginFolder: File
+    val pluginFolder: File,
+    val consoleNotification: Boolean
 ) {
 
     private val fileName = "metadata.conf"
@@ -256,9 +257,12 @@ class PluginUpdater(
     }
 
     private fun scheduleConsoleNotificationTask() {
-        updaterScheduler.scheduleConsoleNotificationTask({
-            printUpdateMessage()
-        }, consoleNotificationInterval)
+        if (consoleNotification) {
+            // Only notify to console periodically if enabled
+            updaterScheduler.scheduleConsoleNotificationTask({
+                printUpdateMessage()
+            }, consoleNotificationInterval)
+        }
     }
 
 }
