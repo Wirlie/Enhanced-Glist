@@ -108,6 +108,26 @@ pipeline {
                             }
                             break
                     }
+                    
+                    // Target release version
+                    env.BUILD_TARGET_RELEASE = 'none'
+                    
+                    switch(env.CHANGE_BRANCH) {
+                        case "develop":
+                        case "2.0.0":
+                            env.BUILD_TARGET_RELEASE = '2.0.0'
+                            break
+                        case "master":
+                            break
+                        default:
+                            println("Branch does not have a target relase: " + env.CHANGE_BRANCH)
+                    }
+                    
+                    if(env.GIT_BRANCH != 'master' && env.BUILD_TARGET_RELEASE == 'none') {
+                        error("Only master branch is allowed to not have a target release, edit Jenkinsfile to fix this.")   
+                    }
+                    
+                    println("Target release for branch " + env.CHANGE_BRANCH + " is " + env.BUILD_TARGET_RELEASE)
                 }
             }
         }
