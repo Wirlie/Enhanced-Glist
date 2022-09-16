@@ -40,6 +40,7 @@ import dev.wirlie.glist.updater.PluginUpdater
 import dev.wirlie.glist.updater.UpdaterScheduler
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.tag.Tag
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
@@ -207,7 +208,12 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
                 executor.asAudience().sendMessage(
                     AdventureUtil.parseMiniMessage(
                         translatorManager.getTranslator().getMessages().updater.notifyMessage.joinToString("<newline>"),
-                        TagResolver.resolver("download-url", Tag.selfClosingInserting(Component.text(pluginUpdater.updateDownloadURL)))
+                        TagResolver.resolver("download-url",
+                            Tag.selfClosingInserting(
+                                Component.text(pluginUpdater.updateDownloadURL)
+                                    .clickEvent(ClickEvent.openUrl(pluginUpdater.updateDownloadURL))
+                            )
+                        )
                     )
                 )
             }, delay.toLong(), TimeUnit.MILLISECONDS)
