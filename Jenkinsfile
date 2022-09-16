@@ -112,7 +112,14 @@ pipeline {
                     // Target release version
                     env.BUILD_TARGET_RELEASE = 'none'
                     
-                    switch(env.CHANGE_BRANCH) {
+                    def branchName = env.CHANGE_BRANCH
+                    
+                    if(branchName == null) {
+                        // Not in PR, use BRANCH_NAME instead
+                        branchName = env.BRANCH_NAME
+                    }
+                    
+                    switch(branchName) {
                         case "develop":
                         case "2.0.0":
                             env.BUILD_TARGET_RELEASE = '2.0.0'
@@ -120,10 +127,10 @@ pipeline {
                         case "master":
                             break
                         default:
-                            println("Branch does not have a target relase: " + env.CHANGE_BRANCH)
+                            println("Branch does not have a target relase: " + branchName)
                     }
                     
-                    if(env.GIT_BRANCH != 'master' && env.BUILD_TARGET_RELEASE == 'none') {
+                    if(env.BRANCH_NAME != 'master' && env.BUILD_TARGET_RELEASE == 'none') {
                         error("Only master branch is allowed to not have a target release, edit Jenkinsfile to fix this.")   
                     }
                     
