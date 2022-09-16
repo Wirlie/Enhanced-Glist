@@ -15,3 +15,6 @@ project(":Platform-Velocity").name = "EnhancedGlist-Velocity"
 
 include("Platform-Velocity-API")
 project(":Platform-Velocity-API").name = "EnhancedGlist-Velocity-API"
+
+include("Updater")
+project(":Updater").name = "EnhancedGlist-Updater"

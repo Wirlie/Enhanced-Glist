@@ -25,6 +25,7 @@ import dev.wirlie.glist.common.configuration.PlatformConfiguration
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.configuration.sections.GroupServersSection
 import dev.wirlie.glist.common.configuration.sections.IgnoreServersSection
+import dev.wirlie.glist.common.configuration.sections.UpdatesSection
 import dev.wirlie.glist.common.extensions.miniMessage
 import dev.wirlie.glist.common.gui.GUIManager
 import dev.wirlie.glist.common.hooks.HookManager
@@ -34,13 +35,15 @@ import dev.wirlie.glist.common.platform.PlatformServer
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.player.PlayerManager
 import dev.wirlie.glist.common.translation.TranslatorManager
+import dev.wirlie.glist.updater.PluginUpdater
+import dev.wirlie.glist.updater.UpdaterScheduler
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import java.io.File
 import java.util.concurrent.CompletableFuture
 
-abstract class Platform<S, P, C> {
+abstract class Platform<S, P, C>: UpdaterScheduler {
 
     lateinit var pluginFolder: File
     lateinit var logger: PlatformLogger
@@ -50,6 +53,7 @@ abstract class Platform<S, P, C> {
     lateinit var hookManager: HookManager
     lateinit var playerManager: PlayerManager
     lateinit var messenger: NetworkMessenger<S>
+    lateinit var pluginUpdater: PluginUpdater
     var guiManager: GUIManager? = null
     var guiSystemEnabled = false
 
@@ -81,6 +85,9 @@ abstract class Platform<S, P, C> {
         playerManager = PlayerManager(this)
         networkMessenger.register()
         networkMessenger.registerListeners()
+        val updaterConfig = configuration.getSection(UpdatesSection::class.java)
+        pluginUpdater = PluginUpdater(this, updaterConfig.checkInterval, updaterConfig.notify.console.notificationInterval)
+        pluginUpdater.setup(logger, pluginFolder)
     }
 
     fun disable() {
@@ -128,6 +135,13 @@ abstract class Platform<S, P, C> {
                 .append(Component.text("Protocolize (GUI System)", NamedTextColor.WHITE))
                 .append(Component.text(".", NamedTextColor.GREEN))
         )
+        // Reload Updater
+        logger.info(
+            Component.text("Reloading ", NamedTextColor.GREEN)
+                .append(Component.text("Updater", NamedTextColor.WHITE))
+                .append(Component.text(".", NamedTextColor.GREEN))
+        )
+        pluginUpdater.reload()
         // Reload Protocolize
         guiManager?.reload()
         logger.info(

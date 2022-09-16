@@ -53,6 +53,12 @@ subprojects {
 
 }
 
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
+}
+
 // Only add Publishing task to -API projects
 configure(subprojects.filter { it.name.contains("-API") }) {
     val subProject = this

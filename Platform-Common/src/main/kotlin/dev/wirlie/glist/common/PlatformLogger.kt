@@ -20,13 +20,14 @@
 
 package dev.wirlie.glist.common
 
+import dev.wirlie.glist.updater.SimpleLogger
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 
 class PlatformLogger(
     val console: Audience
-) {
+): SimpleLogger {
 
     val prefix = Component.text("[EnhancedGlist]", NamedTextColor.GRAY)
 
@@ -82,6 +83,18 @@ class PlatformLogger(
         if (throwable != null) {
             console.sendMessage(Component.text(throwable.stackTraceToString(), NamedTextColor.RED))
         }
+    }
+
+    override fun info(message: String) {
+        info(Component.text(message, NamedTextColor.DARK_AQUA))
+    }
+
+    override fun warning(message: String) {
+        warning(Component.text(message, NamedTextColor.YELLOW))
+    }
+
+    override fun severe(message: String) {
+        error(Component.text(message, NamedTextColor.RED))
     }
 
 }

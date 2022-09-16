@@ -34,8 +34,10 @@ import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
+import net.md_5.bungee.api.scheduler.ScheduledTask
 import net.md_5.bungee.command.ConsoleCommandSender
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 
 /**
  * Main BungeeCord implementation
@@ -43,6 +45,8 @@ import java.util.concurrent.CompletableFuture
 class BungeePlatform(
     val plugin: EnhancedGlistBungeeCord
 ): Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>() {
+
+    private var updateCheckTask: ScheduledTask? = null
 
     override fun toPlatformServer(server: ServerInfo): PlatformServer<ServerInfo> {
         return BungeePlatformServer(this, server)
@@ -117,6 +121,14 @@ class BungeePlatform(
 
     override fun getAllPlayers(): List<PlatformExecutor<ServerInfo>> {
         return ProxyServer.getInstance().players.map { BungeePlayerPlatformExecutor(this, it) }
+    }
+
+    override fun scheduleUpdaterCheckTask(task: Runnable, periodSeconds: Int) {
+        updateCheckTask = ProxyServer.getInstance().scheduler.schedule(plugin, task, periodSeconds.toLong(), periodSeconds.toLong(), TimeUnit.SECONDS)
+    }
+
+    override fun stopUpdaterCheckTask() {
+        updateCheckTask?.cancel()
     }
 
 }

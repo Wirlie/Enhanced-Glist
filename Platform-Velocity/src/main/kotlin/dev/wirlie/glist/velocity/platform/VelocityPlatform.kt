@@ -24,22 +24,28 @@ import com.velocitypowered.api.proxy.ConsoleCommandSource
 import com.velocitypowered.api.proxy.Player
 import com.velocitypowered.api.proxy.ProxyServer
 import com.velocitypowered.api.proxy.server.RegisteredServer
+import com.velocitypowered.api.scheduler.ScheduledTask
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
+import dev.wirlie.glist.velocity.EnhancedGlistVelocity
 import dev.wirlie.glist.velocity.api.events.AFKStateChangeEvent
 import dev.wirlie.glist.velocity.api.events.VanishStateChangeEvent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
 
 /**
  * Main Velocity implementation
  * @param server Velocity Proxy instance
  */
 class VelocityPlatform(
+    val plugin: EnhancedGlistVelocity,
     val server: ProxyServer
 ): Platform<RegisteredServer, Player, ConsoleCommandSource>() {
+
+    private var updaterCheckTask: ScheduledTask? = null
 
     override fun toPlatformServer(server: RegisteredServer): PlatformServer<RegisteredServer> {
         return VelocityPlatformServer(this, server)
@@ -105,6 +111,14 @@ class VelocityPlatform(
 
     override fun getAllPlayers(): List<PlatformExecutor<RegisteredServer>> {
         return server.allPlayers.map { VelocityPlayerPlatformExecutor(this, it) }
+    }
+
+    override fun scheduleUpdaterCheckTask(task: Runnable, periodSeconds: Int) {
+        updaterCheckTask = server.scheduler.buildTask(plugin, task).repeat(periodSeconds.toLong(), TimeUnit.SECONDS).schedule()
+    }
+
+    override fun stopUpdaterCheckTask() {
+        updaterCheckTask?.cancel()
     }
 
 }

@@ -63,7 +63,7 @@ class EnhancedGlistVelocity {
 
     @Subscribe
     fun onProxyInitialization(event: ProxyInitializeEvent) {
-        platform = VelocityPlatform(proxyServer)
+        platform = VelocityPlatform(this, proxyServer)
         platform.pluginFolder = pluginDirectory.toFile()
         platform.console = proxyServer.consoleCommandSource
         platform.setup(

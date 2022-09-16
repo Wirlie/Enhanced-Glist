@@ -26,15 +26,21 @@ import dev.wirlie.glist.spigot.listeners.PlayerJoinListener
 import dev.wirlie.glist.spigot.messenger.NetworkMessenger
 import dev.wirlie.glist.spigot.messenger.NetworkMessengerListener
 import dev.wirlie.glist.spigot.util.AdventureUtil
+import dev.wirlie.glist.updater.PluginUpdater
+import dev.wirlie.glist.updater.SimpleLogger
+import dev.wirlie.glist.updater.UpdaterScheduler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
-import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 
-class EnhancedGlistSpigot: JavaPlugin() {
+class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
 
     lateinit var networkMessenger: NetworkMessenger
     lateinit var hookManager: HookManager
     lateinit var configurationManager: ConfigurationManager
+    lateinit var pluginUpdater: PluginUpdater
+    var updaterCheckTask: BukkitTask? = null
 
     override fun onEnable() {
         AdventureUtil.adventure = BukkitAudiences.create(this)
@@ -50,6 +56,10 @@ class EnhancedGlistSpigot: JavaPlugin() {
         hookManager.registerHooks()
         hookManager.sendAllPlayersToProxy()
 
+        //TODO: Configurable
+        pluginUpdater = PluginUpdater(this, 300, 300)
+        pluginUpdater.setup(this, dataFolder)
+
         getCommand("egls")!!.executor = GlistExecutor(this)
 
         server.pluginManager.also { pluginManager ->
@@ -64,6 +74,30 @@ class EnhancedGlistSpigot: JavaPlugin() {
     fun performReload() {
         configurationManager.reload()
         hookManager.reload()
+    }
+
+    override fun info(message: String) {
+        logger.info(message)
+    }
+
+    override fun warning(message: String) {
+        logger.warning(message)
+    }
+
+    override fun severe(message: String) {
+        logger.severe(message)
+    }
+
+    override fun scheduleUpdaterCheckTask(task: Runnable, periodSeconds: Int) {
+        updaterCheckTask = object: BukkitRunnable() {
+            override fun run() {
+                task.run()
+            }
+        }.runTaskTimer(this, periodSeconds * 20L, periodSeconds * 20L)
+    }
+
+    override fun stopUpdaterCheckTask() {
+        updaterCheckTask?.cancel()
     }
 
 }

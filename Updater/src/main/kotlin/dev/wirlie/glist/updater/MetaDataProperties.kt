@@ -18,50 +18,30 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.common.configuration.sections
+package dev.wirlie.glist.updater
 
-import dev.wirlie.glist.common.configuration.ConfigRootPath
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
-/**
- * Configuration for `updates{}` section.
- */
 @ConfigSerializable
-@ConfigRootPath("updates")
-class UpdatesSection: ConfigurationSection {
+class MetaDataProperties {
 
-    var checkForUpdates = true
-
-    var checkInterval = 300
-
-    var notify = NotifySection()
+    var build = BuildProperties()
 
     @ConfigSerializable
-    class NotifySection {
+    class BuildProperties {
 
-        var onJoin = OnJoinSection()
+        var project = "unknown"
 
-        var console = ConsoleSection()
+        var number = "unknown"
 
-        @ConfigSerializable
-        class OnJoinSection {
+        var branch = "unknown"
 
-            var enable = true
+        var fullHash = "unknown"
 
-            var delay = 2500
+        var timestamp = "unknown"
 
-            var permission = "ebcl.update.notify"
+        var version = "unknown"
 
-        }
-
-        @ConfigSerializable
-        class ConsoleSection {
-
-            var enable = true
-
-            var notificationInterval = 600
-
-        }
 
     }
 

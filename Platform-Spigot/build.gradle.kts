@@ -29,6 +29,8 @@ dependencies {
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
+
+    implementation(project(":EnhancedGlist-Updater"))
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
