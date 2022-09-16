@@ -1,8 +1,15 @@
-name: EnhancedBungeeListBridge
+name: EnhancedGlistBridge
 author: Wirlie
-version: "2.0.0"
-main: dev.wirlie.spigot.glist.EnhancedGlistSpigot
+version: "${version}"
+main: dev.wirlie.glist.spigot.EnhancedGlistSpigot
 softdepend:
   - Essentials
   - PremiumVanish
   - SuperVanish
+  - JetsAntiAFKPro
+  - VanishNoPacket
+  - StaffFacilities
+commands:
+  egls:
+    usage: /<command>
+    aliases: ["eglist-spigot", "enhancedglist-spigot"]

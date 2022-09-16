@@ -1,8 +1,8 @@
-name: EnhancedBungeeList
+name: EnhancedGlist
 author: Wirlie
-version: "2.0"
-main: dev.wirlie.bungeecord.glist.EnhancedBCL
+version: "${version}"
+main: dev.wirlie.glist.bungeecord.EnhancedGlistBungeeCord
 softdepends:
   - LuckPerms
   - PremiumVanish
-  - SuperVanish
+  - PremiumVanish
