@@ -35,13 +35,18 @@ import dev.wirlie.glist.common.platform.PlatformServer
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.player.PlayerManager
 import dev.wirlie.glist.common.translation.TranslatorManager
+import dev.wirlie.glist.common.util.AdventureUtil
 import dev.wirlie.glist.updater.PluginUpdater
 import dev.wirlie.glist.updater.UpdaterScheduler
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.minimessage.tag.Tag
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import java.io.File
 import java.util.concurrent.CompletableFuture
+import java.util.concurrent.TimeUnit
+import kotlin.math.max
 
 abstract class Platform<S, P, C>: UpdaterScheduler {
 
@@ -191,6 +196,23 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
     abstract fun performCommandForPlayer(player: PlatformExecutor<S>, command: String)
 
     abstract fun getAllPlayers(): List<PlatformExecutor<S>>
+
+    abstract fun scheduleLater(task: Runnable, time: Long, unit: TimeUnit)
+
+    fun onPlayerJoin(executor: PlatformExecutor<S>) {
+        val onJoinConfig = configuration.getSection(UpdatesSection::class.java).notify.onJoin
+        if(pluginUpdater.updateAvailable && onJoinConfig.enable && executor.hasPermission(onJoinConfig.permission)) {
+            val delay = max(onJoinConfig.delay, 1)
+            scheduleLater({
+                executor.asAudience().sendMessage(
+                    AdventureUtil.parseMiniMessage(
+                        translatorManager.getTranslator().getMessages().updater.notifyMessage.joinToString("<newline>"),
+                        TagResolver.resolver("download-url", Tag.selfClosingInserting(Component.text(pluginUpdater.updateDownloadURL)))
+                    )
+                )
+            }, delay.toLong(), TimeUnit.MILLISECONDS)
+        }
+    }
 
     fun enableGUISystem() {
         if(!guiSystemEnabled) {

@@ -31,6 +31,7 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import dev.wirlie.glist.velocity.api.impl.EnhancedGlistAPIImpl
 import dev.wirlie.glist.velocity.listener.PlayerDisconnectListener
+import dev.wirlie.glist.velocity.listener.PlayerJoinListener
 import dev.wirlie.glist.velocity.listener.PlayerServerChangeListener
 import dev.wirlie.glist.velocity.platform.VelocityMessenger
 import dev.wirlie.glist.velocity.platform.VelocityPlatform
@@ -71,6 +72,7 @@ class EnhancedGlistVelocity {
         )
 
         proxyServer.eventManager.register(this, PlayerDisconnectListener(platform))
+        proxyServer.eventManager.register(this, PlayerJoinListener(platform))
         proxyServer.eventManager.register(this, PlayerServerChangeListener(platform))
 
         // Init API

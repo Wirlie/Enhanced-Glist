@@ -22,6 +22,7 @@ package dev.wirlie.glist.bungeecord
 
 import dev.wirlie.glist.bungeecord.api.impl.EnhancedGlistAPIImpl
 import dev.wirlie.glist.bungeecord.listener.PlayerDisconnectListener
+import dev.wirlie.glist.bungeecord.listener.PlayerJoinListener
 import dev.wirlie.glist.bungeecord.listener.PlayerServerChangeListener
 import dev.wirlie.glist.bungeecord.platform.BungeeMessenger
 import dev.wirlie.glist.bungeecord.platform.BungeePlatform
@@ -49,6 +50,7 @@ class EnhancedGlistBungeeCord: Plugin() {
         val pluginManager = proxy.pluginManager
 
         pluginManager.registerListener(this, PlayerDisconnectListener(platform))
+        pluginManager.registerListener(this, PlayerJoinListener(platform))
         pluginManager.registerListener(this, PlayerServerChangeListener(platform))
 
         // Init API

@@ -140,4 +140,8 @@ class BungeePlatform(
         consoleNotificationTask?.cancel()
     }
 
+    override fun scheduleLater(task: Runnable, time: Long, unit: TimeUnit) {
+        ProxyServer.getInstance().scheduler.schedule(plugin, task, time, unit)
+    }
+
 }

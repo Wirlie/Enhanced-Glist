@@ -130,4 +130,8 @@ class VelocityPlatform(
         consoleNotificationTask?.cancel()
     }
 
+    override fun scheduleLater(task: Runnable, time: Long, unit: TimeUnit) {
+        server.scheduler.buildTask(plugin, task).delay(time, unit).schedule()
+    }
+
 }

@@ -46,6 +46,8 @@ class TranslationMessages {
 
     var gui: GuiMessages = GuiMessages()
 
+    var updater: UpdaterMessages = UpdaterMessages()
+
     @ConfigSerializable
     class DoNotEditShitSection {
 
@@ -395,6 +397,13 @@ class TranslationMessages {
     class GuiMessages {
 
         var closedByReload = ""
+
+    }
+
+    @ConfigSerializable
+    class UpdaterMessages {
+
+        var notifyMessage = mutableListOf<String>()
 
     }
 
