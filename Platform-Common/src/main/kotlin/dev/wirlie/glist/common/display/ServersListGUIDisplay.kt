@@ -396,7 +396,7 @@ class ServersListGUIDisplay<S>(
     private fun serverTagResolvers(server: PlatformServerGroup<S>): Array<TagResolver> {
         return mutableListOf(
             TagResolver.resolver("server-name", Tag.inserting(Component.text(server.getName()))),
-            TagResolver.resolver("player-count", Tag.inserting(Component.text(server.getPlayers().size))),
+            TagResolver.resolver("player-count", Tag.inserting(Component.text(server.getPlayersCount()))),
         ).toTypedArray()
     }
 
