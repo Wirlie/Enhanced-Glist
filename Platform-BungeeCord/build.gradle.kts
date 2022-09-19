@@ -15,6 +15,7 @@ dependencies {
     implementation(project(":EnhancedGlist-Common"))
     implementation(project(":EnhancedGlist-BungeeCord-API"))
     implementation(project(":EnhancedGlist-Updater"))
+    implementation(project(":EnhancedGlist-Messenger"))
 
     compileOnly("net.md-5:bungeecord:1.19-R0.1-SNAPSHOT")
 

@@ -31,6 +31,7 @@ dependencies {
     implementation("org.spongepowered:configurate-hocon:4.1.2")
 
     implementation(project(":EnhancedGlist-Updater"))
+    implementation(project(":EnhancedGlist-Messenger"))
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

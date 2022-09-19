@@ -21,6 +21,7 @@ dependencies {
     implementation(project(":EnhancedGlist-Common"))
     implementation(project(":EnhancedGlist-Velocity-API"))
     implementation(project(":EnhancedGlist-Updater"))
+    implementation(project(":EnhancedGlist-Messenger"))
 
     // Caffeine for Cache
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
