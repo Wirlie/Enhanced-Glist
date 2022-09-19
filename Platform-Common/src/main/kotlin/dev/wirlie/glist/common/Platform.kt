@@ -334,6 +334,8 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
 
     abstract fun toPlatformComponent(component: Component): Any
 
+    abstract fun getPlayerByName(name: String): PlatformExecutor<S>?
+
     companion object {
 
         var pluginPrefix: Component = Component.empty()

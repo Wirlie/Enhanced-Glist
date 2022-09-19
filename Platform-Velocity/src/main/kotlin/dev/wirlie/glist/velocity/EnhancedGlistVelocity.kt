@@ -66,14 +66,16 @@ class EnhancedGlistVelocity {
         platform = VelocityPlatform(this, proxyServer)
         platform.pluginFolder = pluginDirectory.toFile()
         platform.console = proxyServer.consoleCommandSource
+        val messenger = VelocityMessenger(this, platform)
         platform.setup(
             VelocityPlatformCommandManager(platform, commandManager),
-            VelocityMessenger(this, platform)
+            messenger
         )
 
         proxyServer.eventManager.register(this, PlayerDisconnectListener(platform))
         proxyServer.eventManager.register(this, PlayerJoinListener(platform))
         proxyServer.eventManager.register(this, PlayerServerChangeListener(platform))
+        proxyServer.eventManager.register(this, messenger)
 
         // Init API
         EnhancedGlistAPIImpl(platform)

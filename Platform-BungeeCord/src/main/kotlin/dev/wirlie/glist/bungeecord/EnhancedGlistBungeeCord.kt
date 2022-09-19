@@ -41,9 +41,11 @@ class EnhancedGlistBungeeCord: Plugin() {
         platform = BungeePlatform(this)
         platform.pluginFolder = dataFolder
         platform.console = adventure.console()
+
+        val messenger = BungeeMessenger(this, platform)
         platform.setup(
             BungeePlatformCommandManager(platform, ProxyServer.getInstance().pluginManager, this),
-            BungeeMessenger(this, platform)
+            messenger
         )
 
         val proxy = ProxyServer.getInstance()
@@ -52,6 +54,7 @@ class EnhancedGlistBungeeCord: Plugin() {
         pluginManager.registerListener(this, PlayerDisconnectListener(platform))
         pluginManager.registerListener(this, PlayerJoinListener(platform))
         pluginManager.registerListener(this, PlayerServerChangeListener(platform))
+        pluginManager.registerListener(this, messenger)
 
         // Init API
         EnhancedGlistAPIImpl(platform)

@@ -144,4 +144,9 @@ class BungeePlatform(
         ProxyServer.getInstance().scheduler.schedule(plugin, task, time, unit)
     }
 
+    override fun getPlayerByName(name: String): PlatformExecutor<ServerInfo>? {
+        val player = ProxyServer.getInstance().getPlayer(name) ?: return null
+        return toPlatformExecutorPlayer(player)
+    }
+
 }

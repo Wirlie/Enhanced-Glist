@@ -63,6 +63,18 @@ class EglCommand<S>(
                         )
                     )
                 }
+                "debug" -> {
+                    if(args.size < 2) return
+                    val targetPlayer = platform.getPlayerByName(args[1])
+                    if(targetPlayer != null) {
+                        executor.asAudience().sendMessage(
+                            Component.text("AFK = ${platform.playerManager.getAFKState(targetPlayer.getUUID())}")
+                        )
+                        executor.asAudience().sendMessage(
+                            Component.text("VANISH = ${platform.playerManager.getVanishState(targetPlayer.getUUID())}")
+                        )
+                    }
+                }
             }
         }
 
