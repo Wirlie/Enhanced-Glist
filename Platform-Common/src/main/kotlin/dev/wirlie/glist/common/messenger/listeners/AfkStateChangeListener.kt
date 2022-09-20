@@ -21,7 +21,7 @@
 package dev.wirlie.glist.common.messenger.listeners
 
 import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.messenger.messages.AFKStateChangeMessage
+import dev.wirlie.glist.common.messenger.messages.AFKStateUpdateMessage
 import dev.wirlie.glist.messenger.MessageListener
 import java.util.*
 
@@ -31,11 +31,11 @@ import java.util.*
  */
 class AfkStateChangeListener<S>(
     val platform: Platform<S, *, *>
-): MessageListener<AFKStateChangeMessage>(
-    AFKStateChangeMessage::class.java
+): MessageListener<AFKStateUpdateMessage>(
+    AFKStateUpdateMessage::class.java
 ) {
 
-    override fun onAsyncMessage(message: AFKStateChangeMessage, fromPlayerUUID: UUID, fromServerId: String) {
+    override fun onAsyncMessage(message: AFKStateUpdateMessage, fromPlayerUUID: UUID, fromServerId: String) {
         val state = message.state!!
 
         if(

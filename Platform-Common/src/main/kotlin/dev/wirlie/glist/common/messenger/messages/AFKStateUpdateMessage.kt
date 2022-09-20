@@ -24,7 +24,7 @@ import dev.wirlie.glist.messenger.SerializableMessage
 import java.io.ByteArrayInputStream
 import java.io.DataInputStream
 
-class AFKStateChangeMessage: SerializableMessage() {
+class AFKStateUpdateMessage: SerializableMessage() {
 
     var state: Boolean? = null
 

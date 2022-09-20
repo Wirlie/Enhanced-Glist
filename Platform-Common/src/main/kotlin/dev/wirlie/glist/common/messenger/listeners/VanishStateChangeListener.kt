@@ -21,8 +21,7 @@
 package dev.wirlie.glist.common.messenger.listeners
 
 import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.messenger.messages.AFKStateChangeMessage
-import dev.wirlie.glist.common.messenger.messages.VanishStateChangeMessage
+import dev.wirlie.glist.common.messenger.messages.VanishStateUpdateMessage
 import dev.wirlie.glist.messenger.MessageListener
 import java.util.*
 
@@ -32,11 +31,11 @@ import java.util.*
  */
 class VanishStateChangeListener<S>(
     val platform: Platform<S, *, *>
-): MessageListener<VanishStateChangeMessage>(
-    VanishStateChangeMessage::class.java
+): MessageListener<VanishStateUpdateMessage>(
+    VanishStateUpdateMessage::class.java
 ) {
 
-    override fun onAsyncMessage(message: VanishStateChangeMessage, fromPlayerUUID: UUID, fromServerId: String) {
+    override fun onAsyncMessage(message: VanishStateUpdateMessage, fromPlayerUUID: UUID, fromServerId: String) {
         println("RECEIVED => ${message.state}")
         val state = message.state!!
 

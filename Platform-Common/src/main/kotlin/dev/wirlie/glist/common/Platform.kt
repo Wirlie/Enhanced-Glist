@@ -31,9 +31,9 @@ import dev.wirlie.glist.common.gui.GUIManager
 import dev.wirlie.glist.common.hooks.HookManager
 import dev.wirlie.glist.common.messenger.listeners.AfkStateChangeListener
 import dev.wirlie.glist.common.messenger.listeners.VanishStateChangeListener
-import dev.wirlie.glist.common.messenger.messages.AFKStateChangeMessage
+import dev.wirlie.glist.common.messenger.messages.AFKStateUpdateMessage
 import dev.wirlie.glist.common.messenger.messages.RequestAllDataMessage
-import dev.wirlie.glist.common.messenger.messages.VanishStateChangeMessage
+import dev.wirlie.glist.common.messenger.messages.VanishStateUpdateMessage
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 import dev.wirlie.glist.common.platform.PlatformServerGroup
@@ -121,8 +121,8 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
     }
 
     private fun setupMessenger() {
-        messenger.registerMessage("afk-state-update", AFKStateChangeMessage::class.java)
-        messenger.registerMessage("vanish-state-update", VanishStateChangeMessage::class.java)
+        messenger.registerMessage("afk-state-update", AFKStateUpdateMessage::class.java)
+        messenger.registerMessage("vanish-state-update", VanishStateUpdateMessage::class.java)
         messenger.registerMessage("request-all-data", RequestAllDataMessage::class.java)
 
         messenger.addListener(AfkStateChangeListener(this))

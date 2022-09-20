@@ -24,7 +24,7 @@ import dev.wirlie.glist.messenger.SerializableMessage
 import java.io.ByteArrayInputStream
 import java.io.DataInputStream
 
-class VanishStateChangeMessage: SerializableMessage() {
+class VanishStateUpdateMessage: SerializableMessage() {
 
     var state: Boolean? = null
 
