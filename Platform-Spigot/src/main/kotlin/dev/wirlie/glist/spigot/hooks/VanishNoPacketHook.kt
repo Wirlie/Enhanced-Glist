@@ -21,6 +21,7 @@
 package dev.wirlie.glist.spigot.hooks
 
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
+import dev.wirlie.glist.spigot.messenger.messages.VanishStateUpdateMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -60,7 +61,10 @@ class VanishNoPacketHook(
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: VanishStatusChangeEvent) {
-        plugin.networkMessenger.sendVanishStateToProxy(event.player, event.isVanishing)
+        plugin.spigotPluginMessageMessenger.sendMessage(
+            VanishStateUpdateMessage(event.isVanishing),
+            event.player.name
+        )
     }
 
 }

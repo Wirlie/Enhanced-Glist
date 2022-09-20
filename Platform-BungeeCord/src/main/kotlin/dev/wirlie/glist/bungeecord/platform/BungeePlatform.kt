@@ -36,6 +36,7 @@ import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.scheduler.ScheduledTask
 import net.md_5.bungee.command.ConsoleCommandSender
+import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
@@ -146,6 +147,11 @@ class BungeePlatform(
 
     override fun getPlayerByName(name: String): PlatformExecutor<ServerInfo>? {
         val player = ProxyServer.getInstance().getPlayer(name) ?: return null
+        return toPlatformExecutorPlayer(player)
+    }
+
+    override fun getPlayerByUUID(uuid: UUID): PlatformExecutor<ServerInfo>? {
+        val player = ProxyServer.getInstance().getPlayer(uuid) ?: return null
         return toPlatformExecutorPlayer(player)
     }
 

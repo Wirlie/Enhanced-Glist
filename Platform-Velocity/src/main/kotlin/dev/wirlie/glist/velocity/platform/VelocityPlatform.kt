@@ -33,6 +33,7 @@ import dev.wirlie.glist.velocity.api.events.AFKStateChangeEvent
 import dev.wirlie.glist.velocity.api.events.VanishStateChangeEvent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import java.util.*
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 
@@ -136,6 +137,11 @@ class VelocityPlatform(
 
     override fun getPlayerByName(name: String): PlatformExecutor<RegisteredServer>? {
         val player = server.getPlayer(name).orElse(null) ?: return null
+        return toPlatformExecutorPlayer(player)
+    }
+
+    override fun getPlayerByUUID(uuid: UUID): PlatformExecutor<RegisteredServer>? {
+        val player = server.getPlayer(uuid).orElse(null) ?: return null
         return toPlatformExecutorPlayer(player)
     }
 

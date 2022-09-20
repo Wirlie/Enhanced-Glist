@@ -33,9 +33,9 @@ import dev.wirlie.glist.velocity.api.impl.EnhancedGlistAPIImpl
 import dev.wirlie.glist.velocity.listener.PlayerDisconnectListener
 import dev.wirlie.glist.velocity.listener.PlayerJoinListener
 import dev.wirlie.glist.velocity.listener.PlayerServerChangeListener
-import dev.wirlie.glist.velocity.platform.VelocityMessenger
 import dev.wirlie.glist.velocity.platform.VelocityPlatform
 import dev.wirlie.glist.velocity.platform.VelocityPlatformCommandManager
+import dev.wirlie.glist.velocity.platform.messenger.VelocityPluginMessageMessenger
 import java.nio.file.Path
 
 @Plugin(
@@ -66,7 +66,7 @@ class EnhancedGlistVelocity {
         platform = VelocityPlatform(this, proxyServer)
         platform.pluginFolder = pluginDirectory.toFile()
         platform.console = proxyServer.consoleCommandSource
-        val messenger = VelocityMessenger(this, platform)
+        val messenger = VelocityPluginMessageMessenger(proxyServer)
         platform.setup(
             VelocityPlatformCommandManager(platform, commandManager),
             messenger

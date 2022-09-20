@@ -20,39 +20,41 @@
 
 package dev.wirlie.glist.common.messenger.listeners
 
-import com.google.gson.JsonParser
 import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.messenger.NetworkMessageListener
-import dev.wirlie.glist.common.platform.PlatformExecutor
-import dev.wirlie.glist.common.platform.PlatformServer
+import dev.wirlie.glist.common.messenger.messages.AFKStateChangeMessage
+import dev.wirlie.glist.common.messenger.messages.VanishStateChangeMessage
+import dev.wirlie.glist.messenger.MessageListener
+import java.util.*
 
 /**
- * Messenger listener for Vanish state change.
+ * Messenger listener for AFK state change.
  * @param platform Platform instance.
  */
 class VanishStateChangeListener<S>(
     val platform: Platform<S, *, *>
-): NetworkMessageListener<S>(
-    "enhanced-glist:general",
-    "vanish-state-update"
+): MessageListener<VanishStateChangeMessage>(
+    VanishStateChangeMessage::class.java
 ) {
 
-    override fun onObjectReceive(dataObject: String, fromPlayer: PlatformExecutor<S>, fromServer: PlatformServer<S>) {
-        val state = JsonParser.parseString(dataObject).asBoolean
+    override fun onAsyncMessage(message: VanishStateChangeMessage, fromPlayerUUID: UUID, fromServerId: String) {
+        println("RECEIVED => ${message.state}")
+        val state = message.state!!
 
         if(
-            state && platform.playerManager.hasVanishState(fromPlayer.getUUID()) ||
-            !state && !platform.playerManager.hasVanishState(fromPlayer.getUUID())
+            state && platform.playerManager.hasVanishState(fromPlayerUUID) ||
+            !state && !platform.playerManager.hasVanishState(fromPlayerUUID)
         ) {
             return
         }
 
-        platform.callVanishStateChangeEvent(fromPlayer, state).whenComplete { stateRes, ex ->
+        val player = platform.getPlayerByUUID(fromPlayerUUID) ?: return
+
+        platform.callVanishStateChangeEvent(player, state).whenComplete { stateRes, ex ->
             if(ex != null) {
                 ex.printStackTrace()
                 return@whenComplete
             }
-            platform.playerManager.setVanishState(fromPlayer, stateRes)
+            platform.playerManager.setVanishState(player, stateRes)
         }
     }
 

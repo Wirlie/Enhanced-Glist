@@ -21,7 +21,7 @@
 package dev.wirlie.glist.spigot.hooks
 
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
-import dev.wirlie.glist.spigot.configuration.PluginConfiguration
+import dev.wirlie.glist.spigot.messenger.messages.AFKStateUpdateMessage
 import me.jet315.antiafkpro.AntiAFKProAPI
 import me.jet315.antiafkpro.JetsAntiAFKPro
 import org.bukkit.Bukkit
@@ -91,11 +91,17 @@ class AntiAFKProHook(
                     if(storedAFK && !currentAFK) {
                         // Remove AFK state
                         knowAFKPlayers.remove(player.uniqueId)
-                        plugin.networkMessenger.sendAfkStateToProxy(player, false)
+                        plugin.spigotPluginMessageMessenger.sendMessage(
+                            AFKStateUpdateMessage(false),
+                            player.name
+                        )
                     } else if(!storedAFK && currentAFK) {
                         // Add AFK state
                         knowAFKPlayers.add(player.uniqueId)
-                        plugin.networkMessenger.sendAfkStateToProxy(player, true)
+                        plugin.spigotPluginMessageMessenger.sendMessage(
+                            AFKStateUpdateMessage(true),
+                            player.name
+                        )
                     }
                 }
             }

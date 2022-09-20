@@ -18,24 +18,20 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.common.messenger
+package dev.wirlie.glist.common.messenger.messages
 
-import dev.wirlie.glist.common.platform.PlatformExecutor
-import dev.wirlie.glist.common.platform.PlatformServer
+import dev.wirlie.glist.messenger.SerializableMessage
+import java.io.ByteArrayInputStream
+import java.io.DataInputStream
 
-/**
- * Messenger Listener for incoming messages using Plugin Messages.
- * @param channel Channel to use (namespace format -> foo:foo)
- * @param subject Subject to use.
- */
-abstract class NetworkMessageListener<S>(
-    val channel: String,
-    val subject: String
-) {
+class AFKStateChangeMessage: SerializableMessage() {
 
-    /**
-     * When an object is received.
-     */
-    abstract fun onObjectReceive(dataObject: String, fromPlayer: PlatformExecutor<S>, fromServer: PlatformServer<S>)
+    var state: Boolean? = null
+
+    override fun deserialize(data: ByteArray) {
+        val bin = ByteArrayInputStream(data)
+        val input = DataInputStream(bin)
+        state = input.readBoolean()
+    }
 
 }

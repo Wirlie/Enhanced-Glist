@@ -29,13 +29,18 @@ import dev.wirlie.glist.common.configuration.sections.UpdatesSection
 import dev.wirlie.glist.common.extensions.miniMessage
 import dev.wirlie.glist.common.gui.GUIManager
 import dev.wirlie.glist.common.hooks.HookManager
-import dev.wirlie.glist.common.messenger.NetworkMessenger
+import dev.wirlie.glist.common.messenger.listeners.AfkStateChangeListener
+import dev.wirlie.glist.common.messenger.listeners.VanishStateChangeListener
+import dev.wirlie.glist.common.messenger.messages.AFKStateChangeMessage
+import dev.wirlie.glist.common.messenger.messages.RequestAllDataMessage
+import dev.wirlie.glist.common.messenger.messages.VanishStateChangeMessage
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.player.PlayerManager
 import dev.wirlie.glist.common.translation.TranslatorManager
 import dev.wirlie.glist.common.util.AdventureUtil
+import dev.wirlie.glist.messenger.PlatformMessenger
 import dev.wirlie.glist.updater.PluginUpdater
 import dev.wirlie.glist.updater.UpdaterScheduler
 import net.kyori.adventure.audience.Audience
@@ -45,6 +50,7 @@ import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.minimessage.tag.Tag
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import java.io.File
+import java.util.UUID
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.TimeUnit
 import kotlin.math.max
@@ -58,7 +64,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
     lateinit var platformCommandManager: PlatformCommandManager<S>
     lateinit var hookManager: HookManager
     lateinit var playerManager: PlayerManager
-    lateinit var messenger: NetworkMessenger<S>
+    lateinit var messenger: PlatformMessenger
     lateinit var pluginUpdater: PluginUpdater
     var guiManager: GUIManager? = null
     var guiSystemEnabled = false
@@ -75,7 +81,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
 
     fun setup(
         commandManager: PlatformCommandManager<S>,
-        networkMessenger: NetworkMessenger<S>
+        networkMessenger: PlatformMessenger
     ) {
         unsafeInstance = this
         messenger = networkMessenger
@@ -90,7 +96,6 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
         registerHooks()
         playerManager = PlayerManager(this)
         networkMessenger.register()
-        networkMessenger.registerListeners()
         val updaterConfig = configuration.getSection(UpdatesSection::class.java)
         pluginUpdater = PluginUpdater(
             this,
@@ -104,6 +109,24 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             // Only check for updates if enabled
             pluginUpdater.setup()
         }
+
+        // register messenger messages
+        setupMessenger()
+
+        // Request all players data
+        messenger.sendMessage(
+            RequestAllDataMessage(),
+            null
+        )
+    }
+
+    private fun setupMessenger() {
+        messenger.registerMessage("afk-state-update", AFKStateChangeMessage::class.java)
+        messenger.registerMessage("vanish-state-update", VanishStateChangeMessage::class.java)
+        messenger.registerMessage("request-all-data", RequestAllDataMessage::class.java)
+
+        messenger.addListener(AfkStateChangeListener(this))
+        messenger.addListener(VanishStateChangeListener(this))
     }
 
     fun disable() {
@@ -335,6 +358,8 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
     abstract fun toPlatformComponent(component: Component): Any
 
     abstract fun getPlayerByName(name: String): PlatformExecutor<S>?
+
+    abstract fun getPlayerByUUID(uuid: UUID): PlatformExecutor<S>?
 
     companion object {
 

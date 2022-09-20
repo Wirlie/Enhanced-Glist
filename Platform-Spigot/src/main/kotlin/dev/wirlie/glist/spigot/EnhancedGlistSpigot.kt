@@ -23,8 +23,7 @@ package dev.wirlie.glist.spigot
 import dev.wirlie.glist.spigot.configuration.ConfigurationManager
 import dev.wirlie.glist.spigot.hooks.HookManager
 import dev.wirlie.glist.spigot.listeners.PlayerJoinListener
-import dev.wirlie.glist.spigot.messenger.NetworkMessenger
-import dev.wirlie.glist.spigot.messenger.NetworkMessengerListener
+import dev.wirlie.glist.spigot.messenger.SpigotPluginMessageMessenger
 import dev.wirlie.glist.spigot.util.AdventureUtil
 import dev.wirlie.glist.updater.PluginUpdater
 import dev.wirlie.glist.updater.SimpleLogger
@@ -36,7 +35,7 @@ import org.bukkit.scheduler.BukkitTask
 
 class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
 
-    lateinit var networkMessenger: NetworkMessenger
+    lateinit var spigotPluginMessageMessenger: SpigotPluginMessageMessenger
     lateinit var hookManager: HookManager
     lateinit var configurationManager: ConfigurationManager
     lateinit var pluginUpdater: PluginUpdater
@@ -48,10 +47,9 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
 
         configurationManager = ConfigurationManager(this)
 
-        server.messenger.registerOutgoingPluginChannel(this, "enhanced-glist:general")
-        server.messenger.registerIncomingPluginChannel(this, "enhanced-glist:general", NetworkMessengerListener(this))
+        spigotPluginMessageMessenger = SpigotPluginMessageMessenger(this)
+        spigotPluginMessageMessenger.register()
 
-        networkMessenger = NetworkMessenger(this)
         hookManager = HookManager(this)
 
         hookManager.registerHooks()
@@ -78,10 +76,12 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
     }
 
     override fun onDisable() {
-
+        spigotPluginMessageMessenger.unregister()
     }
 
     fun performReload() {
+        spigotPluginMessageMessenger.unregister()
+        spigotPluginMessageMessenger.register()
         configurationManager.reload()
         hookManager.reload()
         pluginUpdater.stop()

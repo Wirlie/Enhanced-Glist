@@ -24,6 +24,7 @@ import de.myzelyam.api.vanish.PostPlayerHideEvent
 import de.myzelyam.api.vanish.PostPlayerShowEvent
 import de.myzelyam.api.vanish.VanishAPI
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
+import dev.wirlie.glist.spigot.messenger.messages.VanishStateUpdateMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -46,12 +47,18 @@ class SuperVanishHook(
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: PostPlayerShowEvent) {
-        plugin.networkMessenger.sendVanishStateToProxy(event.player, false)
+        plugin.spigotPluginMessageMessenger.sendMessage(
+            VanishStateUpdateMessage(false),
+            event.player.name
+        )
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: PostPlayerHideEvent) {
-        plugin.networkMessenger.sendVanishStateToProxy(event.player, true)
+        plugin.spigotPluginMessageMessenger.sendMessage(
+            VanishStateUpdateMessage(true),
+            event.player.name
+        )
     }
 
     override fun unregister() {

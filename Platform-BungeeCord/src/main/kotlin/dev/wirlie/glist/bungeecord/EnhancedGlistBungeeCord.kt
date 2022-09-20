@@ -24,10 +24,9 @@ import dev.wirlie.glist.bungeecord.api.impl.EnhancedGlistAPIImpl
 import dev.wirlie.glist.bungeecord.listener.PlayerDisconnectListener
 import dev.wirlie.glist.bungeecord.listener.PlayerJoinListener
 import dev.wirlie.glist.bungeecord.listener.PlayerServerChangeListener
-import dev.wirlie.glist.bungeecord.platform.BungeeMessenger
 import dev.wirlie.glist.bungeecord.platform.BungeePlatform
 import dev.wirlie.glist.bungeecord.platform.BungeePlatformCommandManager
-import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.bungeecord.platform.messenger.BungeePluginMessageMessenger
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
@@ -42,7 +41,7 @@ class EnhancedGlistBungeeCord: Plugin() {
         platform.pluginFolder = dataFolder
         platform.console = adventure.console()
 
-        val messenger = BungeeMessenger(this, platform)
+        val messenger = BungeePluginMessageMessenger()
         platform.setup(
             BungeePlatformCommandManager(platform, ProxyServer.getInstance().pluginManager, this),
             messenger
