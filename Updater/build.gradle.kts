@@ -10,3 +10,15 @@ dependencies {
     // Spigot 1.8 uses 2.2.4
     compileOnly("com.google.code.gson:gson:2.9.0")
 }
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
