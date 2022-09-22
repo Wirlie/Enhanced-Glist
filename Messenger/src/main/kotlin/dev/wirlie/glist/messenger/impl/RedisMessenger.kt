@@ -23,12 +23,13 @@ package dev.wirlie.glist.messenger.impl
 import dev.wirlie.glist.messenger.PlatformMessenger
 import dev.wirlie.glist.messenger.api.MessengerLogger
 import dev.wirlie.glist.messenger.util.DataUtil
-import dev.wirlie.glist.messenger.util.NettyFixUtil
 import io.lettuce.core.RedisClient
 import io.lettuce.core.RedisURI
+import io.lettuce.core.event.connection.DisconnectedEvent
+import io.lettuce.core.event.connection.ReconnectAttemptEvent
+import io.lettuce.core.event.connection.ReconnectFailedEvent
 import io.lettuce.core.pubsub.RedisPubSubListener
 import io.lettuce.core.pubsub.api.async.RedisPubSubAsyncCommands
-import io.netty.util.AttributeKey
 
 class RedisMessenger(
     logger: MessengerLogger,
@@ -38,6 +39,8 @@ class RedisMessenger(
     val password: String,
     val proxy: Boolean
 ): PlatformMessenger(logger), RedisPubSubListener<String, String> {
+
+    var doUnregister = false
 
     val incomingChannel = if(proxy) "egl-proxy" else "egl-server"
     val outgoingChannel = if(proxy) "egl-server" else "egl-proxy"
@@ -59,6 +62,18 @@ class RedisMessenger(
         //Uncomment if ['RedisURI' is already used] is a problem to resolve...
         //NettyFixUtil.unregisterLettuceRedisURI()
 
+        client.resources.eventBus().get().subscribe {
+            if(it is DisconnectedEvent) {
+                if (!doUnregister) {
+                    logger!!.info("[Redis] Redis pubsub connection dropped, trying to re-open the connection!!")
+                }
+            } else if(it is ReconnectAttemptEvent) {
+                logger!!.info("[Redis] Reconnection attempt in ${it.delay.seconds} seconds (attempt #${it.attempt})")
+            } else if(it is ReconnectFailedEvent) {
+                logger!!.info("[Redis] Reconnection attempt #${it.attempt} failed: ${it.cause.message}")
+            }
+        }
+
         try {
             logger!!.info("[Redis] Registering connections...")
             client.connect().sync().ping()
@@ -75,6 +90,7 @@ class RedisMessenger(
     }
 
     override fun unregister() {
+        doUnregister = true
         logger!!.info("[Redis] Closing connection...")
         try {
             client.shutdown()
