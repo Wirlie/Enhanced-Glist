@@ -49,6 +49,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("com.github.benmanes.caffeine", "dev.wirlie.shaded.com.github.benmanes.caffeine")
     relocate("io.netty", "dev.wirlie.shaded.io.netty")
     relocate("io.lettuce", "dev.wirlie.shaded.io.lettuce")
+    relocate("okhttp3", "dev.wirlie.shaded.okhttp3")
 }
 
 val templateSource = file("src/main/templates")

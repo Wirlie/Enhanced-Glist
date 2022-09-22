@@ -56,6 +56,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("com.rabbitmq", "dev.wirlie.shaded.com.rabbitmq")
     relocate("io.netty", "dev.wirlie.shaded.io.netty")
     relocate("io.lettuce", "dev.wirlie.shaded.io.lettuce")
+    relocate("okhttp3", "dev.wirlie.shaded.okhttp3")
 }
 
 

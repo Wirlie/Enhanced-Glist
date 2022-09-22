@@ -7,6 +7,8 @@ repositories {
 
 dependencies {
     implementation("org.spongepowered:configurate-hocon:4.1.2")
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.10")
+
     // Spigot 1.8 uses 2.2.4
     compileOnly("com.google.code.gson:gson:2.9.0")
 }
