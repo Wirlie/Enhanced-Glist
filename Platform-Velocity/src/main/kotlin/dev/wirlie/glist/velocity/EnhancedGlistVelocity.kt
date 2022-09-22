@@ -29,13 +29,20 @@ import com.velocitypowered.api.plugin.Dependency
 import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
+import dev.wirlie.glist.common.configuration.sections.CommunicationSection
+import dev.wirlie.glist.messenger.impl.DummyPlatformMessenger
+import dev.wirlie.glist.messenger.PlatformMessenger
+import dev.wirlie.glist.messenger.impl.RabbitMQMessenger
+import dev.wirlie.glist.messenger.impl.RedisMessenger
 import dev.wirlie.glist.velocity.api.impl.EnhancedGlistAPIImpl
 import dev.wirlie.glist.velocity.listener.PlayerDisconnectListener
 import dev.wirlie.glist.velocity.listener.PlayerJoinListener
 import dev.wirlie.glist.velocity.listener.PlayerServerChangeListener
-import dev.wirlie.glist.velocity.platform.VelocityMessenger
 import dev.wirlie.glist.velocity.platform.VelocityPlatform
 import dev.wirlie.glist.velocity.platform.VelocityPlatformCommandManager
+import dev.wirlie.glist.velocity.platform.messenger.VelocityPluginMessageMessenger
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import java.nio.file.Path
 
 @Plugin(
@@ -61,19 +68,70 @@ class EnhancedGlistVelocity {
 
     lateinit var platform: VelocityPlatform
 
+    private lateinit var messenger: PlatformMessenger
+
     @Subscribe
     fun onProxyInitialization(event: ProxyInitializeEvent) {
         platform = VelocityPlatform(this, proxyServer)
         platform.pluginFolder = pluginDirectory.toFile()
         platform.console = proxyServer.consoleCommandSource
+        platform.setupConfig()
+
+        val communicationConfig = platform.configuration.getSection(CommunicationSection::class.java)
+
+        when (communicationConfig.type.lowercase()) {
+            "plugin-messages" -> {
+                platform.logger.info(
+                    Component.text("Enabling communication using plugin messages.", NamedTextColor.LIGHT_PURPLE)
+                )
+                messenger = VelocityPluginMessageMessenger(proxyServer)
+            }
+            "rabbitmq" -> {
+                platform.logger.info(
+                    Component.text("Enabling communication using RabbitMQ.", NamedTextColor.LIGHT_PURPLE)
+                )
+                messenger = RabbitMQMessenger(
+                    platform.logger,
+                    communicationConfig.rabbitmqServer.host,
+                    communicationConfig.rabbitmqServer.port,
+                    communicationConfig.rabbitmqServer.user,
+                    communicationConfig.rabbitmqServer.password,
+                    true
+                )
+            }
+            "redis" -> {
+                platform.logger.info(
+                    Component.text("Enabling communication using Redis.", NamedTextColor.LIGHT_PURPLE)
+                )
+                messenger = RedisMessenger(
+                    platform.logger,
+                    communicationConfig.redisServer.host,
+                    communicationConfig.redisServer.port,
+                    communicationConfig.redisServer.user,
+                    communicationConfig.redisServer.password,
+                    true
+                )
+            }
+            else -> {
+                messenger = DummyPlatformMessenger()
+                platform.logger.error(
+                    Component.text("Unknown communication type: '${communicationConfig.type}'.", NamedTextColor.RED)
+                )
+                platform.logger.error(
+                    Component.text("Fix this to enable communication between Proxy and Server.", NamedTextColor.RED)
+                )
+            }
+        }
+
         platform.setup(
             VelocityPlatformCommandManager(platform, commandManager),
-            VelocityMessenger(this, platform)
+            messenger
         )
 
         proxyServer.eventManager.register(this, PlayerDisconnectListener(platform))
         proxyServer.eventManager.register(this, PlayerJoinListener(platform))
         proxyServer.eventManager.register(this, PlayerServerChangeListener(platform))
+        proxyServer.eventManager.register(this, messenger)
 
         // Init API
         EnhancedGlistAPIImpl(platform)

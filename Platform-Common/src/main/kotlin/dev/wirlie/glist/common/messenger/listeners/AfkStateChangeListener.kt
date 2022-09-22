@@ -20,11 +20,10 @@
 
 package dev.wirlie.glist.common.messenger.listeners
 
-import com.google.gson.JsonParser
 import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.messenger.NetworkMessageListener
-import dev.wirlie.glist.common.platform.PlatformExecutor
-import dev.wirlie.glist.common.platform.PlatformServer
+import dev.wirlie.glist.common.messenger.messages.AFKStateUpdateMessage
+import dev.wirlie.glist.messenger.api.MessageListener
+import java.util.*
 
 /**
  * Messenger listener for AFK state change.
@@ -32,27 +31,29 @@ import dev.wirlie.glist.common.platform.PlatformServer
  */
 class AfkStateChangeListener<S>(
     val platform: Platform<S, *, *>
-): NetworkMessageListener<S>(
-    "enhanced-glist:general",
-    "afk-state-update"
+): MessageListener<AFKStateUpdateMessage>(
+    AFKStateUpdateMessage::class.java
 ) {
 
-    override fun onObjectReceive(dataObject: String, fromPlayer: PlatformExecutor<S>, fromServer: PlatformServer<S>) {
-        val state = JsonParser.parseString(dataObject).asBoolean
+    override fun onAsyncMessage(message: AFKStateUpdateMessage, fromPlayerUUID: UUID?, fromServerId: String?) {
+        val state = message.state!!
+        val playerUUID = message.playerUUID!!
 
         if(
-            state && platform.playerManager.hasAFKState(fromPlayer.getUUID()) ||
-            !state && !platform.playerManager.hasAFKState(fromPlayer.getUUID())
+            state && platform.playerManager.hasAFKState(playerUUID) ||
+            !state && !platform.playerManager.hasAFKState(playerUUID)
         ) {
             return
         }
 
-        platform.callAFKStateChangeEvent(fromPlayer, state).whenComplete { stateRes, ex ->
+        val player = platform.getPlayerByUUID(playerUUID) ?: return
+
+        platform.callAFKStateChangeEvent(player, state).whenComplete { stateRes, ex ->
             if(ex != null) {
                 ex.printStackTrace()
                 return@whenComplete
             }
-            platform.playerManager.setAFKState(fromPlayer, stateRes)
+            platform.playerManager.setAFKState(player, stateRes)
         }
     }
 

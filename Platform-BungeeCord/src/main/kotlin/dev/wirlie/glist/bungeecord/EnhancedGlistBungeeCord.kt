@@ -24,26 +24,81 @@ import dev.wirlie.glist.bungeecord.api.impl.EnhancedGlistAPIImpl
 import dev.wirlie.glist.bungeecord.listener.PlayerDisconnectListener
 import dev.wirlie.glist.bungeecord.listener.PlayerJoinListener
 import dev.wirlie.glist.bungeecord.listener.PlayerServerChangeListener
-import dev.wirlie.glist.bungeecord.platform.BungeeMessenger
 import dev.wirlie.glist.bungeecord.platform.BungeePlatform
 import dev.wirlie.glist.bungeecord.platform.BungeePlatformCommandManager
-import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.bungeecord.platform.messenger.BungeePluginMessageMessenger
+import dev.wirlie.glist.messenger.impl.RabbitMQMessenger
+import dev.wirlie.glist.common.configuration.sections.CommunicationSection
+import dev.wirlie.glist.messenger.impl.DummyPlatformMessenger
+import dev.wirlie.glist.messenger.PlatformMessenger
+import dev.wirlie.glist.messenger.impl.RedisMessenger
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
 
 class EnhancedGlistBungeeCord: Plugin() {
 
     lateinit var platform: BungeePlatform
+    private lateinit var messenger: PlatformMessenger
 
     override fun onEnable() {
         adventure = BungeeAudiences.create(this)
         platform = BungeePlatform(this)
         platform.pluginFolder = dataFolder
         platform.console = adventure.console()
+        platform.setupConfig()
+
+        val communicationConfig = platform.configuration.getSection(CommunicationSection::class.java)
+
+        when (communicationConfig.type.lowercase()) {
+            "plugin-messages" -> {
+                platform.logger.info(
+                    Component.text("Enabling communication using plugin messages.", NamedTextColor.LIGHT_PURPLE)
+                )
+                messenger = BungeePluginMessageMessenger()
+            }
+            "rabbitmq" -> {
+                platform.logger.info(
+                    Component.text("Enabling communication using RabbitMQ.", NamedTextColor.LIGHT_PURPLE)
+                )
+                messenger = RabbitMQMessenger(
+                    platform.logger,
+                    communicationConfig.rabbitmqServer.host,
+                    communicationConfig.rabbitmqServer.port,
+                    communicationConfig.rabbitmqServer.user,
+                    communicationConfig.rabbitmqServer.password,
+                    true
+                )
+            }
+            "redis" -> {
+                platform.logger.info(
+                    Component.text("Enabling communication using Redis.", NamedTextColor.LIGHT_PURPLE)
+                )
+                messenger = RedisMessenger(
+                    platform.logger,
+                    communicationConfig.redisServer.host,
+                    communicationConfig.redisServer.port,
+                    communicationConfig.redisServer.user,
+                    communicationConfig.redisServer.password,
+                    true
+                )
+            }
+            else -> {
+                messenger = DummyPlatformMessenger()
+                platform.logger.error(
+                    Component.text("Unknown communication type: '${communicationConfig.type}'.", NamedTextColor.RED)
+                )
+                platform.logger.error(
+                    Component.text("Fix this to enable communication between Proxy and Server.", NamedTextColor.RED)
+                )
+            }
+        }
+
         platform.setup(
             BungeePlatformCommandManager(platform, ProxyServer.getInstance().pluginManager, this),
-            BungeeMessenger(this, platform)
+            messenger
         )
 
         val proxy = ProxyServer.getInstance()
@@ -52,6 +107,10 @@ class EnhancedGlistBungeeCord: Plugin() {
         pluginManager.registerListener(this, PlayerDisconnectListener(platform))
         pluginManager.registerListener(this, PlayerJoinListener(platform))
         pluginManager.registerListener(this, PlayerServerChangeListener(platform))
+
+        if(messenger is BungeePluginMessageMessenger) {
+            pluginManager.registerListener(this, messenger as BungeePluginMessageMessenger)
+        }
 
         // Init API
         EnhancedGlistAPIImpl(platform)

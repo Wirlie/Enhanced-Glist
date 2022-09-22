@@ -80,7 +80,7 @@ class ServerPlayersChatDisplay<S>(
                 "server-count", Tag.selfClosingInserting(Component.text("${serverGroup.getServers().size}"))
             ),
             TagResolver.resolver(
-                "players-count", Tag.selfClosingInserting(Component.text("${serverGroup.getPlayers().size}"))
+                "players-count", Tag.selfClosingInserting(Component.text("${serverGroup.getPlayersCount()}"))
             ),
             TagResolver.resolver(
                 "page-number", Tag.selfClosingInserting(Component.text("${page.pageNumber + 1}"))

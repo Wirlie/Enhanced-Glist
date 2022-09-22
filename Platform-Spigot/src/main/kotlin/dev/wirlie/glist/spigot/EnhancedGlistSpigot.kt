@@ -20,23 +20,33 @@
 
 package dev.wirlie.glist.spigot
 
+import dev.wirlie.glist.messenger.PlatformMessenger
+import dev.wirlie.glist.messenger.api.MessengerLogger
+import dev.wirlie.glist.messenger.impl.DummyPlatformMessenger
+import dev.wirlie.glist.messenger.impl.RabbitMQMessenger
+import dev.wirlie.glist.messenger.impl.RedisMessenger
 import dev.wirlie.glist.spigot.configuration.ConfigurationManager
 import dev.wirlie.glist.spigot.hooks.HookManager
 import dev.wirlie.glist.spigot.listeners.PlayerJoinListener
-import dev.wirlie.glist.spigot.messenger.NetworkMessenger
-import dev.wirlie.glist.spigot.messenger.NetworkMessengerListener
+import dev.wirlie.glist.spigot.messenger.SpigotPluginMessageMessenger
+import dev.wirlie.glist.spigot.messenger.listeners.RequestAllDataListener
+import dev.wirlie.glist.spigot.messenger.messages.AFKStateUpdateMessage
+import dev.wirlie.glist.spigot.messenger.messages.RequestAllDataMessage
+import dev.wirlie.glist.spigot.messenger.messages.VanishStateUpdateMessage
 import dev.wirlie.glist.spigot.util.AdventureUtil
 import dev.wirlie.glist.updater.PluginUpdater
 import dev.wirlie.glist.updater.SimpleLogger
 import dev.wirlie.glist.updater.UpdaterScheduler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 
-class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
+class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, MessengerLogger {
 
-    lateinit var networkMessenger: NetworkMessenger
+    lateinit var messenger: PlatformMessenger
     lateinit var hookManager: HookManager
     lateinit var configurationManager: ConfigurationManager
     lateinit var pluginUpdater: PluginUpdater
@@ -48,10 +58,58 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
 
         configurationManager = ConfigurationManager(this)
 
-        server.messenger.registerOutgoingPluginChannel(this, "enhanced-glist:general")
-        server.messenger.registerIncomingPluginChannel(this, "enhanced-glist:general", NetworkMessengerListener(this))
+        val communicationConfig = configurationManager.getConfiguration().communication
 
-        networkMessenger = NetworkMessenger(this)
+        when (communicationConfig.type.lowercase()) {
+            "plugin-messages" -> {
+                logger.info("Enabling communication using plugin messages.")
+                messenger = SpigotPluginMessageMessenger(this)
+            }
+            "rabbitmq" -> {
+                logger.info("Enabling communication using RabbitMQ.")
+                messenger = RabbitMQMessenger(
+                    this,
+                    communicationConfig.rabbitmqServer.host,
+                    communicationConfig.rabbitmqServer.port,
+                    communicationConfig.rabbitmqServer.user,
+                    communicationConfig.rabbitmqServer.password,
+                    false
+                )
+            }
+            "redis" -> {
+                logger.info("Enabling communication using Redis.")
+                messenger = RedisMessenger(
+                    this,
+                    communicationConfig.redisServer.host,
+                    communicationConfig.redisServer.port,
+                    communicationConfig.redisServer.user,
+                    communicationConfig.redisServer.password,
+                    false
+                )
+            }
+            else -> {
+                messenger = DummyPlatformMessenger()
+                logger.severe("Unknown communication type: '${communicationConfig.type}'.")
+                logger.severe("Fix this to enable communication between Proxy and Server.")
+            }
+        }
+
+        try {
+            messenger.register()
+        } catch (ex: Throwable) {
+            messenger = DummyPlatformMessenger()
+            logger.severe("An exception has occurred while enabling communication system.")
+            logger.severe("Fix this to enable communication between Proxy and Server.")
+            ex.printStackTrace()
+        }
+
+        // Messenger message registration
+        messenger.registerMessage("request-all-data", RequestAllDataMessage::class.java)
+        messenger.registerMessage("afk-state-update", AFKStateUpdateMessage::class.java)
+        messenger.registerMessage("vanish-state-update", VanishStateUpdateMessage::class.java)
+        // Messenger listener registration
+        messenger.addListener(RequestAllDataListener(this))
+
         hookManager = HookManager(this)
 
         hookManager.registerHooks()
@@ -78,10 +136,12 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler {
     }
 
     override fun onDisable() {
-
+        messenger.unregister()
     }
 
     fun performReload() {
+        messenger.unregister()
+        messenger.register()
         configurationManager.reload()
         hookManager.reload()
         pluginUpdater.stop()

@@ -20,7 +20,7 @@ repositories {
 
 allprojects {
     group = "net.wirlie"
-    val artifactVersion = System.getenv("ARTIFACT_VERSION") ?: "2.0.0-BETA1"
+    val artifactVersion = System.getenv("ARTIFACT_VERSION") ?: "2.0.0-BETA2"
     val artifactSnapshot = (System.getenv("ARTIFACT_PUBLISH_SNAPSHOT") ?: "true") == "true"
     version = if(artifactSnapshot) "$artifactVersion-SNAPSHOT" else artifactVersion
 }
@@ -53,12 +53,24 @@ subprojects {
         targetCompatibility = "11"
     }
 
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
+
 }
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
     sourceCompatibility = "11"
     targetCompatibility = "11"
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 // Only add Publishing task to -API projects

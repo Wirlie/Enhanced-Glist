@@ -21,6 +21,8 @@
 package dev.wirlie.glist.spigot.listeners
 
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
+import dev.wirlie.glist.spigot.messenger.messages.AFKStateUpdateMessage
+import dev.wirlie.glist.spigot.messenger.messages.VanishStateUpdateMessage
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
@@ -44,8 +46,14 @@ class PlayerJoinListener(
         }
 
         //Send to proxy
-        plugin.networkMessenger.sendAfkStateToProxy(event.player, isAFK)
-        plugin.networkMessenger.sendVanishStateToProxy(event.player, isVanish)
+        plugin.messenger.sendMessage(
+            AFKStateUpdateMessage(event.player.uniqueId, isAFK),
+            event.player.name
+        )
+        plugin.messenger.sendMessage(
+            VanishStateUpdateMessage(event.player.uniqueId, isVanish),
+            event.player.name
+        )
     }
 
 }

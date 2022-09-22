@@ -16,6 +16,8 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.1.2")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
+    implementation("com.rabbitmq:amqp-client:5.16.0")
+    implementation("io.lettuce:lettuce-core:6.2.0.RELEASE")
 
     // Third Party libraries with public API
     compileOnly("net.essentialsx:EssentialsX:2.19.0")
@@ -31,6 +33,7 @@ dependencies {
     implementation("org.spongepowered:configurate-hocon:4.1.2")
 
     implementation(project(":EnhancedGlist-Updater"))
+    implementation(project(":EnhancedGlist-Messenger"))
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -47,6 +50,9 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("kotlin", "dev.wirlie.shaded.kotlin")
     relocate("com.github.benmanes.caffeine", "dev.wirlie.shaded.com.github.benmanes.caffeine")
     relocate("net.kyori", "dev.wirlie.shaded.net.kyori")
+    relocate("com.rabbitmq", "dev.wirlie.shaded.com.rabbitmq")
+    relocate("io.netty", "dev.wirlie.shaded.io.netty")
+    relocate("io.lettuce", "dev.wirlie.shaded.io.lettuce")
 }
 
 

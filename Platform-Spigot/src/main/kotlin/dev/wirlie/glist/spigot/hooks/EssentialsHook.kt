@@ -22,6 +22,8 @@ package dev.wirlie.glist.spigot.hooks
 
 import com.earth2me.essentials.Essentials
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
+import dev.wirlie.glist.spigot.messenger.messages.AFKStateUpdateMessage
+import dev.wirlie.glist.spigot.messenger.messages.VanishStateUpdateMessage
 import net.ess3.api.events.AfkStatusChangeEvent
 import net.ess3.api.events.VanishStatusChangeEvent
 import org.bukkit.Bukkit
@@ -57,12 +59,18 @@ class EssentialsHook(
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: VanishStatusChangeEvent) {
-        plugin.networkMessenger.sendVanishStateToProxy(event.affected.base, event.value)
+        plugin.messenger.sendMessage(
+            VanishStateUpdateMessage(event.affected.base.uniqueId, event.value),
+            event.affected.base.name
+        )
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: AfkStatusChangeEvent) {
-        plugin.networkMessenger.sendAfkStateToProxy(event.affected.base, event.value)
+        plugin.messenger.sendMessage(
+            AFKStateUpdateMessage(event.affected.base.uniqueId, event.value),
+            event.affected.base.name
+        )
     }
 
     override fun unregister() {

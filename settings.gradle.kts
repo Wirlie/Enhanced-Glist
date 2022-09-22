@@ -18,3 +18,6 @@ project(":Platform-Velocity-API").name = "EnhancedGlist-Velocity-API"
 
 include("Updater")
 project(":Updater").name = "EnhancedGlist-Updater"
+
+include("Messenger")
+project(":Messenger").name = "EnhancedGlist-Messenger"

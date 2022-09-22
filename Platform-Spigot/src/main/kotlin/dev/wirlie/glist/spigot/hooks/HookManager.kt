@@ -21,6 +21,8 @@
 package dev.wirlie.glist.spigot.hooks
 
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
+import dev.wirlie.glist.spigot.messenger.messages.AFKStateUpdateMessage
+import dev.wirlie.glist.spigot.messenger.messages.VanishStateUpdateMessage
 import org.bukkit.Bukkit
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
@@ -48,13 +50,13 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
 
         // Send to Proxy
         for(player in Bukkit.getOnlinePlayers()) {
-            plugin.networkMessenger.sendAfkStateToProxy(
-                player,
-                afkPlayersState[player.uniqueId] ?: false
+            plugin.messenger.sendMessage(
+                AFKStateUpdateMessage(player.uniqueId, afkPlayersState[player.uniqueId] ?: false),
+                player.name
             )
-            plugin.networkMessenger.sendVanishStateToProxy(
-                player,
-                vanishPlayersState[player.uniqueId] ?: false
+            plugin.messenger.sendMessage(
+                VanishStateUpdateMessage(player.uniqueId, vanishPlayersState[player.uniqueId] ?: false),
+                player.name
             )
         }
         plugin.logger.info("[Bridge] Operation done.")
