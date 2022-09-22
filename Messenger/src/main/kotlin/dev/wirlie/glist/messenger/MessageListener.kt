@@ -26,9 +26,9 @@ abstract class MessageListener<T: SerializableMessage>(
     val clazz: Class<T>
 ) {
 
-    abstract fun onAsyncMessage(message: T, fromPlayerUUID: UUID, fromServerId: String)
+    abstract fun onAsyncMessage(message: T, fromPlayerUUID: UUID?, fromServerId: String?)
 
-    fun onMessageInternal(message: SerializableMessage, fromPlayerUUID: UUID, fromServerId: String) {
+    fun onMessageInternal(message: SerializableMessage, fromPlayerUUID: UUID?, fromServerId: String?) {
         @Suppress("UNCHECKED_CAST")
         onAsyncMessage(message as T, fromPlayerUUID, fromServerId)
     }

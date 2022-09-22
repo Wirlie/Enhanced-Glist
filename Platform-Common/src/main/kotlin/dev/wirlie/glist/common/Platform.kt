@@ -79,13 +79,17 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
 
     val configuration = PlatformConfiguration(this)
 
+    fun setupConfig() {
+        configuration.setup()
+    }
+
     fun setup(
         commandManager: PlatformCommandManager<S>,
         networkMessenger: PlatformMessenger
     ) {
         unsafeInstance = this
         messenger = networkMessenger
-        configuration.setup()
+        setupConfig()
         pluginPrefix = configuration.getSection(GeneralSection::class.java).prefix.miniMessage()
         translatorManager = TranslatorManager(this)
         translatorManager.setup()
@@ -132,6 +136,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
     fun disable() {
         // Close inventories from Protocolize
         guiManager?.disable()
+        messenger.unregister()
     }
 
     fun reload() {

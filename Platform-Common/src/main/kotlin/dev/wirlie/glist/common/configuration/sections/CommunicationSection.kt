@@ -18,24 +18,37 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.common.messenger.messages
+package dev.wirlie.glist.common.configuration.sections
 
-import dev.wirlie.glist.messenger.SerializableMessage
-import java.io.ByteArrayInputStream
-import java.io.DataInputStream
-import java.util.UUID
+import dev.wirlie.glist.common.configuration.ConfigRootPath
+import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
-class AFKStateUpdateMessage: SerializableMessage() {
+@ConfigSerializable
+@ConfigRootPath("communication")
+class CommunicationSection: ConfigurationSection {
 
-    var playerUUID: UUID? = null
+    var type = "plugin-messages"
 
-    var state: Boolean? = null
+    var rabbitmqServer = RabbitMQServerSection()
 
-    override fun deserialize(data: ByteArray) {
-        val bin = ByteArrayInputStream(data)
-        val input = DataInputStream(bin)
-        playerUUID = UUID.fromString(input.readUTF())
-        state = input.readBoolean()
+    var redisServer = RedisServer()
+
+    @ConfigSerializable
+    class RabbitMQServerSection {
+
+        var host = "localhost"
+
+        var port = 5672
+
+    }
+
+    @ConfigSerializable
+    class RedisServer {
+
+        var host = "localhost"
+
+        var port = 6379
+
     }
 
 }

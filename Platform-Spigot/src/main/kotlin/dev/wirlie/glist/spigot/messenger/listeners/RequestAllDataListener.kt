@@ -32,7 +32,7 @@ class RequestAllDataListener(
     RequestAllDataMessage::class.java
 ) {
 
-    override fun onAsyncMessage(message: RequestAllDataMessage, fromPlayerUUID: UUID, fromServerId: String) {
+    override fun onAsyncMessage(message: RequestAllDataMessage, fromPlayerUUID: UUID?, fromServerId: String?) {
         plugin.logger.info("[Proxy] Received a request from Proxy to send all data.")
         plugin.logger.info("[Proxy] ${Bukkit.getOnlinePlayers().size} players will be sent to Proxy.")
         plugin.hookManager.sendAllPlayersToProxy()

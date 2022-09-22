@@ -27,21 +27,68 @@ import dev.wirlie.glist.bungeecord.listener.PlayerServerChangeListener
 import dev.wirlie.glist.bungeecord.platform.BungeePlatform
 import dev.wirlie.glist.bungeecord.platform.BungeePlatformCommandManager
 import dev.wirlie.glist.bungeecord.platform.messenger.BungeePluginMessageMessenger
+import dev.wirlie.glist.bungeecord.platform.messenger.RabbitMQMessenger
+import dev.wirlie.glist.common.configuration.sections.CommunicationSection
+import dev.wirlie.glist.messenger.DummyPlatformMessenger
+import dev.wirlie.glist.messenger.PlatformMessenger
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import net.md_5.bungee.api.ProxyServer
 import net.md_5.bungee.api.plugin.Plugin
 
 class EnhancedGlistBungeeCord: Plugin() {
 
     lateinit var platform: BungeePlatform
+    private lateinit var messenger: PlatformMessenger
 
     override fun onEnable() {
         adventure = BungeeAudiences.create(this)
         platform = BungeePlatform(this)
         platform.pluginFolder = dataFolder
         platform.console = adventure.console()
+        platform.setupConfig()
 
-        val messenger = BungeePluginMessageMessenger()
+        val communicationConfig = platform.configuration.getSection(CommunicationSection::class.java)
+
+        try {
+            when (communicationConfig.type.lowercase()) {
+                "plugin-messages" -> {
+                    platform.logger.info(
+                        Component.text("Enabling communication using plugin messages.", NamedTextColor.GREEN)
+                    )
+                    messenger = BungeePluginMessageMessenger()
+                }
+                "rabbitmq" -> {
+                    platform.logger.info(
+                        Component.text("Enabling communication using RabbitMQ.", NamedTextColor.GREEN)
+                    )
+                    messenger = RabbitMQMessenger(
+                        communicationConfig.rabbitmqServer.host,
+                        communicationConfig.rabbitmqServer.port
+                    )
+                }
+                else -> {
+                    messenger = DummyPlatformMessenger()
+                    platform.logger.error(
+                        Component.text("Unknown communication type: '${communicationConfig.type}'.", NamedTextColor.RED)
+                    )
+                    platform.logger.error(
+                        Component.text("Fix this to enable communication between Proxy and Server.", NamedTextColor.RED)
+                    )
+                }
+            }
+        } catch (ex: Throwable) {
+            messenger = DummyPlatformMessenger()
+            platform.logger.error(
+                Component.text("An exception has occurred while enabling communication system.", NamedTextColor.RED)
+            )
+            platform.logger.error(
+                Component.text("Fix this to enable communication between Proxy and Server.", NamedTextColor.RED)
+            )
+            ex.printStackTrace()
+        }
+
         platform.setup(
             BungeePlatformCommandManager(platform, ProxyServer.getInstance().pluginManager, this),
             messenger
@@ -53,7 +100,10 @@ class EnhancedGlistBungeeCord: Plugin() {
         pluginManager.registerListener(this, PlayerDisconnectListener(platform))
         pluginManager.registerListener(this, PlayerJoinListener(platform))
         pluginManager.registerListener(this, PlayerServerChangeListener(platform))
-        pluginManager.registerListener(this, messenger)
+
+        if(messenger is BungeePluginMessageMessenger) {
+            pluginManager.registerListener(this, messenger as BungeePluginMessageMessenger)
+        }
 
         // Init API
         EnhancedGlistAPIImpl(platform)

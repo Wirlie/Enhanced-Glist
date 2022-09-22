@@ -35,17 +35,18 @@ class AfkStateChangeListener<S>(
     AFKStateUpdateMessage::class.java
 ) {
 
-    override fun onAsyncMessage(message: AFKStateUpdateMessage, fromPlayerUUID: UUID, fromServerId: String) {
+    override fun onAsyncMessage(message: AFKStateUpdateMessage, fromPlayerUUID: UUID?, fromServerId: String?) {
         val state = message.state!!
+        val playerUUID = message.playerUUID!!
 
         if(
-            state && platform.playerManager.hasAFKState(fromPlayerUUID) ||
-            !state && !platform.playerManager.hasAFKState(fromPlayerUUID)
+            state && platform.playerManager.hasAFKState(playerUUID) ||
+            !state && !platform.playerManager.hasAFKState(playerUUID)
         ) {
             return
         }
 
-        val player = platform.getPlayerByUUID(fromPlayerUUID) ?: return
+        val player = platform.getPlayerByUUID(playerUUID) ?: return
 
         platform.callAFKStateChangeEvent(player, state).whenComplete { stateRes, ex ->
             if(ex != null) {

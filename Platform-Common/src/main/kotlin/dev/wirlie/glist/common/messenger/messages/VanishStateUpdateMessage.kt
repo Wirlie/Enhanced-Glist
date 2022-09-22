@@ -23,14 +23,18 @@ package dev.wirlie.glist.common.messenger.messages
 import dev.wirlie.glist.messenger.SerializableMessage
 import java.io.ByteArrayInputStream
 import java.io.DataInputStream
+import java.util.*
 
 class VanishStateUpdateMessage: SerializableMessage() {
+
+    var playerUUID: UUID? = null
 
     var state: Boolean? = null
 
     override fun deserialize(data: ByteArray) {
         val bin = ByteArrayInputStream(data)
         val input = DataInputStream(bin)
+        playerUUID = UUID.fromString(input.readUTF())
         state = input.readBoolean()
     }
 

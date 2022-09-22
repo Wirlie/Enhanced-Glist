@@ -34,6 +34,9 @@ dependencies {
     // Third Party Plugin Libraries
     compileOnly("net.luckperms:api:5.4")
     compileOnly("com.github.LeonMangler:PremiumVanishAPI:2.7.11-2")
+
+    // Communication types
+    implementation("com.rabbitmq:amqp-client:5.16.0")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -51,6 +54,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("com.google.gson", "dev.wirlie.shaded.com.google.gson")
     relocate("com.github.benmanes.caffeine", "dev.wirlie.shaded.com.github.benmanes.caffeine")
     relocate("net.kyori", "dev.wirlie.shaded.net.kyori")
+    relocate("com.rabbitmq", "dev.wirlie.shaded.com.rabbitmq")
 }
 
 

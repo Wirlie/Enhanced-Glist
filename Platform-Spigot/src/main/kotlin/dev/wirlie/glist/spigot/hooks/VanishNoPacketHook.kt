@@ -62,7 +62,7 @@ class VanishNoPacketHook(
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: VanishStatusChangeEvent) {
         plugin.spigotPluginMessageMessenger.sendMessage(
-            VanishStateUpdateMessage(event.isVanishing),
+            VanishStateUpdateMessage(event.player.uniqueId, event.isVanishing),
             event.player.name
         )
     }

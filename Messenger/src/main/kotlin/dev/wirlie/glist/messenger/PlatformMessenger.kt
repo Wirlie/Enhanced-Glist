@@ -57,8 +57,8 @@ abstract class PlatformMessenger {
         channel: String,
         subject: String,
         data: ByteArray,
-        fromPlayer: UUID,
-        fromServerId: String
+        fromPlayer: UUID?,
+        fromServerId: String?
     ) {
         val messageClass = messagesRegistry.firstOrNull { it.first == subject }?.second
             ?: throw IllegalStateException("Received unknown message from Messenger, channel=$channel, subject=$subject")
@@ -76,8 +76,8 @@ abstract class PlatformMessenger {
         clazz: Class<out SerializableMessage>,
         listener: MessageListener<out SerializableMessage>,
         message: SerializableMessage,
-        fromPlayer: UUID,
-        fromServerId: String
+        fromPlayer: UUID?,
+        fromServerId: String?
     ) {
         if(clazz == listener.clazz) {
             println("CLASS MATCH FOR LISTENER")

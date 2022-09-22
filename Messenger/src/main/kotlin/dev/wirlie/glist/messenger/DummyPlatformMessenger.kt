@@ -18,24 +18,23 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.common.messenger.messages
+package dev.wirlie.glist.messenger
 
-import dev.wirlie.glist.messenger.SerializableMessage
-import java.io.ByteArrayInputStream
-import java.io.DataInputStream
-import java.util.UUID
+/**
+ * Utility messenger when main messenger has failed to start.
+ */
+class DummyPlatformMessenger: PlatformMessenger() {
 
-class AFKStateUpdateMessage: SerializableMessage() {
+    override fun register() {
 
-    var playerUUID: UUID? = null
+    }
 
-    var state: Boolean? = null
+    override fun unregister() {
 
-    override fun deserialize(data: ByteArray) {
-        val bin = ByteArrayInputStream(data)
-        val input = DataInputStream(bin)
-        playerUUID = UUID.fromString(input.readUTF())
-        state = input.readBoolean()
+    }
+
+    override fun sendMessage(subject: String, data: ByteArray, targetSenderObject: String?) {
+
     }
 
 }

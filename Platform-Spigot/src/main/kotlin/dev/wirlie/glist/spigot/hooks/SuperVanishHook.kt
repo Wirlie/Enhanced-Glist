@@ -48,7 +48,7 @@ class SuperVanishHook(
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: PostPlayerShowEvent) {
         plugin.spigotPluginMessageMessenger.sendMessage(
-            VanishStateUpdateMessage(false),
+            VanishStateUpdateMessage(event.player.uniqueId, false),
             event.player.name
         )
     }
@@ -56,7 +56,7 @@ class SuperVanishHook(
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: PostPlayerHideEvent) {
         plugin.spigotPluginMessageMessenger.sendMessage(
-            VanishStateUpdateMessage(true),
+            VanishStateUpdateMessage(event.player.uniqueId, true),
             event.player.name
         )
     }

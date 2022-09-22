@@ -35,18 +35,19 @@ class VanishStateChangeListener<S>(
     VanishStateUpdateMessage::class.java
 ) {
 
-    override fun onAsyncMessage(message: VanishStateUpdateMessage, fromPlayerUUID: UUID, fromServerId: String) {
+    override fun onAsyncMessage(message: VanishStateUpdateMessage, fromPlayerUUID: UUID?, fromServerId: String?) {
         println("RECEIVED => ${message.state}")
         val state = message.state!!
+        val playerUUID = message.playerUUID!!
 
         if(
-            state && platform.playerManager.hasVanishState(fromPlayerUUID) ||
-            !state && !platform.playerManager.hasVanishState(fromPlayerUUID)
+            state && platform.playerManager.hasVanishState(playerUUID) ||
+            !state && !platform.playerManager.hasVanishState(playerUUID)
         ) {
             return
         }
 
-        val player = platform.getPlayerByUUID(fromPlayerUUID) ?: return
+        val player = platform.getPlayerByUUID(playerUUID) ?: return
 
         platform.callVanishStateChangeEvent(player, state).whenComplete { stateRes, ex ->
             if(ex != null) {

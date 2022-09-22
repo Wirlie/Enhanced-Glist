@@ -23,14 +23,17 @@ package dev.wirlie.glist.spigot.messenger.messages
 import dev.wirlie.glist.messenger.SerializableMessage
 import java.io.ByteArrayOutputStream
 import java.io.DataOutputStream
+import java.util.*
 
 class VanishStateUpdateMessage(
+    val playerUUID: UUID,
     val state: Boolean
 ): SerializableMessage() {
 
     override fun serialize(): ByteArray {
         val bout = ByteArrayOutputStream()
         val out = DataOutputStream(bout)
+        out.writeUTF(playerUUID.toString())
         out.writeBoolean(state)
         out.close()
         bout.close()

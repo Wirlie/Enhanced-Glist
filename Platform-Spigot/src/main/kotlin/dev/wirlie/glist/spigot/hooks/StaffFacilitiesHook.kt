@@ -60,7 +60,7 @@ class StaffFacilitiesHook(
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: PlayerVanishEvent) {
         plugin.spigotPluginMessageMessenger.sendMessage(
-            VanishStateUpdateMessage(event.isVanishing),
+            VanishStateUpdateMessage(event.player.uniqueId, event.isVanishing),
             event.player.name
         )
     }
@@ -68,7 +68,7 @@ class StaffFacilitiesHook(
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: PlayerStaffvanishEvent) {
         plugin.spigotPluginMessageMessenger.sendMessage(
-            VanishStateUpdateMessage(event.isStaffvanishing),
+            VanishStateUpdateMessage(event.player.uniqueId, event.isStaffvanishing),
             event.player.name
         )
     }
