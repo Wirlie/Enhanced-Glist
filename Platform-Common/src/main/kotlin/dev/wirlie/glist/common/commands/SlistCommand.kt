@@ -122,6 +122,17 @@ class SlistCommand<S>(
         }
 
         val display = getDisplayFor(executor, server)
+
+        if(display.dataProvider.provideData().isEmpty()) {
+            // No players in server (vanished)
+            audience.sendMessage(
+                AdventureUtil.parseMiniMessage(
+                    translation.slist.serverNoPlayers
+                )
+            )
+            return
+        }
+
         var page = ((if(args.size > 1) args[1].toIntOrNull() else null) ?: 1) - 1
         val totalPages = display.calculateTotalPages()
 
