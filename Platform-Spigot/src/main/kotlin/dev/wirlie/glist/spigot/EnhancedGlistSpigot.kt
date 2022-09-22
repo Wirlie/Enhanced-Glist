@@ -58,6 +58,39 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
 
         configurationManager = ConfigurationManager(this)
 
+        setupMessenger()
+
+        hookManager = HookManager(this)
+
+        hookManager.registerHooks()
+        hookManager.sendAllPlayersToProxy()
+
+        val updaterConfiguration = configurationManager.getConfiguration().updates
+        pluginUpdater = PluginUpdater(
+            this,
+            updaterConfiguration.checkInterval,
+            updaterConfiguration.notify.console.notificationInterval,
+            this,
+            dataFolder,
+            updaterConfiguration.notify.console.enable
+        )
+        if(updaterConfiguration.checkForUpdates) {
+            pluginUpdater.setup()
+        }
+
+        getCommand("egls")!!.executor = GlistExecutor(this)
+
+        server.pluginManager.also { pluginManager ->
+            pluginManager.registerEvents(PlayerJoinListener(this), this)
+        }
+    }
+
+    override fun onDisable() {
+        pluginUpdater.stop()
+        messenger.unregister()
+    }
+
+    private fun setupMessenger() {
         val communicationConfig = configurationManager.getConfiguration().communication
 
         when (communicationConfig.type.lowercase()) {
@@ -109,40 +142,12 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
         messenger.registerMessage("vanish-state-update", VanishStateUpdateMessage::class.java)
         // Messenger listener registration
         messenger.addListener(RequestAllDataListener(this))
-
-        hookManager = HookManager(this)
-
-        hookManager.registerHooks()
-        hookManager.sendAllPlayersToProxy()
-
-        val updaterConfiguration = configurationManager.getConfiguration().updates
-        pluginUpdater = PluginUpdater(
-            this,
-            updaterConfiguration.checkInterval,
-            updaterConfiguration.notify.console.notificationInterval,
-            this,
-            dataFolder,
-            updaterConfiguration.notify.console.enable
-        )
-        if(updaterConfiguration.checkForUpdates) {
-            pluginUpdater.setup()
-        }
-
-        getCommand("egls")!!.executor = GlistExecutor(this)
-
-        server.pluginManager.also { pluginManager ->
-            pluginManager.registerEvents(PlayerJoinListener(this), this)
-        }
-    }
-
-    override fun onDisable() {
-        messenger.unregister()
     }
 
     fun performReload() {
         messenger.unregister()
-        messenger.register()
         configurationManager.reload()
+        setupMessenger()
         hookManager.reload()
         pluginUpdater.stop()
         val updaterConfiguration = configurationManager.getConfiguration().updates

@@ -44,11 +44,16 @@ import java.util.concurrent.TimeUnit
  * Main BungeeCord implementation
  */
 class BungeePlatform(
-    val plugin: EnhancedGlistBungeeCord
+    val plugin: EnhancedGlistBungeeCord,
+    val reloadMessengerCallback: () -> Unit
 ): Platform<ServerInfo, ProxiedPlayer, ConsoleCommandSender>() {
 
     private var updateCheckTask: ScheduledTask? = null
     private var consoleNotificationTask: ScheduledTask? = null
+
+    override fun reloadMessenger() {
+        reloadMessengerCallback()
+    }
 
     override fun toPlatformServer(server: ServerInfo): PlatformServer<ServerInfo> {
         return BungeePlatformServer(this, server)

@@ -214,6 +214,8 @@ class PluginUpdater(
     }
 
     fun stop() {
+        client.connectionPool.evictAll()
+        client.dispatcher.executorService.shutdownNow()
         updaterScheduler.stopUpdaterCheckTask()
         updaterScheduler.stopConsoleNotificationTask()
     }

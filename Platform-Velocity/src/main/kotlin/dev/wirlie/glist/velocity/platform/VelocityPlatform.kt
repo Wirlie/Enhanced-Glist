@@ -43,11 +43,16 @@ import java.util.concurrent.TimeUnit
  */
 class VelocityPlatform(
     val plugin: EnhancedGlistVelocity,
-    val server: ProxyServer
+    val server: ProxyServer,
+    val reloadMessengerCallback: () -> Unit
 ): Platform<RegisteredServer, Player, ConsoleCommandSource>() {
 
     private var updaterCheckTask: ScheduledTask? = null
     private var consoleNotificationTask: ScheduledTask? = null
+
+    override fun reloadMessenger() {
+        reloadMessengerCallback()
+    }
 
     override fun toPlatformServer(server: RegisteredServer): PlatformServer<RegisteredServer> {
         return VelocityPlatformServer(this, server)

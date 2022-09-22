@@ -30,6 +30,7 @@ import io.lettuce.core.event.connection.ReconnectAttemptEvent
 import io.lettuce.core.event.connection.ReconnectFailedEvent
 import io.lettuce.core.pubsub.RedisPubSubListener
 import io.lettuce.core.pubsub.api.async.RedisPubSubAsyncCommands
+import reactor.core.Disposable
 
 class RedisMessenger(
     logger: MessengerLogger,
@@ -40,6 +41,7 @@ class RedisMessenger(
     val proxy: Boolean
 ): PlatformMessenger(logger), RedisPubSubListener<String, String> {
 
+    var eventDisposable: Disposable? = null
     var doUnregister = false
 
     val incomingChannel = if(proxy) "egl-proxy" else "egl-server"
@@ -62,7 +64,7 @@ class RedisMessenger(
         //Uncomment if ['RedisURI' is already used] is a problem to resolve...
         //NettyFixUtil.unregisterLettuceRedisURI()
 
-        client.resources.eventBus().get().subscribe {
+        eventDisposable = client.resources.eventBus().get().subscribe {
             if(it is DisconnectedEvent) {
                 if (!doUnregister) {
                     logger!!.info("[Redis] Redis pubsub connection dropped, trying to re-open the connection!!")
@@ -91,11 +93,13 @@ class RedisMessenger(
 
     override fun unregister() {
         doUnregister = true
+        eventDisposable?.dispose()
         logger!!.info("[Redis] Closing connection...")
         try {
             client.shutdown()
             receiveConnection?.unsubscribe(incomingChannel)
         } catch (ex: Throwable) {
+            if(ex.message?.contains("Scheduler unavailable", true) == true) return
             ex.printStackTrace()
         }
     }
