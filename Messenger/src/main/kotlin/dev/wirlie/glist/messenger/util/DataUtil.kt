@@ -18,45 +18,18 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.common.configuration.sections
+package dev.wirlie.glist.messenger.util
 
-import dev.wirlie.glist.common.configuration.ConfigRootPath
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
+import java.util.*
 
-@ConfigSerializable
-@ConfigRootPath("communication")
-class CommunicationSection: ConfigurationSection {
+object DataUtil {
 
-    var type = "plugin-messages"
-
-    var rabbitmqServer = RabbitMQServerSection()
-
-    var redisServer = RedisServer()
-
-    @ConfigSerializable
-    class RabbitMQServerSection {
-
-        var host = "localhost"
-
-        var port = 5672
-
-        var user = "guest"
-
-        var password = "guest"
-
+    fun bytesToString(byteArray: ByteArray): String {
+        return Base64.getEncoder().encodeToString(byteArray)
     }
 
-    @ConfigSerializable
-    class RedisServer {
-
-        var host = "localhost"
-
-        var port = 6379
-
-        var user = ""
-
-        var password = ""
-
+    fun stringToBytes(string: String): ByteArray {
+        return Base64.getDecoder().decode(string)
     }
 
 }

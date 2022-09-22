@@ -33,6 +33,7 @@ import dev.wirlie.glist.common.configuration.sections.CommunicationSection
 import dev.wirlie.glist.messenger.impl.DummyPlatformMessenger
 import dev.wirlie.glist.messenger.PlatformMessenger
 import dev.wirlie.glist.messenger.impl.RabbitMQMessenger
+import dev.wirlie.glist.messenger.impl.RedisMessenger
 import dev.wirlie.glist.velocity.api.impl.EnhancedGlistAPIImpl
 import dev.wirlie.glist.velocity.listener.PlayerDisconnectListener
 import dev.wirlie.glist.velocity.listener.PlayerJoinListener
@@ -95,6 +96,19 @@ class EnhancedGlistVelocity {
                     communicationConfig.rabbitmqServer.port,
                     communicationConfig.rabbitmqServer.user,
                     communicationConfig.rabbitmqServer.password,
+                    true
+                )
+            }
+            "redis" -> {
+                platform.logger.info(
+                    Component.text("Enabling communication using Redis.", NamedTextColor.LIGHT_PURPLE)
+                )
+                messenger = RedisMessenger(
+                    platform.logger,
+                    communicationConfig.redisServer.host,
+                    communicationConfig.redisServer.port,
+                    communicationConfig.redisServer.user,
+                    communicationConfig.redisServer.password,
                     true
                 )
             }

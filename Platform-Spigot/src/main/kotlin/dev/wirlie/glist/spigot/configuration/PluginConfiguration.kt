@@ -62,6 +62,10 @@ class PluginConfiguration {
 
             var port = 6379
 
+            var user = ""
+
+            var password = ""
+
         }
 
     }

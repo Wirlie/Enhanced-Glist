@@ -24,6 +24,8 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
     implementation("com.google.code.gson:gson:2.9.1")
+    implementation("com.rabbitmq:amqp-client:5.16.0")
+    implementation("io.lettuce:lettuce-core:6.2.0.RELEASE")
 
     // Caffeine for Cache
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
@@ -52,6 +54,8 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("com.github.benmanes.caffeine", "dev.wirlie.shaded.com.github.benmanes.caffeine")
     relocate("net.kyori", "dev.wirlie.shaded.net.kyori")
     relocate("com.rabbitmq", "dev.wirlie.shaded.com.rabbitmq")
+    relocate("io.netty", "dev.wirlie.shaded.io.netty")
+    relocate("io.lettuce", "dev.wirlie.shaded.io.lettuce")
 }
 
 

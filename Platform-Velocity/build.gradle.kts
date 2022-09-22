@@ -17,6 +17,8 @@ dependencies {
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
     compileOnly("net.luckperms:api:5.4")
     implementation("com.google.code.gson:gson:2.9.1")
+    implementation("com.rabbitmq:amqp-client:5.16.0")
+    implementation("io.lettuce:lettuce-core:6.2.0.RELEASE")
 
     implementation(project(":EnhancedGlist-Common"))
     implementation(project(":EnhancedGlist-Velocity-API"))
@@ -45,6 +47,8 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("kotlin", "dev.wirlie.shaded.kotlin")
     relocate("com.google.gson", "dev.wirlie.shaded.com.google.gson")
     relocate("com.github.benmanes.caffeine", "dev.wirlie.shaded.com.github.benmanes.caffeine")
+    relocate("io.netty", "dev.wirlie.shaded.io.netty")
+    relocate("io.lettuce", "dev.wirlie.shaded.io.lettuce")
 }
 
 val templateSource = file("src/main/templates")

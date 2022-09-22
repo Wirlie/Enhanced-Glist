@@ -24,6 +24,7 @@ import dev.wirlie.glist.messenger.PlatformMessenger
 import dev.wirlie.glist.messenger.api.MessengerLogger
 import dev.wirlie.glist.messenger.impl.DummyPlatformMessenger
 import dev.wirlie.glist.messenger.impl.RabbitMQMessenger
+import dev.wirlie.glist.messenger.impl.RedisMessenger
 import dev.wirlie.glist.spigot.configuration.ConfigurationManager
 import dev.wirlie.glist.spigot.hooks.HookManager
 import dev.wirlie.glist.spigot.listeners.PlayerJoinListener
@@ -72,6 +73,17 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
                     communicationConfig.rabbitmqServer.port,
                     communicationConfig.rabbitmqServer.user,
                     communicationConfig.rabbitmqServer.password,
+                    false
+                )
+            }
+            "redis" -> {
+                logger.info("Enabling communication using Redis.")
+                messenger = RedisMessenger(
+                    this,
+                    communicationConfig.redisServer.host,
+                    communicationConfig.redisServer.port,
+                    communicationConfig.redisServer.user,
+                    communicationConfig.redisServer.password,
                     false
                 )
             }
