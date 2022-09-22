@@ -118,10 +118,12 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
         setupMessenger()
 
         // Request all players data
-        messenger.sendMessage(
-            RequestAllDataMessage(),
-            null
-        )
+        scheduleLater({
+            messenger.sendMessage(
+                RequestAllDataMessage(),
+                null
+            )
+        }, 1, TimeUnit.SECONDS)
     }
 
     private fun setupMessenger() {
