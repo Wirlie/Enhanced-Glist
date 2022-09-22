@@ -33,7 +33,7 @@ class SpigotPluginMessageMessenger(
     val plugin: EnhancedGlistSpigot
 ): PlatformMessenger(null), PluginMessageListener {
 
-    private val channelId = "enhanced-glist:general"
+    private val channelId = "egl:general"
 
     override fun register() {
         plugin.server.messenger.registerOutgoingPluginChannel(plugin, channelId)

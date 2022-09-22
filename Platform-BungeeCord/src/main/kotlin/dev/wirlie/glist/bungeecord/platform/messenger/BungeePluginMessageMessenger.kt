@@ -31,7 +31,7 @@ import net.md_5.bungee.event.EventHandler
 
 class BungeePluginMessageMessenger: PlatformMessenger(null), Listener {
 
-    private val channelId = "enhanced-glist:general"
+    private val channelId = "egl:general"
 
     override fun register() {
         ProxyServer.getInstance().registerChannel(channelId)

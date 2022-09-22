@@ -33,7 +33,7 @@ class VelocityPluginMessageMessenger(
     val server: ProxyServer
 ): PlatformMessenger(null) {
 
-    private val channelId = MinecraftChannelIdentifier.create("enhanced-glist", "general")
+    private val channelId = MinecraftChannelIdentifier.create("egl", "general")
 
     override fun register() {
         server.channelRegistrar.register(channelId)
