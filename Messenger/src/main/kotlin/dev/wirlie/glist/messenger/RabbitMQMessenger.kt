@@ -18,13 +18,12 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.bungeecord.platform.messenger
+package dev.wirlie.glist.messenger
 
 import com.rabbitmq.client.Connection
 import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.DeliverCallback
 import com.rabbitmq.client.Delivery
-import dev.wirlie.glist.messenger.PlatformMessenger
 
 class RabbitMQMessenger(
     val host: String,

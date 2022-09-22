@@ -34,9 +34,6 @@ dependencies {
     // Third Party Plugin Libraries
     compileOnly("net.luckperms:api:5.4")
     compileOnly("com.github.LeonMangler:PremiumVanishAPI:2.7.11-2")
-
-    // Communication types
-    implementation("com.rabbitmq:amqp-client:5.16.0")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

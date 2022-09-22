@@ -27,7 +27,7 @@ import dev.wirlie.glist.bungeecord.listener.PlayerServerChangeListener
 import dev.wirlie.glist.bungeecord.platform.BungeePlatform
 import dev.wirlie.glist.bungeecord.platform.BungeePlatformCommandManager
 import dev.wirlie.glist.bungeecord.platform.messenger.BungeePluginMessageMessenger
-import dev.wirlie.glist.bungeecord.platform.messenger.RabbitMQMessenger
+import dev.wirlie.glist.messenger.RabbitMQMessenger
 import dev.wirlie.glist.common.configuration.sections.CommunicationSection
 import dev.wirlie.glist.messenger.DummyPlatformMessenger
 import dev.wirlie.glist.messenger.PlatformMessenger
