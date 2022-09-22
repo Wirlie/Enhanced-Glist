@@ -176,7 +176,7 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
             override fun run() {
                 task.run()
             }
-        }.runTaskTimer(this, periodSeconds * 20L, periodSeconds * 20L)
+        }.runTaskTimer(this, 1, periodSeconds * 20L)
     }
 
     override fun stopUpdaterCheckTask() {
