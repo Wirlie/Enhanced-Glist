@@ -56,8 +56,6 @@ val templateDest = layout.buildDirectory.dir("generated/sources/templates")
 val generateTemplates = tasks.register<Copy>("generateTemplates") {
     val props = mutableMapOf(Pair("version", project.version))
 
-    println(templateDest.get().asFile.absolutePath)
-
     inputs.properties(props)
     from(templateSource)
     into(templateDest)

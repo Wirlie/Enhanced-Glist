@@ -85,10 +85,7 @@ abstract class PlatformMessenger(
         fromServerId: String?
     ) {
         if(clazz == listener.clazz) {
-            println("CLASS MATCH FOR LISTENER")
             listener.onMessageInternal(message, fromPlayer, fromServerId)
-        } else {
-            println("CLASS NOT MATCH: clazz=$clazz vs T=${listener.clazz}")
         }
     }
 

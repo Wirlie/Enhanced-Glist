@@ -36,7 +36,6 @@ class VanishStateChangeListener<S>(
 ) {
 
     override fun onAsyncMessage(message: VanishStateUpdateMessage, fromPlayerUUID: UUID?, fromServerId: String?) {
-        println("RECEIVED => ${message.state}")
         val state = message.state!!
         val playerUUID = message.playerUUID!!
 
