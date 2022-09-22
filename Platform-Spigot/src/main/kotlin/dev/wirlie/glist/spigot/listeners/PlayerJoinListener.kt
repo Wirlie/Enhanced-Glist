@@ -46,11 +46,11 @@ class PlayerJoinListener(
         }
 
         //Send to proxy
-        plugin.spigotPluginMessageMessenger.sendMessage(
+        plugin.messenger.sendMessage(
             AFKStateUpdateMessage(event.player.uniqueId, isAFK),
             event.player.name
         )
-        plugin.spigotPluginMessageMessenger.sendMessage(
+        plugin.messenger.sendMessage(
             VanishStateUpdateMessage(event.player.uniqueId, isVanish),
             event.player.name
         )

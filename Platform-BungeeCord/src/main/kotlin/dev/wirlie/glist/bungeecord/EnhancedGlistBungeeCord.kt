@@ -27,9 +27,9 @@ import dev.wirlie.glist.bungeecord.listener.PlayerServerChangeListener
 import dev.wirlie.glist.bungeecord.platform.BungeePlatform
 import dev.wirlie.glist.bungeecord.platform.BungeePlatformCommandManager
 import dev.wirlie.glist.bungeecord.platform.messenger.BungeePluginMessageMessenger
-import dev.wirlie.glist.messenger.RabbitMQMessenger
+import dev.wirlie.glist.messenger.impl.RabbitMQMessenger
 import dev.wirlie.glist.common.configuration.sections.CommunicationSection
-import dev.wirlie.glist.messenger.DummyPlatformMessenger
+import dev.wirlie.glist.messenger.impl.DummyPlatformMessenger
 import dev.wirlie.glist.messenger.PlatformMessenger
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences
 import net.kyori.adventure.text.Component
@@ -51,42 +51,35 @@ class EnhancedGlistBungeeCord: Plugin() {
 
         val communicationConfig = platform.configuration.getSection(CommunicationSection::class.java)
 
-        try {
-            when (communicationConfig.type.lowercase()) {
-                "plugin-messages" -> {
-                    platform.logger.info(
-                        Component.text("Enabling communication using plugin messages.", NamedTextColor.GREEN)
-                    )
-                    messenger = BungeePluginMessageMessenger()
-                }
-                "rabbitmq" -> {
-                    platform.logger.info(
-                        Component.text("Enabling communication using RabbitMQ.", NamedTextColor.GREEN)
-                    )
-                    messenger = RabbitMQMessenger(
-                        communicationConfig.rabbitmqServer.host,
-                        communicationConfig.rabbitmqServer.port
-                    )
-                }
-                else -> {
-                    messenger = DummyPlatformMessenger()
-                    platform.logger.error(
-                        Component.text("Unknown communication type: '${communicationConfig.type}'.", NamedTextColor.RED)
-                    )
-                    platform.logger.error(
-                        Component.text("Fix this to enable communication between Proxy and Server.", NamedTextColor.RED)
-                    )
-                }
+        when (communicationConfig.type.lowercase()) {
+            "plugin-messages" -> {
+                platform.logger.info(
+                    Component.text("Enabling communication using plugin messages.", NamedTextColor.LIGHT_PURPLE)
+                )
+                messenger = BungeePluginMessageMessenger()
             }
-        } catch (ex: Throwable) {
-            messenger = DummyPlatformMessenger()
-            platform.logger.error(
-                Component.text("An exception has occurred while enabling communication system.", NamedTextColor.RED)
-            )
-            platform.logger.error(
-                Component.text("Fix this to enable communication between Proxy and Server.", NamedTextColor.RED)
-            )
-            ex.printStackTrace()
+            "rabbitmq" -> {
+                platform.logger.info(
+                    Component.text("Enabling communication using RabbitMQ.", NamedTextColor.LIGHT_PURPLE)
+                )
+                messenger = RabbitMQMessenger(
+                    platform.logger,
+                    communicationConfig.rabbitmqServer.host,
+                    communicationConfig.rabbitmqServer.port,
+                    communicationConfig.rabbitmqServer.user,
+                    communicationConfig.rabbitmqServer.password,
+                    true
+                )
+            }
+            else -> {
+                messenger = DummyPlatformMessenger()
+                platform.logger.error(
+                    Component.text("Unknown communication type: '${communicationConfig.type}'.", NamedTextColor.RED)
+                )
+                platform.logger.error(
+                    Component.text("Fix this to enable communication between Proxy and Server.", NamedTextColor.RED)
+                )
+            }
         }
 
         platform.setup(

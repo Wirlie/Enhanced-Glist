@@ -18,33 +18,45 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.messenger
+package dev.wirlie.glist.messenger.impl
 
 import com.rabbitmq.client.Connection
 import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.DeliverCallback
 import com.rabbitmq.client.Delivery
+import dev.wirlie.glist.messenger.PlatformMessenger
+import dev.wirlie.glist.messenger.api.MessengerLogger
 
 class RabbitMQMessenger(
+    logger: MessengerLogger,
     val host: String,
-    val port: Int
-): PlatformMessenger() {
+    val port: Int,
+    val userName: String,
+    val password: String,
+    val isProxy: Boolean
+): PlatformMessenger(logger) {
 
-    private val receiveExchangeName = "egl-proxy"
-    private val sendExchangeName = "egl-servers"
+    private val receiveExchangeName = if(isProxy) "egl-proxy" else "egl-servers"
+    private val sendExchangeName = if(isProxy) "egl-servers" else "egl-proxy"
     private lateinit var factory: ConnectionFactory
     private var receiveConnection: Connection? = null
 
     override fun register() {
         factory = ConnectionFactory()
-        factory.host = "localhost"
+        factory.host = host
         factory.port = port
+        factory.username = userName
+        factory.password = password
+
+        logger!!.info("[RabbitMQ] Starting communication...")
 
         receiveConnection = factory.newConnection()
         val channel = receiveConnection!!.createChannel()
         channel.exchangeDeclare(receiveExchangeName, "fanout")
         val queueName = channel.queueDeclare().queue
         channel.queueBind(queueName, receiveExchangeName, "")
+
+        logger.info("[RabbitMQ] Channels created, waiting for incoming messages...")
 
         val deliverCallback = DeliverCallback { consumerTag: String?, delivery: Delivery ->
             val unpacked = unpackMessage(delivery.body)
@@ -61,6 +73,7 @@ class RabbitMQMessenger(
     }
 
     override fun unregister() {
+        logger!!.info("[RabbitMQ] Removing connection...")
         receiveConnection?.close(100)
     }
 

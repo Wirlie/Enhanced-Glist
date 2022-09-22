@@ -59,7 +59,7 @@ class StaffFacilitiesHook(
     // TODO: I do not know what is the difference between PlayerVanishEvent and PlayerStaffvanishEvent, PENDING TEST BECAUSE THIS IS A PAID RESOURCE!!
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: PlayerVanishEvent) {
-        plugin.spigotPluginMessageMessenger.sendMessage(
+        plugin.messenger.sendMessage(
             VanishStateUpdateMessage(event.player.uniqueId, event.isVanishing),
             event.player.name
         )
@@ -67,7 +67,7 @@ class StaffFacilitiesHook(
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: PlayerStaffvanishEvent) {
-        plugin.spigotPluginMessageMessenger.sendMessage(
+        plugin.messenger.sendMessage(
             VanishStateUpdateMessage(event.player.uniqueId, event.isStaffvanishing),
             event.player.name
         )

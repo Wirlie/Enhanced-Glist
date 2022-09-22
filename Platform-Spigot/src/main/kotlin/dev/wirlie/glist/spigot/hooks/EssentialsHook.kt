@@ -59,7 +59,7 @@ class EssentialsHook(
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: VanishStatusChangeEvent) {
-        plugin.spigotPluginMessageMessenger.sendMessage(
+        plugin.messenger.sendMessage(
             VanishStateUpdateMessage(event.affected.base.uniqueId, event.value),
             event.affected.base.name
         )
@@ -67,7 +67,7 @@ class EssentialsHook(
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     fun event(event: AfkStatusChangeEvent) {
-        plugin.spigotPluginMessageMessenger.sendMessage(
+        plugin.messenger.sendMessage(
             AFKStateUpdateMessage(event.affected.base.uniqueId, event.value),
             event.affected.base.name
         )

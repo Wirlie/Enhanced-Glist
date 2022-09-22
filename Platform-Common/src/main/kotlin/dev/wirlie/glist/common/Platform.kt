@@ -40,6 +40,7 @@ import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.player.PlayerManager
 import dev.wirlie.glist.common.translation.TranslatorManager
 import dev.wirlie.glist.common.util.AdventureUtil
+import dev.wirlie.glist.messenger.impl.DummyPlatformMessenger
 import dev.wirlie.glist.messenger.PlatformMessenger
 import dev.wirlie.glist.updater.PluginUpdater
 import dev.wirlie.glist.updater.UpdaterScheduler
@@ -99,7 +100,23 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
         hookManager = HookManager(this)
         registerHooks()
         playerManager = PlayerManager(this)
-        networkMessenger.register()
+
+        try {
+            networkMessenger.register()
+            logger.info(
+                Component.text("Communication system established.", NamedTextColor.LIGHT_PURPLE)
+            )
+        } catch (ex: Throwable) {
+            messenger = DummyPlatformMessenger()
+            logger.error(
+                Component.text("An exception has occurred while enabling communication system.", NamedTextColor.RED)
+            )
+            logger.error(
+                Component.text("Fix this to enable communication between Proxy and Server.", NamedTextColor.RED)
+            )
+            ex.printStackTrace()
+        }
+
         val updaterConfig = configuration.getSection(UpdatesSection::class.java)
         pluginUpdater = PluginUpdater(
             this,

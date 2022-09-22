@@ -31,17 +31,9 @@ import org.bukkit.plugin.messaging.PluginMessageListener
 
 class SpigotPluginMessageMessenger(
     val plugin: EnhancedGlistSpigot
-): PlatformMessenger(), PluginMessageListener {
+): PlatformMessenger(null), PluginMessageListener {
 
     private val channelId = "enhanced-glist:general"
-
-    init {
-        registerMessage("request-all-data", RequestAllDataMessage::class.java)
-        registerMessage("afk-state-update", AFKStateUpdateMessage::class.java)
-        registerMessage("vanish-state-update", VanishStateUpdateMessage::class.java)
-
-        addListener(RequestAllDataListener(plugin))
-    }
 
     override fun register() {
         plugin.server.messenger.registerOutgoingPluginChannel(plugin, channelId)

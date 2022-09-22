@@ -20,7 +20,7 @@
 
 package dev.wirlie.glist.spigot.messenger.messages
 
-import dev.wirlie.glist.messenger.SerializableMessage
+import dev.wirlie.glist.messenger.api.SerializableMessage
 
 class RequestAllDataMessage: SerializableMessage() {
 

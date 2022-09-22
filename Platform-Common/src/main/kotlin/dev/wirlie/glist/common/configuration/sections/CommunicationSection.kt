@@ -40,6 +40,10 @@ class CommunicationSection: ConfigurationSection {
 
         var port = 5672
 
+        var user = "guest"
+
+        var password = "guest"
+
     }
 
     @ConfigSerializable

@@ -22,7 +22,7 @@ package dev.wirlie.glist.common.messenger.listeners
 
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.messenger.messages.VanishStateUpdateMessage
-import dev.wirlie.glist.messenger.MessageListener
+import dev.wirlie.glist.messenger.api.MessageListener
 import java.util.*
 
 /**

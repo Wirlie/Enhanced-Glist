@@ -18,17 +18,19 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.messenger
+package dev.wirlie.glist.messenger.api
 
-open class SerializableMessage {
+import java.util.UUID
 
-    open fun serialize(): ByteArray {
-        return ByteArray(0)
+abstract class MessageListener<T: SerializableMessage>(
+    val clazz: Class<T>
+) {
+
+    abstract fun onAsyncMessage(message: T, fromPlayerUUID: UUID?, fromServerId: String?)
+
+    fun onMessageInternal(message: SerializableMessage, fromPlayerUUID: UUID?, fromServerId: String?) {
+        @Suppress("UNCHECKED_CAST")
+        onAsyncMessage(message as T, fromPlayerUUID, fromServerId)
     }
-
-    open fun deserialize(data: ByteArray) {
-
-    }
-
 
 }

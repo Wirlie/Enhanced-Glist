@@ -91,14 +91,14 @@ class AntiAFKProHook(
                     if(storedAFK && !currentAFK) {
                         // Remove AFK state
                         knowAFKPlayers.remove(player.uniqueId)
-                        plugin.spigotPluginMessageMessenger.sendMessage(
+                        plugin.messenger.sendMessage(
                             AFKStateUpdateMessage(player.uniqueId, false),
                             player.name
                         )
                     } else if(!storedAFK && currentAFK) {
                         // Add AFK state
                         knowAFKPlayers.add(player.uniqueId)
-                        plugin.spigotPluginMessageMessenger.sendMessage(
+                        plugin.messenger.sendMessage(
                             AFKStateUpdateMessage(player.uniqueId, true),
                             player.name
                         )

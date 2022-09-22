@@ -18,23 +18,17 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.messenger
+package dev.wirlie.glist.messenger.api
 
-/**
- * Utility messenger when main messenger has failed to start.
- */
-class DummyPlatformMessenger: PlatformMessenger() {
+open class SerializableMessage {
 
-    override fun register() {
+    open fun serialize(): ByteArray {
+        return ByteArray(0)
+    }
+
+    open fun deserialize(data: ByteArray) {
 
     }
 
-    override fun unregister() {
-
-    }
-
-    override fun sendMessage(subject: String, data: ByteArray, targetSenderObject: String?) {
-
-    }
 
 }

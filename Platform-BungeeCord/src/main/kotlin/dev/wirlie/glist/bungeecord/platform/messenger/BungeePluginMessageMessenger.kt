@@ -29,7 +29,7 @@ import net.md_5.bungee.api.event.PluginMessageEvent
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler
 
-class BungeePluginMessageMessenger: PlatformMessenger(), Listener {
+class BungeePluginMessageMessenger: PlatformMessenger(null), Listener {
 
     private val channelId = "enhanced-glist:general"
 

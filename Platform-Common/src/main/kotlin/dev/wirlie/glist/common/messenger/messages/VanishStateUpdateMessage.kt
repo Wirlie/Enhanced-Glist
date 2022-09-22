@@ -20,7 +20,7 @@
 
 package dev.wirlie.glist.common.messenger.messages
 
-import dev.wirlie.glist.messenger.SerializableMessage
+import dev.wirlie.glist.messenger.api.SerializableMessage
 import java.io.ByteArrayInputStream
 import java.io.DataInputStream
 import java.util.*

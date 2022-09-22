@@ -20,7 +20,7 @@
 
 package dev.wirlie.glist.spigot.messenger.listeners
 
-import dev.wirlie.glist.messenger.MessageListener
+import dev.wirlie.glist.messenger.api.MessageListener
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
 import dev.wirlie.glist.spigot.messenger.messages.RequestAllDataMessage
 import org.bukkit.Bukkit

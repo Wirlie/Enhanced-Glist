@@ -18,19 +18,30 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.messenger
+package dev.wirlie.glist.messenger.impl
 
-import java.util.UUID
+import dev.wirlie.glist.messenger.PlatformMessenger
+import dev.wirlie.glist.messenger.api.MessengerLogger
 
-abstract class MessageListener<T: SerializableMessage>(
-    val clazz: Class<T>
-) {
+/**
+ * Utility messenger when main messenger has failed to start.
+ */
+class DummyPlatformMessenger: PlatformMessenger(object : MessengerLogger {
+    override fun info(text: String) {}
+    override fun severe(text: String) {}
+    override fun warning(text: String) {}
+}) {
 
-    abstract fun onAsyncMessage(message: T, fromPlayerUUID: UUID?, fromServerId: String?)
+    override fun register() {
 
-    fun onMessageInternal(message: SerializableMessage, fromPlayerUUID: UUID?, fromServerId: String?) {
-        @Suppress("UNCHECKED_CAST")
-        onAsyncMessage(message as T, fromPlayerUUID, fromServerId)
+    }
+
+    override fun unregister() {
+
+    }
+
+    override fun sendMessage(subject: String, data: ByteArray, targetSenderObject: String?) {
+
     }
 
 }

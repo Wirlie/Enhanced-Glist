@@ -18,24 +18,14 @@
  * Contact e-mail: wirlie.dev@gmail.com
  */
 
-package dev.wirlie.glist.common.messenger.messages
+package dev.wirlie.glist.messenger.api
 
-import dev.wirlie.glist.messenger.api.SerializableMessage
-import java.io.ByteArrayInputStream
-import java.io.DataInputStream
-import java.util.UUID
+interface MessengerLogger {
 
-class AFKStateUpdateMessage: SerializableMessage() {
+    fun info(text: String)
 
-    var playerUUID: UUID? = null
+    fun severe(text: String)
 
-    var state: Boolean? = null
-
-    override fun deserialize(data: ByteArray) {
-        val bin = ByteArrayInputStream(data)
-        val input = DataInputStream(bin)
-        playerUUID = UUID.fromString(input.readUTF())
-        state = input.readBoolean()
-    }
+    fun warning(text: String)
 
 }

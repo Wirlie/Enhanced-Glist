@@ -50,11 +50,11 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
 
         // Send to Proxy
         for(player in Bukkit.getOnlinePlayers()) {
-            plugin.spigotPluginMessageMessenger.sendMessage(
+            plugin.messenger.sendMessage(
                 AFKStateUpdateMessage(player.uniqueId, afkPlayersState[player.uniqueId] ?: false),
                 player.name
             )
-            plugin.spigotPluginMessageMessenger.sendMessage(
+            plugin.messenger.sendMessage(
                 VanishStateUpdateMessage(player.uniqueId, vanishPlayersState[player.uniqueId] ?: false),
                 player.name
             )

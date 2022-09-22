@@ -20,13 +20,18 @@
 
 package dev.wirlie.glist.messenger
 
+import dev.wirlie.glist.messenger.api.MessageListener
+import dev.wirlie.glist.messenger.api.MessengerLogger
+import dev.wirlie.glist.messenger.api.SerializableMessage
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.util.UUID
 
-abstract class PlatformMessenger {
+abstract class PlatformMessenger(
+    val logger: MessengerLogger?
+) {
 
     private val messagesRegistry = mutableSetOf<Pair<String, Class<out SerializableMessage>>>()
     private val listeners = mutableSetOf<MessageListener<out SerializableMessage>>()

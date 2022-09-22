@@ -28,12 +28,10 @@ import com.velocitypowered.api.proxy.ServerConnection
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier
 import com.velocitypowered.api.proxy.server.RegisteredServer
 import dev.wirlie.glist.messenger.PlatformMessenger
-import java.io.ByteArrayInputStream
-import java.io.DataInputStream
 
 class VelocityPluginMessageMessenger(
     val server: ProxyServer
-): PlatformMessenger() {
+): PlatformMessenger(null) {
 
     private val channelId = MinecraftChannelIdentifier.create("enhanced-glist", "general")
 

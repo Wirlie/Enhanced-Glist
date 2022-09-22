@@ -31,6 +31,41 @@ class PluginConfiguration {
 
     var updates = UpdatesConfiguration()
 
+    var communication = CommunicationConfiguration()
+
+    @ConfigSerializable
+    class CommunicationConfiguration {
+
+        var type = "plugin-messages"
+
+        var rabbitmqServer = RabbitMQServerSection()
+
+        var redisServer = RedisServer()
+
+        @ConfigSerializable
+        class RabbitMQServerSection {
+
+            var host = "localhost"
+
+            var port = 5672
+
+            var user = "guest"
+
+            var password = "guest"
+
+        }
+
+        @ConfigSerializable
+        class RedisServer {
+
+            var host = "localhost"
+
+            var port = 6379
+
+        }
+
+    }
+
     @ConfigSerializable
     class HooksConfiguration {
 
