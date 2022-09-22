@@ -60,3 +60,15 @@ tasks.withType<ProcessResources> {
         expand(props)
     }
 }
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}

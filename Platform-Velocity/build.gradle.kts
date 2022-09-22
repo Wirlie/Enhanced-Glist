@@ -49,6 +49,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("com.github.benmanes.caffeine", "dev.wirlie.shaded.com.github.benmanes.caffeine")
     relocate("io.netty", "dev.wirlie.shaded.io.netty")
     relocate("io.lettuce", "dev.wirlie.shaded.io.lettuce")
+    relocate("okhttp3", "dev.wirlie.shaded.okhttp3")
 }
 
 val templateSource = file("src/main/templates")
@@ -80,5 +81,17 @@ rootProject.idea {
                 afterSync(generateTemplates)
             }
         }
+    }
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    sourceCompatibility = "11"
+    targetCompatibility = "11"
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "11"
     }
 }

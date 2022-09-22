@@ -72,11 +72,31 @@ class EnhancedGlistVelocity {
 
     @Subscribe
     fun onProxyInitialization(event: ProxyInitializeEvent) {
-        platform = VelocityPlatform(this, proxyServer)
+        platform = VelocityPlatform(this, proxyServer) {
+            // Reload Messenger
+            reloadMessenger()
+        }
         platform.pluginFolder = pluginDirectory.toFile()
         platform.console = proxyServer.consoleCommandSource
         platform.setupConfig()
 
+        setupMessenger()
+
+        platform.setup(
+            VelocityPlatformCommandManager(platform, commandManager),
+            messenger
+        )
+
+        proxyServer.eventManager.register(this, PlayerDisconnectListener(platform))
+        proxyServer.eventManager.register(this, PlayerJoinListener(platform))
+        proxyServer.eventManager.register(this, PlayerServerChangeListener(platform))
+        proxyServer.eventManager.register(this, messenger)
+
+        // Init API
+        EnhancedGlistAPIImpl(platform)
+    }
+
+    private fun setupMessenger() {
         val communicationConfig = platform.configuration.getSection(CommunicationSection::class.java)
 
         when (communicationConfig.type.lowercase()) {
@@ -122,19 +142,26 @@ class EnhancedGlistVelocity {
                 )
             }
         }
+    }
 
-        platform.setup(
-            VelocityPlatformCommandManager(platform, commandManager),
-            messenger
-        )
-
-        proxyServer.eventManager.register(this, PlayerDisconnectListener(platform))
-        proxyServer.eventManager.register(this, PlayerJoinListener(platform))
-        proxyServer.eventManager.register(this, PlayerServerChangeListener(platform))
-        proxyServer.eventManager.register(this, messenger)
-
-        // Init API
-        EnhancedGlistAPIImpl(platform)
+    private fun reloadMessenger() {
+        if (this::messenger.isInitialized) {
+            messenger.unregister()
+        }
+        setupMessenger()
+        try {
+            messenger.register()
+        } catch (ex: Throwable) {
+            messenger = DummyPlatformMessenger()
+            platform.logger.error(
+                Component.text("An exception has occurred while enabling communication system.", NamedTextColor.RED)
+            )
+            platform.logger.error(
+                Component.text("Fix this to enable communication between Proxy and Server.", NamedTextColor.RED)
+            )
+            ex.printStackTrace()
+        }
+        platform.setupMessenger()
     }
 
     @Subscribe

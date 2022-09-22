@@ -45,11 +45,41 @@ class EnhancedGlistBungeeCord: Plugin() {
 
     override fun onEnable() {
         adventure = BungeeAudiences.create(this)
-        platform = BungeePlatform(this)
+        platform = BungeePlatform(this) {
+            // Reload Messenger
+            reloadMessenger()
+        }
         platform.pluginFolder = dataFolder
         platform.console = adventure.console()
         platform.setupConfig()
 
+        setupMessenger()
+
+        platform.setup(
+            BungeePlatformCommandManager(platform, ProxyServer.getInstance().pluginManager, this),
+            messenger
+        )
+
+        val proxy = ProxyServer.getInstance()
+        val pluginManager = proxy.pluginManager
+
+        pluginManager.registerListener(this, PlayerDisconnectListener(platform))
+        pluginManager.registerListener(this, PlayerJoinListener(platform))
+        pluginManager.registerListener(this, PlayerServerChangeListener(platform))
+
+        if(messenger is BungeePluginMessageMessenger) {
+            pluginManager.registerListener(this, messenger as BungeePluginMessageMessenger)
+        }
+
+        // Init API
+        EnhancedGlistAPIImpl(platform)
+    }
+
+    override fun onDisable() {
+        platform.disable()
+    }
+
+    private fun setupMessenger() {
         val communicationConfig = platform.configuration.getSection(CommunicationSection::class.java)
 
         when (communicationConfig.type.lowercase()) {
@@ -95,29 +125,26 @@ class EnhancedGlistBungeeCord: Plugin() {
                 )
             }
         }
-
-        platform.setup(
-            BungeePlatformCommandManager(platform, ProxyServer.getInstance().pluginManager, this),
-            messenger
-        )
-
-        val proxy = ProxyServer.getInstance()
-        val pluginManager = proxy.pluginManager
-
-        pluginManager.registerListener(this, PlayerDisconnectListener(platform))
-        pluginManager.registerListener(this, PlayerJoinListener(platform))
-        pluginManager.registerListener(this, PlayerServerChangeListener(platform))
-
-        if(messenger is BungeePluginMessageMessenger) {
-            pluginManager.registerListener(this, messenger as BungeePluginMessageMessenger)
-        }
-
-        // Init API
-        EnhancedGlistAPIImpl(platform)
     }
 
-    override fun onDisable() {
-        platform.disable()
+    private fun reloadMessenger() {
+        if (this::messenger.isInitialized) {
+            messenger.unregister()
+        }
+        setupMessenger()
+        try {
+            messenger.register()
+        } catch (ex: Throwable) {
+            messenger = DummyPlatformMessenger()
+            platform.logger.error(
+                Component.text("An exception has occurred while enabling communication system.", NamedTextColor.RED)
+            )
+            platform.logger.error(
+                Component.text("Fix this to enable communication between Proxy and Server.", NamedTextColor.RED)
+            )
+            ex.printStackTrace()
+        }
+        platform.setupMessenger()
     }
 
     companion object {

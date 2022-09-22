@@ -143,7 +143,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
         }, 1, TimeUnit.SECONDS)
     }
 
-    private fun setupMessenger() {
+    fun setupMessenger() {
         messenger.registerMessage("afk-state-update", AFKStateUpdateMessage::class.java)
         messenger.registerMessage("vanish-state-update", VanishStateUpdateMessage::class.java)
         messenger.registerMessage("request-all-data", RequestAllDataMessage::class.java)
@@ -198,6 +198,13 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
                 .append(Component.text("Protocolize (GUI System)", NamedTextColor.WHITE))
                 .append(Component.text(".", NamedTextColor.GREEN))
         )
+        // Reload Messenger
+        logger.info(
+            Component.text("Reloading ", NamedTextColor.GREEN)
+                .append(Component.text("Communication System", NamedTextColor.WHITE))
+                .append(Component.text(".", NamedTextColor.GREEN))
+        )
+        reloadMessenger()
         // Reload Updater
         logger.info(
             Component.text("Reloading ", NamedTextColor.GREEN)
@@ -384,6 +391,8 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
     abstract fun getPlayerByName(name: String): PlatformExecutor<S>?
 
     abstract fun getPlayerByUUID(uuid: UUID): PlatformExecutor<S>?
+
+    abstract fun reloadMessenger()
 
     companion object {
 

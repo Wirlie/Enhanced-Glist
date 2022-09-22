@@ -53,6 +53,7 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("com.rabbitmq", "dev.wirlie.shaded.com.rabbitmq")
     relocate("io.netty", "dev.wirlie.shaded.io.netty")
     relocate("io.lettuce", "dev.wirlie.shaded.io.lettuce")
+    relocate("okhttp3", "dev.wirlie.shaded.okhttp3")
 }
 
 
@@ -74,5 +75,17 @@ tasks.withType<ProcessResources> {
     filteringCharset = "UTF-8"
     filesMatching(listOf("metadata.conf", "config.conf", "plugin.yml")) {
         expand(props)
+    }
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
