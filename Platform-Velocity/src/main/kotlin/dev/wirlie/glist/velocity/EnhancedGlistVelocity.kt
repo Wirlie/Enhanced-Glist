@@ -161,6 +161,7 @@ class EnhancedGlistVelocity {
             )
             ex.printStackTrace()
         }
+        platform.messenger = messenger
         platform.setupMessenger()
     }
 

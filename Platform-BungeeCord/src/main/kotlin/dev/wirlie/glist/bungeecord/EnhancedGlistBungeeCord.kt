@@ -144,6 +144,7 @@ class EnhancedGlistBungeeCord: Plugin() {
             )
             ex.printStackTrace()
         }
+        platform.messenger = messenger
         platform.setupMessenger()
     }
 
