@@ -26,6 +26,7 @@ import net.md_5.bungee.api.CommandSender
 import net.md_5.bungee.api.config.ServerInfo
 import net.md_5.bungee.api.connection.ProxiedPlayer
 import net.md_5.bungee.api.plugin.Command
+import net.md_5.bungee.api.plugin.TabExecutor
 import net.md_5.bungee.command.ConsoleCommandSender
 
 /**
@@ -40,13 +41,27 @@ class SlistExecutor(
     platformCommand.name,
     platformCommand.permission,
     *platformCommand.aliases.toTypedArray()
-) {
+), TabExecutor {
 
     override fun execute(sender: CommandSender, args: Array<String>) {
         if(sender is ProxiedPlayer) {
             platformCommand.tryExecution(platform.toPlatformExecutorPlayer(sender), args)
         } else {
             platformCommand.tryExecution(platform.toPlatformExecutorConsole(sender as ConsoleCommandSender), args)
+        }
+    }
+
+    override fun onTabComplete(sender: CommandSender, args: Array<String>): List<String> {
+        return when (sender) {
+            is ProxiedPlayer -> {
+                platformCommand.handleTabCompletion(platform.toPlatformExecutorPlayer(sender), args)
+            }
+            is ConsoleCommandSender -> {
+                platformCommand.handleTabCompletion(platform.toPlatformExecutorConsole(sender), args)
+            }
+            else -> {
+                listOf()
+            }
         }
     }
 

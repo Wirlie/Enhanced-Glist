@@ -91,4 +91,13 @@ class EglCommand<S>(
 
     }
 
+    override fun handleTabCompletion(executor: PlatformExecutor<S>, args: Array<String>): List<String> {
+        if(!executor.hasPermission(permission)) {
+            // Do not make suggestions if player doest not have permission to use this command
+            return listOf()
+        }
+
+        return listOf("reload")
+    }
+
 }

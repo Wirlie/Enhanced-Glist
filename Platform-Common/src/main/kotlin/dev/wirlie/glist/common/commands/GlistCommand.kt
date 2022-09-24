@@ -141,4 +141,8 @@ class GlistCommand<S>(
         return newDisplay
     }
 
+    override fun handleTabCompletion(executor: PlatformExecutor<S>, args: Array<String>): List<String> {
+        return listOf()
+    }
+
 }
