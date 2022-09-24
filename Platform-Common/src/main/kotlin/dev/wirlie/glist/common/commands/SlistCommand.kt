@@ -238,7 +238,7 @@ class SlistCommand<S>(
             return listOf()
         }
 
-        return platform.getAllServersGrouped().map { it.getName().lowercase() }.filter { it.contains(args[0], true) }
+        return platform.getAllServersGrouped().map { it.getName().lowercase() }.filter { args.isEmpty() || it.contains(args[0], true) }
     }
 
 }
