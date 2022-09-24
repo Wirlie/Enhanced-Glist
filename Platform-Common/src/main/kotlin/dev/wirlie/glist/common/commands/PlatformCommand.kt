@@ -41,4 +41,6 @@ abstract class PlatformCommand<S>(
      */
     abstract fun tryExecution(executor: PlatformExecutor<S>, args: Array<String>)
 
+    abstract fun handleTabCompletion(executor: PlatformExecutor<S>, args: Array<String>): List<String>
+
 }
