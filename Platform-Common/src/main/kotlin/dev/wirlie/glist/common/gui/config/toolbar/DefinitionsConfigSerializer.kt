@@ -102,8 +102,6 @@ class DefinitionsConfigSerializer: TypeSerializer<DefinitionsCustomConfig> {
         if(obj == null) {
             node.set(null)
         } else {
-            val definitionsKey = mutableMapOf<String, ConfigurationNode>()
-
             obj.definitions.forEach { def ->
                 val key = def.key
                 val valueNode = def.node
@@ -142,10 +140,8 @@ class DefinitionsConfigSerializer: TypeSerializer<DefinitionsCustomConfig> {
                     }
                 }
 
-                definitionsKey[key] = valueNode
+                node.node(key).set(valueNode)
             }
-
-            node.set(definitionsKey)
         }
     }
 
