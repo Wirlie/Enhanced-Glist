@@ -10,7 +10,7 @@ plugins {
     kotlin("kapt") version "1.6.21"
     `maven-publish`
     idea
-    id("org.jetbrains.gradle.plugin.idea-ext") version "1.0.1"
+    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.6"
 }
 
 repositories {
