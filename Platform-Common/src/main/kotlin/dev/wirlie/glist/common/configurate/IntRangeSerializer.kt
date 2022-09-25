@@ -52,7 +52,15 @@ class IntRangeSerializer: TypeSerializer<IntRange> {
         if(obj == null) {
             node.set(null)
         } else {
-            node.set("${obj.first}_${obj.last}")
+            node.set("${padZeros(obj.first)}_${padZeros(obj.last)}")
+        }
+    }
+
+    private fun padZeros(value: Int): String {
+        return if(value < 10) {
+            "0$value"
+        } else {
+            "$value"
         }
     }
 
