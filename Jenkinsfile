@@ -149,6 +149,16 @@ pipeline {
                 }
             }
         }
+        stage('Common Test') {
+            when { 
+                environment name: 'CI_SKIP', value: 'false' 
+            }
+            steps {
+                script {
+                    sh './gradlew :EnhancedGlist-Common:test'
+                }
+            }
+        }
         stage('BungeeCord Build') {
             when { 
                 environment name: 'CI_SKIP', value: 'false' 
