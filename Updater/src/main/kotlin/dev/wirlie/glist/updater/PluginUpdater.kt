@@ -136,12 +136,20 @@ class PluginUpdater(
                     return
                 }
 
+                val body = response.body
+
+                if(body == null) {
+                    logger.severe("[Updater] Something went wrong while fetching information from CI Server: HTTP code ${response.code}, no body is provided.")
+                    onBuildNumberResolved(-1)
+                    return
+                }
+
                 try {
                     // Read XML from Jenkins
                     val dbf = DocumentBuilderFactory.newInstance()
-                    dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                    dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true)
                     val db = dbf.newDocumentBuilder()
-                    val doc = db.parse(InputSource(StringReader(response.body.string())))
+                    val doc = db.parse(InputSource(StringReader(body.string())))
                     doc.documentElement.normalize()
 
                     // Get latest successful build
@@ -197,7 +205,7 @@ class PluginUpdater(
 
         // Deprecated, but Spigot 1.8 uses this...
         @Suppress("DEPRECATION")
-        val json = JsonParser().parse(response.body.string())
+        val json = JsonParser().parse(response.body!!.string())
         val jsonArray = json.asJsonArray
 
         for(element in jsonArray) {
