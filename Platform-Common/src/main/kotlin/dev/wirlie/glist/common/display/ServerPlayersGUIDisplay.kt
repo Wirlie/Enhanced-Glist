@@ -23,6 +23,7 @@ package dev.wirlie.glist.common.display
 import dev.simplix.protocolize.api.Protocolize
 import dev.simplix.protocolize.api.inventory.Inventory
 import dev.simplix.protocolize.api.item.ItemStack
+import dev.simplix.protocolize.api.player.ProtocolizePlayer
 import dev.simplix.protocolize.data.ItemType
 import dev.simplix.protocolize.data.inventory.InventoryType
 import dev.wirlie.glist.common.Platform
@@ -40,7 +41,6 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.minimessage.tag.Tag
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import net.querz.nbt.tag.StringTag
-import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
@@ -51,7 +51,6 @@ import kotlin.math.min
  * @param serverGroup Server group to use for players list.
  * @param executor Command executor to filter vanished players if executor does not have permission to see vanished players.
  * @param audience Audience to send the result of this display.
- * @param playersPerPage Players to display per page.
  */
 class ServerPlayersGUIDisplay<S>(
     platform: Platform<S, *, *>,
@@ -69,8 +68,8 @@ class ServerPlayersGUIDisplay<S>(
     private var temporalTotalPages = 0
     private var shouldRegisterClickActions = true
 
-    lateinit var inventory : Inventory
-    val protocolPlayer = Protocolize.playerProvider().player(executor.getUUID())
+    private lateinit var inventory : Inventory
+    private val protocolPlayer: ProtocolizePlayer = Protocolize.playerProvider().player(executor.getUUID())
 
     override fun buildPageDisplay(page: Page<PlatformExecutor<S>>) {
         temporalTotalPages = calculateTotalPages()
@@ -118,7 +117,7 @@ class ServerPlayersGUIDisplay<S>(
                 )
 
                 if (generalItem.material == ItemType.PLAYER_HEAD) {
-                    item.nbtData().put("SkullOwner", StringTag(playerItem.getName()));
+                    item.nbtData().put("SkullOwner", StringTag(playerItem.getName()))
                 }
 
                 inventory.item(i, item)

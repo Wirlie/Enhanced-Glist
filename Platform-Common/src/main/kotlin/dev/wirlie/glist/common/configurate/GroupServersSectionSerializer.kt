@@ -35,15 +35,14 @@ class GroupServersSectionSerializer: TypeSerializer<GroupServersSection> {
             val subNode = it.value
 
             if(key is String) {
-                val serverName = key as String
                 if(subNode.hasChild("patterns")) {
                     servers.add(GroupServersSection.ServerSection().also { sv ->
-                        sv.serverName = serverName
+                        sv.serverName = key
                         sv.byPattern = subNode.node("patterns").getList(String::class.java, listOf())
                     })
                 } else {
                     servers.add(GroupServersSection.ServerSection().also { sv ->
-                        sv.serverName = serverName
+                        sv.serverName = key
                         sv.byName = subNode.getList(String::class.java, listOf())
                     })
                 }

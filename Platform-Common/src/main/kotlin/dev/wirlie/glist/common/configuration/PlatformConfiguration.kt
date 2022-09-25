@@ -45,7 +45,7 @@ class PlatformConfiguration(
     val platform: Platform<*, *, *>
 ) {
 
-    lateinit var configurationFile: File
+    private lateinit var configurationFile: File
     private lateinit var configuration: ConfigurationNode
     private lateinit var configurationLoader: HoconConfigurationLoader
 
@@ -72,7 +72,7 @@ class PlatformConfiguration(
     /**
      * Save default configuration.
      */
-    fun saveDefault() {
+    private fun saveDefault() {
         if (!configurationFile.exists()) {
             platform.logger.info(Component.text("Configuration not found, saving default configuration..."))
                     if (!configurationFile.parentFile.exists()) {
@@ -121,7 +121,7 @@ class PlatformConfiguration(
     /**
      * Load configuration.
      */
-    fun load() {
+    private fun load() {
         val customFactory: ObjectMapper.Factory = ObjectMapper.factoryBuilder().build()
 
         configurationLoader = HoconConfigurationLoader.builder()

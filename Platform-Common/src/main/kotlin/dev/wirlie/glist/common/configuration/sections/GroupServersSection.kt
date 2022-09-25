@@ -20,10 +20,7 @@
 
 package dev.wirlie.glist.common.configuration.sections
 
-import dev.wirlie.glist.common.configuration.ConfigHandler
 import dev.wirlie.glist.common.configuration.ConfigRootPath
-import org.spongepowered.configurate.ConfigurationNode
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 /**
  * Configuration for `group-servers{}` section.

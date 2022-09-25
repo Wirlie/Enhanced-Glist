@@ -32,9 +32,9 @@ import org.bukkit.entity.Player
 object AdventureUtil {
 
     lateinit var adventure: BukkitAudiences
-    val miniMessage: MiniMessage = MiniMessage.miniMessage()
-    val legacySectionSerializer = LegacyComponentSerializer.legacySection()
-    val legacyAmpersandSerializer = LegacyComponentSerializer.legacyAmpersand()
+    private val miniMessage: MiniMessage = MiniMessage.miniMessage()
+    private val legacySectionSerializer = LegacyComponentSerializer.legacySection()
+    private val legacyAmpersandSerializer = LegacyComponentSerializer.legacyAmpersand()
 
     fun player(player: Player): Audience {
         return adventure.player(player)

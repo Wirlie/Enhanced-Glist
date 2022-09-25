@@ -26,8 +26,8 @@ import java.io.DataOutputStream
 import java.util.UUID
 
 class AFKStateUpdateMessage(
-    val playerUUID: UUID,
-    val state: Boolean
+    private val playerUUID: UUID,
+    private val state: Boolean
 ): SerializableMessage() {
 
     override fun serialize(): ByteArray {

@@ -25,7 +25,6 @@ import dev.simplix.protocolize.data.packets.CloseWindow
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configurate.IntRangeSerializer
 import dev.wirlie.glist.common.configurate.RegexSerializer
-import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.gui.config.GuiGlistMenuConfig
 import dev.wirlie.glist.common.gui.config.GuiSlistMenuConfig
 import dev.wirlie.glist.common.gui.config.toolbar.DefinitionsConfigSerializer
@@ -48,11 +47,11 @@ class GUIManager(
     val platform: Platform<*,*,*>
 ) {
 
-    val glistConfigFile = File(platform.pluginFolder, "gui-glist-menu.conf")
-    val slistConfigFile = File(platform.pluginFolder, "gui-slist-menu.conf")
+    private val glistConfigFile = File(platform.pluginFolder, "gui-glist-menu.conf")
+    private val slistConfigFile = File(platform.pluginFolder, "gui-slist-menu.conf")
 
-    val glistConfigLoader: HoconConfigurationLoader
-    val slistConfigLoader: HoconConfigurationLoader
+    private val glistConfigLoader: HoconConfigurationLoader
+    private val slistConfigLoader: HoconConfigurationLoader
 
     lateinit var glistConfig: GuiGlistMenuConfig
     lateinit var slistConfig: GuiSlistMenuConfig

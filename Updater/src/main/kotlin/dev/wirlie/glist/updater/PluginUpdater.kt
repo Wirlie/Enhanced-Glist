@@ -36,15 +36,15 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 
 class PluginUpdater(
-    val updaterScheduler: UpdaterScheduler,
-    val checkInterval: Int,
-    val consoleNotificationInterval: Int,
+    private val updaterScheduler: UpdaterScheduler,
+    private val checkInterval: Int,
+    private val consoleNotificationInterval: Int,
     val logger: SimpleLogger,
     val pluginFolder: File,
-    val consoleNotification: Boolean
+    private val consoleNotification: Boolean
 ) {
 
-    var client = OkHttpClient()
+    private var client = OkHttpClient()
     private val fileName = "metadata.conf"
     private lateinit var metaDataProperties: MetaDataProperties
 

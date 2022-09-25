@@ -38,11 +38,11 @@ object ProtocolizeUtil {
         }
     }
 
-    fun setHeadOwner(item: ItemStack, owner: String) {
+    private fun setHeadOwner(item: ItemStack, owner: String) {
         (item.nbtData() as CompoundTag).put("SkullOwner", StringTag(owner))
     }
 
-    fun setHeadTexture(item: ItemStack, textureHash: String) {
+    private fun setHeadTexture(item: ItemStack, textureHash: String) {
         var skullOwner = (item.nbtData() as CompoundTag).getCompoundTag("SkullOwner")
         if (skullOwner == null) {
             skullOwner = CompoundTag()

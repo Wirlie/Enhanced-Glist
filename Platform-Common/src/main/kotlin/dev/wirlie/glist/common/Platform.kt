@@ -20,6 +20,7 @@
 
 package dev.wirlie.glist.common
 
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dev.wirlie.glist.common.configuration.PlatformConfiguration
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
@@ -62,15 +63,15 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
     lateinit var logger: PlatformLogger
 
     lateinit var translatorManager: TranslatorManager
-    lateinit var platformCommandManager: PlatformCommandManager<S>
+    private lateinit var platformCommandManager: PlatformCommandManager<S>
     lateinit var hookManager: HookManager
     lateinit var playerManager: PlayerManager
     lateinit var messenger: PlatformMessenger
-    lateinit var pluginUpdater: PluginUpdater
+    private lateinit var pluginUpdater: PluginUpdater
     var guiManager: GUIManager? = null
     var guiSystemEnabled = false
 
-    val gsonInstance = GsonBuilder().create()
+    val gsonInstance: Gson = GsonBuilder().create()
 
     var console: Audience = Audience.empty()
         set(value) {
@@ -287,7 +288,6 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
 
         val groupConfiguration = configuration.servers.firstOrNull { it.serverName.equals(name, true) }
 
-        @Suppress("FoldInitializerAndIfToElvis")
         if(groupConfiguration == null) {
             // No group, try to return a server directly
             return getServerByName(name)?.run {

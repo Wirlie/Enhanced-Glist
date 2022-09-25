@@ -22,10 +22,6 @@ package dev.wirlie.glist.spigot.messenger
 
 import dev.wirlie.glist.messenger.PlatformMessenger
 import dev.wirlie.glist.spigot.EnhancedGlistSpigot
-import dev.wirlie.glist.spigot.messenger.listeners.RequestAllDataListener
-import dev.wirlie.glist.spigot.messenger.messages.AFKStateUpdateMessage
-import dev.wirlie.glist.spigot.messenger.messages.RequestAllDataMessage
-import dev.wirlie.glist.spigot.messenger.messages.VanishStateUpdateMessage
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.PluginMessageListener
 

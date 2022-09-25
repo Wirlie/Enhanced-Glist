@@ -68,7 +68,7 @@ class ServersListDisplay<S>(
                 "page-number", Tag.selfClosingInserting(Component.text("${page.pageNumber + 1}"))
             ),
             TagResolver.resolver(
-                "total-pages", Tag.selfClosingInserting(Component.text("${totalPages}"))
+                "total-pages", Tag.selfClosingInserting(Component.text("$totalPages"))
             ),
             TagResolver.resolver(
                 "players-amount", Tag.selfClosingInserting(Component.text("${platform.getConnectedPlayersAmount()}"))

@@ -5,7 +5,7 @@ object TextWidthUtil {
     private val charWidth112: MutableMap<Char, Int> = HashMap()
     private val charWidth113: MutableMap<Char, Int> = HashMap()
 
-    const val VERSION_112 = 1
+    private const val VERSION_112 = 1
     const val VERSION_113 = 2
 
     init {

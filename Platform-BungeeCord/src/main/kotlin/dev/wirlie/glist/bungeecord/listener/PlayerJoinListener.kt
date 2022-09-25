@@ -21,7 +21,6 @@
 package dev.wirlie.glist.bungeecord.listener
 
 import dev.wirlie.glist.bungeecord.platform.BungeePlatform
-import net.md_5.bungee.api.event.PlayerDisconnectEvent
 import net.md_5.bungee.api.event.PostLoginEvent
 import net.md_5.bungee.api.plugin.Listener
 import net.md_5.bungee.event.EventHandler

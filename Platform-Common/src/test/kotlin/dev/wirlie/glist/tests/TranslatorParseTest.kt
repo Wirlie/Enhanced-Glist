@@ -48,7 +48,7 @@ import kotlin.test.assertNotNull
 class TranslatorParseTest {
 
     @Mock lateinit var platform: Platform<*, *, *>
-    var servers: MutableList<PlatformServerGroup<*>> = mutableListOf()
+    private var servers: MutableList<PlatformServerGroup<*>> = mutableListOf()
     private lateinit var manager: TranslatorManager
     private val translators = mutableMapOf<String, Translator>()
 

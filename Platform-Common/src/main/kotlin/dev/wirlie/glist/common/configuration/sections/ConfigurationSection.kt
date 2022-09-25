@@ -23,5 +23,4 @@ package dev.wirlie.glist.common.configuration.sections
 /**
  * Utility class.
  */
-interface ConfigurationSection {
-}
+interface ConfigurationSection

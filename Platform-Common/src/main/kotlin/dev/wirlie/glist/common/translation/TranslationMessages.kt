@@ -32,7 +32,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Formatter
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
-import org.spongepowered.configurate.objectmapping.meta.Comment
 
 @ConfigSerializable
 class TranslationMessages {
@@ -196,25 +195,25 @@ class TranslationMessages {
     @ConfigSerializable
     class PageController {
 
-        var previousPageHoverMessage = ""
+        private var previousPageHoverMessage = ""
 
-        var previousPageHoverMessageNoPreviousPage = ""
+        private var previousPageHoverMessageNoPreviousPage = ""
 
-        var nextPageHoverMessage = ""
+        private var nextPageHoverMessage = ""
 
-        var nextPageHoverMessageNoNextPage = ""
+        private var nextPageHoverMessageNoNextPage = ""
 
-        var previousPagePhrase = ""
+        private var previousPagePhrase = ""
 
-        var previousPageController = ""
+        private var previousPageController = ""
 
-        var previousPageControllerDisabled = ""
+        private var previousPageControllerDisabled = ""
 
-        var nextPagePhrase = ""
+        private var nextPagePhrase = ""
 
-        var nextPageController = ""
+        private var nextPageController = ""
 
-        var nextPageControllerDisabled = ""
+        private var nextPageControllerDisabled = ""
 
         var format = Format()
 

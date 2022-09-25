@@ -20,8 +20,6 @@
 
 package dev.wirlie.glist.bungeecord.platform
 
-import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.configuration.sections.BehaviorSection
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer

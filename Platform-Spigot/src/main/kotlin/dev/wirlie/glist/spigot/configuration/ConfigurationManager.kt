@@ -25,6 +25,7 @@ import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import java.io.File
 import java.nio.file.Files
+import java.util.logging.Logger
 
 class ConfigurationManager(
     val plugin: EnhancedGlistSpigot
@@ -33,10 +34,10 @@ class ConfigurationManager(
     private lateinit var configuration: ConfigurationNode
     private lateinit var pluginConfiguration: PluginConfiguration
 
-    val logger = plugin.logger
-    val configurationFile = File(plugin.dataFolder, "config.conf")
+    private val logger: Logger = plugin.logger
+    private val configurationFile = File(plugin.dataFolder, "config.conf")
 
-    val configurationLoader = HoconConfigurationLoader.builder()
+    private val configurationLoader: HoconConfigurationLoader = HoconConfigurationLoader.builder()
         .path(configurationFile.toPath())
         .emitComments(true)
         .prettyPrinting(true)
@@ -46,7 +47,7 @@ class ConfigurationManager(
         reload()
     }
 
-    fun saveDefault() {
+    private fun saveDefault() {
         if (!configurationFile.exists()) {
             logger.info("Configuration not found, saving default configuration...")
             if (!configurationFile.parentFile.exists()) {

@@ -25,7 +25,6 @@ import dev.wirlie.glist.common.configuration.sections.BehaviorSection
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.pageable.Page
-import dev.wirlie.glist.common.pageable.PageDisplay
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.translation.TranslationMessages

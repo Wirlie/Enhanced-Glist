@@ -41,16 +41,16 @@ class RedisMessenger(
     val proxy: Boolean
 ): PlatformMessenger(logger), RedisPubSubListener<String, String> {
 
-    var eventDisposable: Disposable? = null
-    var doUnregister = false
+    private var eventDisposable: Disposable? = null
+    private var doUnregister = false
 
-    val incomingChannel = if(proxy) "egl-proxy" else "egl-server"
-    val outgoingChannel = if(proxy) "egl-server" else "egl-proxy"
+    private val incomingChannel = if(proxy) "egl-proxy" else "egl-server"
+    private val outgoingChannel = if(proxy) "egl-server" else "egl-proxy"
 
-    var receiveConnection: RedisPubSubAsyncCommands<String, String>? = null
-    var sendConnection: RedisPubSubAsyncCommands<String, String>? = null
+    private var receiveConnection: RedisPubSubAsyncCommands<String, String>? = null
+    private var sendConnection: RedisPubSubAsyncCommands<String, String>? = null
 
-    var client = RedisClient.create(
+    private var client: RedisClient = RedisClient.create(
         RedisURI.Builder.redis(host, port).also {
             if(user.isNotEmpty()) {
                 it.withAuthentication(user, password.toCharArray())

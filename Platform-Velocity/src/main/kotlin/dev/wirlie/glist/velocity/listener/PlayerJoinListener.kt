@@ -21,7 +21,6 @@
 package dev.wirlie.glist.velocity.listener
 
 import com.velocitypowered.api.event.Subscribe
-import com.velocitypowered.api.event.connection.DisconnectEvent
 import com.velocitypowered.api.event.connection.PostLoginEvent
 import dev.wirlie.glist.velocity.platform.VelocityPlatform
 
