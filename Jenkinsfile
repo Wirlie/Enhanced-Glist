@@ -122,7 +122,7 @@ pipeline {
                     
                     if(branchName.startsWith("renovate")) {
                         // Use develop as reference if this is a renovate branch
-                        branchName = "develop
+                        branchName = "develop"
                     }
                     
                     switch(branchName) {
