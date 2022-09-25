@@ -120,6 +120,11 @@ pipeline {
                         branchName = env.BRANCH_NAME
                     }
                     
+                    if(branchName.startsWith("renovate")) {
+                        // Use develop as reference if this is a renovate branch
+                        branchName = "develop
+                    }
+                    
                     switch(branchName) {
                         case "develop":
                         case "2.0.0":
