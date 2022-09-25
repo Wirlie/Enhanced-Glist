@@ -2,5 +2,6 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base"
-  ]
+  ],
+  "ignoreDeps": ["net.md-5:bungeecord", "com.github.LeonMangler:PremiumVanish", "github.jet315:antiafkpro"]
 }
