@@ -28,7 +28,7 @@ import kotlin.math.ceil
  * @param dataProvider Data to use.
  */
 open class Pageable<T>(
-    var pageSize: Int,
+    private var pageSize: Int,
     var dataProvider: DataProvider<T>
 ) {
 

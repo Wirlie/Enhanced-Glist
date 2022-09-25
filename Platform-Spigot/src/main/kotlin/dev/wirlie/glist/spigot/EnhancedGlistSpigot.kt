@@ -38,8 +38,6 @@ import dev.wirlie.glist.updater.PluginUpdater
 import dev.wirlie.glist.updater.SimpleLogger
 import dev.wirlie.glist.updater.UpdaterScheduler
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
@@ -49,9 +47,9 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
     lateinit var messenger: PlatformMessenger
     lateinit var hookManager: HookManager
     lateinit var configurationManager: ConfigurationManager
-    lateinit var pluginUpdater: PluginUpdater
-    var updaterCheckTask: BukkitTask? = null
-    var consoleNotificationTask: BukkitTask? = null
+    private lateinit var pluginUpdater: PluginUpdater
+    private var updaterCheckTask: BukkitTask? = null
+    private var consoleNotificationTask: BukkitTask? = null
 
     override fun onEnable() {
         AdventureUtil.adventure = BukkitAudiences.create(this)

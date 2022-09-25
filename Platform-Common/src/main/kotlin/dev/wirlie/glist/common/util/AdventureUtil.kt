@@ -31,10 +31,10 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 
 object AdventureUtil {
 
-    val miniMessage: MiniMessage = MiniMessage.miniMessage()
-    val legacySectionSerializer = LegacyComponentSerializer.legacySection()
-    val legacyAmpersandSerializer = LegacyComponentSerializer.legacyAmpersand()
-    val gsonSerializer = GsonComponentSerializer.colorDownsamplingGson()
+    private val miniMessage: MiniMessage = MiniMessage.miniMessage()
+    private val legacySectionSerializer = LegacyComponentSerializer.legacySection()
+    private val legacyAmpersandSerializer = LegacyComponentSerializer.legacyAmpersand()
+    private val gsonSerializer = GsonComponentSerializer.colorDownsamplingGson()
 
     fun parseMiniMessage(text: String, vararg tagResolver: TagResolver): Component {
 

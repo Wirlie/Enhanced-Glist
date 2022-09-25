@@ -132,7 +132,7 @@ abstract class PlatformMessenger(
         return messagesRegistry.add(Pair(subject, message))
     }
 
-    fun unregisterMessage(subject: String): Boolean {
+    private fun unregisterMessage(subject: String): Boolean {
         return messagesRegistry.removeIf { it.first == subject }
     }
 

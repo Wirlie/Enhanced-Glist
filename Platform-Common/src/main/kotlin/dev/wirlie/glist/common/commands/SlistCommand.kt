@@ -25,6 +25,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
+import dev.wirlie.glist.common.configuration.sections.IgnoreServersSection
 import dev.wirlie.glist.common.display.PlayersDataProvider
 import dev.wirlie.glist.common.display.ServerPlayersAbstractDisplay
 import dev.wirlie.glist.common.display.ServerPlayersChatDisplay
@@ -81,21 +82,50 @@ class SlistCommand<S>(
         val translation = platform.translatorManager.getTranslator().getMessages()
         val configuration = platform.configuration.getSection(CommandsSection::class.java)
 
+        var server: PlatformServerGroup<S>? = null
+
         if(args.isEmpty()) {
-            // Wrong usage
-            audience.sendMessage(
-                AdventureUtil.parseMiniMessage(
-                    translation.slist.usage,
-                    TagResolver.resolver(
-                        "slist-label",
-                        Tag.selfClosingInserting(Component.text(configuration.slist.label))
+            // Determine if current server is listable by EnhancedGlist
+            val currentServer = executor.getConnectedServer()
+
+            if(currentServer == null) {
+                // Weird, this should never happen
+                audience.sendMessage(
+                    AdventureUtil.parseMiniMessage(
+                        translation.slist.usage,
+                        TagResolver.resolver(
+                            "slist-label",
+                            Tag.selfClosingInserting(Component.text(configuration.slist.label))
+                        )
                     )
                 )
-            )
-            return
+                return
+            }
+
+            // Should list this server? Or ignore it?
+            val ignoreServersConfiguration = platform.configuration.getSection(IgnoreServersSection::class.java)
+            if(ignoreServersConfiguration.shouldIgnore(currentServer.getName())) {
+                // Ignore server
+                audience.sendMessage(
+                    AdventureUtil.parseMiniMessage(
+                        translation.slist.cannotFindServer,
+                        TagResolver.resolver(
+                            "server-name",
+                            Tag.selfClosingInserting(Component.text(args[0]))
+                        )
+                    )
+                )
+                return
+            }
+
+            // Ok, current this server to list players
+            server = PlatformServerGroup(currentServer.getName(), listOf(currentServer), false)
         }
 
-        val server = platform.getServerGrouped(args[0])
+        if(server == null) {
+            // If null, then player has used [/slist <server>] usage.
+            server = platform.getServerGrouped(args[0])
+        }
 
         if(server == null) {
             // Server not found
@@ -200,6 +230,15 @@ class SlistCommand<S>(
         cache!!.put(key, newDisplay)
 
         return newDisplay
+    }
+
+    override fun handleTabCompletion(executor: PlatformExecutor<S>, args: Array<String>): List<String> {
+        if(!executor.hasPermission(permission)) {
+            // Do not make suggestions if player doest not have permission to use this command
+            return listOf()
+        }
+
+        return platform.getAllServersGrouped().map { it.getName().lowercase() }.filter { args.isEmpty() || it.contains(args[0], true) }
     }
 
 }

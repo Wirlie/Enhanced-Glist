@@ -49,4 +49,22 @@ class GlistExecutor(
         return invocation.source().hasPermission(platformCommand.permission)
     }
 
+    @Suppress("DuplicatedCode")
+    override fun suggest(invocation: SimpleCommand.Invocation): List<String> {
+        val sender = invocation.source()
+        val args = invocation.arguments()
+
+        return when (sender) {
+            is Player -> {
+                platformCommand.handleTabCompletion(platform.toPlatformExecutorPlayer(sender), args)
+            }
+            is ConsoleCommandSource -> {
+                platformCommand.handleTabCompletion(platform.toPlatformExecutorConsole(sender), args)
+            }
+            else -> {
+                listOf()
+            }
+        }
+    }
+
 }

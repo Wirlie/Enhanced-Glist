@@ -24,7 +24,6 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
-import dev.wirlie.glist.common.display.PlayersDataProvider
 import dev.wirlie.glist.common.display.ServersListDisplay
 import dev.wirlie.glist.common.display.ServersListGUIDisplay
 import dev.wirlie.glist.common.pageable.PageDisplay
@@ -139,6 +138,10 @@ class GlistCommand<S>(
         cache.put(key, newDisplay)
 
         return newDisplay
+    }
+
+    override fun handleTabCompletion(executor: PlatformExecutor<S>, args: Array<String>): List<String> {
+        return listOf()
     }
 
 }

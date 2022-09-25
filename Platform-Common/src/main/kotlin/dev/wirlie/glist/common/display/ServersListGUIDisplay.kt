@@ -23,6 +23,7 @@ package dev.wirlie.glist.common.display
 import dev.simplix.protocolize.api.Protocolize
 import dev.simplix.protocolize.api.inventory.Inventory
 import dev.simplix.protocolize.api.item.ItemStack
+import dev.simplix.protocolize.api.player.ProtocolizePlayer
 import dev.simplix.protocolize.data.ItemType
 import dev.simplix.protocolize.data.inventory.InventoryType
 import dev.wirlie.glist.common.Platform
@@ -49,7 +50,6 @@ import kotlin.math.min
  * @param platform Platform instance.
  * @param executor Command executor.
  * @param audience Audience to send the result of this display.
- * @param initialPageSize Elements per page.
  * @param data Data to use for pagination.
  */
 class ServersListGUIDisplay<S>(
@@ -65,8 +65,8 @@ class ServersListGUIDisplay<S>(
 ) {
 
     val configuration = platform.guiManager!!.glistConfig
-    lateinit var inventory : Inventory
-    val protocolPlayer = Protocolize.playerProvider().player(executor.getUUID())
+    private lateinit var inventory : Inventory
+    private val protocolPlayer: ProtocolizePlayer = Protocolize.playerProvider().player(executor.getUUID())
 
     override fun buildPageDisplay(page: Page<PlatformServerGroup<S>>) {
         inventory = GUIInventory(InventoryType.chestInventoryWithRows(menuRows)).also {

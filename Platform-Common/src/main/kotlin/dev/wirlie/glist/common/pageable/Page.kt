@@ -23,7 +23,6 @@ package dev.wirlie.glist.common.pageable
 /**
  * Utility class to represent a Page.
  * @param pageNumber Page number.
- * @param totalPages Total number of pages.
  * @param items Items of this page.
  * @param hasPrevious If previous page is available.
  * @param hasNext If next page is available.

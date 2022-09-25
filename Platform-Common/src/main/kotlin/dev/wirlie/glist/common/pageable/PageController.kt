@@ -22,8 +22,8 @@ package dev.wirlie.glist.common.pageable
 
 /**
  * Pagination controller.
- * @param initialPageSize Page size.
- * @param initialData Data to use.
+ * @param pageSize Page size.
+ * @param dataProvider Data to use.
  */
 open class PageController<T>(
     pageSize: Int,

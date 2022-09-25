@@ -31,9 +31,9 @@ class RabbitMQMessenger(
     logger: MessengerLogger,
     val host: String,
     val port: Int,
-    val userName: String,
+    private val userName: String,
     val password: String,
-    val isProxy: Boolean
+    private val isProxy: Boolean
 ): PlatformMessenger(logger) {
 
     private val receiveExchangeName = if(isProxy) "egl-proxy" else "egl-servers"
@@ -81,7 +81,7 @@ class RabbitMQMessenger(
         factory.newConnection().use { connection ->
             val channel = connection.createChannel()
             channel.exchangeDeclare(sendExchangeName, "fanout")
-            channel.basicPublish(sendExchangeName, "", null, packMessage(subject, data));
+            channel.basicPublish(sendExchangeName, "", null, packMessage(subject, data))
         }
     }
 }

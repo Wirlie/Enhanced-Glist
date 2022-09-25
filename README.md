@@ -19,10 +19,10 @@ Supporting my work:
 * Github Sponsor: https://github.com/sponsors/Wirlie
 
 # Issues
-Please feel free to open a [Issue](https://github.com/Wirlie/Enhanced-Glist/issues) if:
+Please feel free to open an [Issue](https://github.com/Wirlie/Enhanced-Glist/issues) if:
 * You want to report a Bug.
 
-Do not open a [Issue](https://github.com/Wirlie/Enhanced-Glist/issues) if:
+Do not open an [Issue](https://github.com/Wirlie/Enhanced-Glist/issues) if:
 * You need support, use the [Discussion Section](https://github.com/Wirlie/Enhanced-Glist/discussions) instead.
 * You have a suggestion or feedback, use the [Discussion Section](https://github.com/Wirlie/Enhanced-Glist/discussions) instead.
 

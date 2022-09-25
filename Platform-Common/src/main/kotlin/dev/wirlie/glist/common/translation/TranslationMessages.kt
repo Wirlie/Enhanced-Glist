@@ -66,7 +66,6 @@ class TranslationMessages {
 
         var serversFormat = ServersFormat()
 
-        @ConfigSerializable
         class ServersFormat {
 
             var clickToShowPlayersHoverMessage = ""
@@ -196,25 +195,25 @@ class TranslationMessages {
     @ConfigSerializable
     class PageController {
 
-        var previousPageHoverMessage = ""
+        private var previousPageHoverMessage = ""
 
-        var previousPageHoverMessageNoPreviousPage = ""
+        private var previousPageHoverMessageNoPreviousPage = ""
 
-        var nextPageHoverMessage = ""
+        private var nextPageHoverMessage = ""
 
-        var nextPageHoverMessageNoNextPage = ""
+        private var nextPageHoverMessageNoNextPage = ""
 
-        var previousPagePhrase = ""
+        private var previousPagePhrase = ""
 
-        var previousPageController = ""
+        private var previousPageController = ""
 
-        var previousPageControllerDisabled = ""
+        private var previousPageControllerDisabled = ""
 
-        var nextPagePhrase = ""
+        private var nextPagePhrase = ""
 
-        var nextPageController = ""
+        private var nextPageController = ""
 
-        var nextPageControllerDisabled = ""
+        private var nextPageControllerDisabled = ""
 
         var format = Format()
 

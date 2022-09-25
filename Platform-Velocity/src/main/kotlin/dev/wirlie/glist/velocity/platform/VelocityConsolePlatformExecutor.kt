@@ -21,7 +21,6 @@
 package dev.wirlie.glist.velocity.platform
 
 import com.velocitypowered.api.proxy.ConsoleCommandSource
-import com.velocitypowered.api.proxy.Player
 import com.velocitypowered.api.proxy.server.RegisteredServer
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
@@ -33,7 +32,7 @@ import java.util.*
  * @param console Velocity console.
  */
 class VelocityConsolePlatformExecutor(
-    val console: ConsoleCommandSource
+    private val console: ConsoleCommandSource
 ): PlatformExecutor<RegisteredServer>() {
 
     override fun isConsole(): Boolean {

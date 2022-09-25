@@ -26,8 +26,8 @@ import kotlin.math.max
 /**
  * Display for multiples pages.
  * @param audience Target audience to send the result of this display.
- * @param initialPageSize Page size.
- * @param initialData Data to use.
+ * @param pageSize Page size.
+ * @param dataProvider Data to use.
  */
 abstract class PageDisplay<T>(
     val audience: Audience,
