@@ -90,7 +90,7 @@ pipeline {
                             currentBuild.description = "<hr>✅ Contribute to this project by testing experimental builds.<br/>⚠️ This build can be unstable and may contain bugs or perfomance problems! Be careful, always take a backup before installing an unstable build.<br/>🐛 Please make a <a href=\"https://github.com/Wirlie/Enhanced-Glist/issues\" target=\"_blank\">bug report</a> if you have any issue.<br/><hr>"
                             break
                         default:
-                            if (env.BRANCH_NAME.startsWith('PR-')) {
+                            if (env.BRANCH_NAME.startsWith('PR-') && !env.CHANGE_BRANCH.startsWith('renovate')) {
                                 // Pull request, get version from build.gradle file
                                 def baseVersion = sh(script: './gradlew properties | grep ^version: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
                                 // Publish to nexus and snapshot
