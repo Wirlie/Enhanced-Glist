@@ -51,6 +51,7 @@ import kotlin.math.min
  * @param serverGroup Server group to use for players list.
  * @param executor Command executor to filter vanished players if executor does not have permission to see vanished players.
  * @param audience Audience to send the result of this display.
+ * @param menuRows Number of ros.
  */
 class ServerPlayersGUIDisplay<S>(
     platform: Platform<S, *, *>,
