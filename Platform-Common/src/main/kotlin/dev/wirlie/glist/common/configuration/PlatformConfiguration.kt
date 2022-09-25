@@ -21,6 +21,7 @@
 package dev.wirlie.glist.common.configuration
 
 import dev.wirlie.glist.common.Platform
+import dev.wirlie.glist.common.configurate.GroupServersSectionSerializer
 import dev.wirlie.glist.common.configurate.IntRangeSerializer
 import dev.wirlie.glist.common.configurate.RegexSerializer
 import dev.wirlie.glist.common.configuration.sections.ConfigurationSection
@@ -44,7 +45,7 @@ class PlatformConfiguration(
     val platform: Platform<*, *, *>
 ) {
 
-    private lateinit var configurationFile: File
+    lateinit var configurationFile: File
     private lateinit var configuration: ConfigurationNode
     private lateinit var configurationLoader: HoconConfigurationLoader
 
@@ -74,7 +75,7 @@ class PlatformConfiguration(
     fun saveDefault() {
         if (!configurationFile.exists()) {
             platform.logger.info(Component.text("Configuration not found, saving default configuration..."))
-            if (!configurationFile.parentFile.exists()) {
+                    if (!configurationFile.parentFile.exists()) {
                 Files.createDirectories(configurationFile.parentFile.toPath())
             }
             Files.copy(this::class.java.getResourceAsStream("/config.conf")!!, configurationFile.toPath())
@@ -132,6 +133,7 @@ class PlatformConfiguration(
                     build.registerAnnotatedObjects(customFactory)
                     build.register(IntRange::class.java, IntRangeSerializer())
                     build.register(Regex::class.java, RegexSerializer())
+                    build.register(GroupServersSection::class.java, GroupServersSectionSerializer())
                 }
             }
             .build()

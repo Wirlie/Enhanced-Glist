@@ -35,6 +35,12 @@ dependencies {
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
+
+    testImplementation(kotlin("test"))
+    testImplementation("org.mockito:mockito-core:4.8.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:4.8.0")
+    testImplementation("org.mockito:mockito-inline:4.8.0")
+
 }
 
 tasks.withType<ProcessResources> {
@@ -71,4 +77,8 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
     kotlinOptions {
         jvmTarget = "11"
     }
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
