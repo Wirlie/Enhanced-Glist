@@ -46,8 +46,6 @@ class MainConfigurationTest {
         Mockito.`when`(platform.logger).thenReturn(PlatformLogger(Audience.empty()))
         Mockito.`when`(platform.pluginFolder).thenReturn(File("test-data-folder"))
 
-        // Remove test folder
-        platform.pluginFolder.deleteRecursively()
         // Configure platform configuration
         configuration = PlatformConfiguration(platform)
         configuration.setup()

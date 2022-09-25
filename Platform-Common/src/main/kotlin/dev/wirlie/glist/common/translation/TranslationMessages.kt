@@ -32,6 +32,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Formatter
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
+import org.spongepowered.configurate.objectmapping.meta.Comment
 
 @ConfigSerializable
 class TranslationMessages {
@@ -66,7 +67,6 @@ class TranslationMessages {
 
         var serversFormat = ServersFormat()
 
-        @ConfigSerializable
         class ServersFormat {
 
             var clickToShowPlayersHoverMessage = ""
