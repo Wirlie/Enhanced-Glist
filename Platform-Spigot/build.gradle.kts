@@ -20,7 +20,7 @@ dependencies {
     implementation("io.lettuce:lettuce-core:6.2.0.RELEASE")
 
     // Third Party libraries with public API
-    compileOnly("net.essentialsx:EssentialsX:2.19.0")
+    compileOnly("net.essentialsx:EssentialsX:2.19.7")
     compileOnly("com.github.LeonMangler:PremiumVanish:6.2.6-4")
     compileOnly("com.github.mbax:VanishNoPacket:3.22")
     compileOnly("com.github.xtomyserrax:StaffFacilities:5.0.6.0")
