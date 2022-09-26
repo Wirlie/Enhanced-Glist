@@ -51,13 +51,6 @@ pipeline {
                         )
                     }
 
-                    configFileProvider([configFile(fileId: '91da0cee-34a7-41a4-b605-2998257e24ff', variable: 'configFile')]) {
-                        script {
-                            sh 'mv $configFile ./local.properties' // move file to root
-                            println('local.properties file moved to root directory')
-                        }
-                    }
-
                     sh 'chmod +x ./gradlew' // give execution permission to gradlew file
                     sh './gradlew cleanCompiledArtifactsFolder'
 
@@ -93,9 +86,8 @@ pipeline {
                             if (env.BRANCH_NAME.startsWith('PR-') && !env.CHANGE_BRANCH.startsWith('renovate')) {
                                 // Pull request, get version from build.gradle file
                                 def baseVersion = sh(script: './gradlew properties | grep ^version: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
-                                // Publish to nexus and snapshot
-                                env.PUBLISH_TO_NEXUS = 'true'
-                                env.PUBLISH_SNAPSHOT = 'true'
+                                env.PUBLISH_TO_NEXUS = 'false'
+                                env.PUBLISH_SNAPSHOT = 'false'
                                 env.PUBLISH_PR_ID = env.BRANCH_NAME.replace('PR-', '')
                                 env.ARTIFACT_PUBLISH_SNAPSHOT = 'true'
                                 // Version: "X.X.X-PR-X" example "1.1.10-PR-5"
@@ -155,6 +147,13 @@ pipeline {
             }
             steps {
                 script {
+                    configFileProvider([configFile(fileId: '91da0cee-34a7-41a4-b605-2998257e24ff', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
                     sh './gradlew :EnhancedGlist-Common:test'
                 }
             }
@@ -165,6 +164,13 @@ pipeline {
             }
             steps {
                 script {
+                    configFileProvider([configFile(fileId: '91da0cee-34a7-41a4-b605-2998257e24ff', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
                     sh './gradlew :EnhancedGlist-BungeeCord:test :EnhancedGlist-BungeeCord:shadowJar'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
@@ -177,6 +183,13 @@ pipeline {
             }
             steps {
                 script {
+                    configFileProvider([configFile(fileId: 'cd4ebdfd-ecb8-4234-90fb-619df2e496c2', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
                     nexusPublish("EnhancedGlist-BungeeCord-API")
                 }
             }
@@ -187,6 +200,13 @@ pipeline {
             }
             steps {
                 script {
+                    configFileProvider([configFile(fileId: '91da0cee-34a7-41a4-b605-2998257e24ff', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
                     sh './gradlew :EnhancedGlist-Velocity:test :EnhancedGlist-Velocity:shadowJar'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
@@ -199,6 +219,13 @@ pipeline {
             }
             steps {
                 script {
+                    configFileProvider([configFile(fileId: 'cd4ebdfd-ecb8-4234-90fb-619df2e496c2', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
                     nexusPublish("EnhancedGlist-Velocity-API")
                 }
             }
@@ -209,6 +236,13 @@ pipeline {
             }
             steps {
                 script {
+                    configFileProvider([configFile(fileId: '91da0cee-34a7-41a4-b605-2998257e24ff', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
                     sh './gradlew :EnhancedGlist-Spigot-Bridge:test :EnhancedGlist-Spigot-Bridge:shadowJar'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
@@ -231,6 +265,9 @@ pipeline {
     post {
         always {
             script {
+                // Remove local.properties
+                sh 'rm -f ./local.properties'
+                
                 if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START != '') {
                     withCredentials([string(credentialsId: 'discord-webhook-maven-releases', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
                         discordSend(
