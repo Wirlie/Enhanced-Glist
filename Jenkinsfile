@@ -51,16 +51,21 @@ pipeline {
                         )
                     }
 
-                    configFileProvider([configFile(fileId: '91da0cee-34a7-41a4-b605-2998257e24ff', variable: 'configFile')]) {
-                        script {
-                            sh 'mv $configFile ./local.properties' // move file to root
-                            println('local.properties file moved to root directory')
-                        }
-                    }
-
+                    sh 'echo empty > ./local.properties'
                     sh 'chmod +x ./gradlew' // give execution permission to gradlew file
+                    sh './gradlew cleanCompiledArtifactsFolder'
 
+                    env.ARTIFACT_PUBLISH_SNAPSHOT = 'false'
                     env.PUBLISH_PR_ID = 'none'
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = ''
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = ''
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = ''
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START = ''
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE = ''
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END = ''
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START = ''
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE = ''
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END = ''
                     
                     println("Branch: " + env.GIT_BRANCH)
                     switch(env.GIT_BRANCH) {
@@ -70,18 +75,20 @@ pipeline {
                             println("Environment variables set for master branch")
                             break
                         case "develop":
+                        case "2.0.0":
                             env.PUBLISH_TO_NEXUS = 'true'
                             env.PUBLISH_SNAPSHOT = 'true'
                             env.ARTIFACT_PUBLISH_SNAPSHOT = 'true'
                             println("Environment variables set for develop branch")
+                            // Set build description
+                            currentBuild.description = "<hr>✅ Contribute to this project by testing experimental builds.<br/>⚠️ This build can be unstable and may contain bugs or perfomance problems! Be careful, always take a backup before installing an unstable build.<br/>🐛 Please make a <a href=\"https://github.com/Wirlie/Enhanced-Glist/issues\" target=\"_blank\">bug report</a> if you have any issue.<br/><hr>"
                             break
                         default:
-                            if (env.BRANCH_NAME.startsWith('PR-')) {
+                            if (env.BRANCH_NAME.startsWith('PR-') && !env.CHANGE_BRANCH.startsWith('renovate')) {
                                 // Pull request, get version from build.gradle file
                                 def baseVersion = sh(script: './gradlew properties | grep ^version: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
-                                // Publish to nexus and snapshot
-                                env.PUBLISH_TO_NEXUS = 'true'
-                                env.PUBLISH_SNAPSHOT = 'true'
+                                env.PUBLISH_TO_NEXUS = 'false'
+                                env.PUBLISH_SNAPSHOT = 'false'
                                 env.PUBLISH_PR_ID = env.BRANCH_NAME.replace('PR-', '')
                                 env.ARTIFACT_PUBLISH_SNAPSHOT = 'true'
                                 // Version: "X.X.X-PR-X" example "1.1.10-PR-5"
@@ -94,23 +101,212 @@ pipeline {
                             }
                             break
                     }
+
+                    // Target release version
+                    env.BUILD_TARGET_RELEASE = 'none'
+                    env.BUILD_TARGET_RELEASE_BYPASS = 'no' // Set this to yes to prevent build failing when target release is published at SpigotMC
+
+                    def branchName = env.CHANGE_BRANCH
+
+                    if(branchName == null) {
+                        // Not in PR, use BRANCH_NAME instead
+                        branchName = env.BRANCH_NAME
+                    }
+
+                    if(branchName.startsWith("renovate")) {
+                        // Use develop as reference if this is a renovate branch
+                        branchName = "develop"
+                    }
+
+                    switch(branchName) {
+                        case "develop":
+                        case "2.0.0":
+                            env.BUILD_TARGET_RELEASE = '2.0.0'
+                            break
+                        case "master":
+                            break
+                        default:
+                            println("Branch does not have a target relase: " + branchName)
+                    }
+
+                    if(env.BRANCH_NAME != 'master' && env.BUILD_TARGET_RELEASE == 'none') {
+                        error("Only master branch is allowed to not have a target release, edit Jenkinsfile to fix this.")
+                    }
+
+                    println("Target release for branch " + branchName + " is " + env.BUILD_TARGET_RELEASE)
+
+                    // Validate that this target release is not published at SpigotMC
+                    if(env.BUILD_TARGET_RELEASE_BYPASS == 'no') {
+                        validateSpigotMC()
+                    }
                 }
             }
         }
-        stage('Project Compile') {
+        stage('Common Test') {
+            when {
+                environment name: 'CI_SKIP', value: 'false'
+            }
+            steps {
+                script {
+                    configFileProvider([configFile(fileId: '91da0cee-34a7-41a4-b605-2998257e24ff', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
+                    sh './gradlew :EnhancedGlist-Common:test'
+                }
+            }
+        }
+        stage('BungeeCord Build') {
+            when {
+                environment name: 'CI_SKIP', value: 'false'
+            }
+            steps {
+                script {
+                    configFileProvider([configFile(fileId: '91da0cee-34a7-41a4-b605-2998257e24ff', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
+                    sh './gradlew :EnhancedGlist-BungeeCord:test :EnhancedGlist-BungeeCord:shadowJar'
+                    archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
+                }
+            }
+        }
+        stage('BungeeCord Deploy') {
+            when {
+                environment name: 'CI_SKIP', value: 'false'
+                environment name: 'PUBLISH_TO_NEXUS', value: 'true'
+            }
+            steps {
+                script {
+                    configFileProvider([configFile(fileId: 'cd4ebdfd-ecb8-4234-90fb-619df2e496c2', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
+                    nexusPublish("EnhancedGlist-BungeeCord-API")
+                }
+            }
+        }
+        stage('Velocity Build') {
+            when {
+                environment name: 'CI_SKIP', value: 'false'
+            }
+            steps {
+                script {
+                    configFileProvider([configFile(fileId: '91da0cee-34a7-41a4-b605-2998257e24ff', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
+                    sh './gradlew :EnhancedGlist-Velocity:test :EnhancedGlist-Velocity:shadowJar'
+                    archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
+                }
+            }
+        }
+        stage('Velocity Deploy') {
+            when {
+                environment name: 'CI_SKIP', value: 'false'
+                environment name: 'PUBLISH_TO_NEXUS', value: 'true'
+            }
+            steps {
+                script {
+                    configFileProvider([configFile(fileId: 'cd4ebdfd-ecb8-4234-90fb-619df2e496c2', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
+                    nexusPublish("EnhancedGlist-Velocity-API")
+                }
+            }
+        }
+        stage('Spigot Build') {
             when { 
                 environment name: 'CI_SKIP', value: 'false' 
             }
             steps {
                 script {
-                    sh './gradlew clean test shadowJar'
+                    configFileProvider([configFile(fileId: '91da0cee-34a7-41a4-b605-2998257e24ff', variable: 'configFile')]) {
+                        script {
+                            sh 'rm -f ./local.properties'
+                            sh 'mv $configFile ./local.properties'
+                            println('local.properties file moved to working directory')
+                        }
+                    }
+                    sh './gradlew :EnhancedGlist-Spigot-Bridge:test :EnhancedGlist-Spigot-Bridge:shadowJar'
                     archiveArtifacts artifacts: 'compiled/*.jar', fingerprint: true
                 }
             }
         }
+        stage('Spigot Deploy') {
+            when {
+                environment name: 'CI_SKIP', value: 'false'
+                environment name: 'PUBLISH_TO_NEXUS', value: 'true'
+            }
+            steps {
+                script {
+                    //nexusPublish("EnhancedGlist-Spigot-Bridge-API")
+                    println("Skipped for now")
+                }
+            }
+        }
     }
-    
+
     post {
+        always {
+            script {
+                // Remove local.properties
+                sh 'rm -f ./local.properties'
+
+                if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START != '') {
+                    withCredentials([string(credentialsId: 'discord-webhook-maven-releases', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
+                        discordSend(
+                            description: env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END,
+                            footer: "Jenkins - Build Pipeline",
+                            link: env.BUILD_URL,
+                            result: "SUCCESS",
+                            title: JOB_NAME,
+                            webhookURL: NEXUS_DISCORD_WEBHOOK
+                        )
+                    }
+                }
+                if(env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START != '') {
+                    withCredentials([string(credentialsId: 'discord-webhook-maven-snapshots', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
+                        discordSend(
+                            description: env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END,
+                            footer: "Jenkins - Build Pipeline",
+                            link: env.BUILD_URL,
+                            result: "SUCCESS",
+                            title: JOB_NAME,
+                            webhookURL: NEXUS_DISCORD_WEBHOOK
+                        )
+                    }
+                }
+                if(env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START != '') {
+                    withCredentials([string(credentialsId: 'discord-webhook-github-pr', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
+                        discordSend(
+                            description: env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END,
+                            footer: "Jenkins - Build Pipeline",
+                            link: env.BUILD_URL,
+                            result: "SUCCESS",
+                            title: JOB_NAME,
+                            webhookURL: NEXUS_DISCORD_WEBHOOK
+                        )
+                    }
+                }
+            }
+        }
         success {
             script {
                 if(env.CI_SKIP == 'false') {
@@ -168,7 +364,7 @@ pipeline {
     }
 }
 
-def nexusFetch(snapshot) {
+def nexusFetch(snapshot, project) {
     withCredentials([string(credentialsId: 'nexus-jenkins-user-name', variable: 'NEXUS_FETCH_USERNAME'), string(credentialsId: 'nexus-jenkins-user-pass', variable: 'NEXUS_FETCH_USERPASS')]) {
         script {
             if(snapshot == 'true') {
@@ -177,9 +373,9 @@ def nexusFetch(snapshot) {
                 fetchRepository = "public-releases"
             }
 
-            fetchMavenGroupId = sh(script: './gradlew properties | grep ^group: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
-            fetchMavenArtifactId = sh(script: './gradlew properties | grep ^name: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
-            fetchMavenBaseVersion = sh(script: './gradlew properties | grep ^version: | awk \'{print  $2 }\' | tr -d \'\n\'', returnStdout: true)
+            fetchMavenGroupId = sh(script: "./gradlew :${project}:properties | grep ^group: | awk '{print  \$2 }' | tr -d '\n'", returnStdout: true)
+            fetchMavenArtifactId = sh(script: "./gradlew :${project}:properties | grep ^name: | awk '{print  \$2 }' | tr -d '\n'", returnStdout: true)
+            fetchMavenBaseVersion = sh(script: "./gradlew :${project}:properties | grep ^version: | awk '{print  \$2 }' | tr -d '\n'", returnStdout: true)
 
             println("Artifact to fetch -> " + fetchMavenGroupId + ":" + fetchMavenArtifactId + ":" + fetchMavenBaseVersion)
 
@@ -244,5 +440,84 @@ def resolveCommitHash() {
         return sh(script: 'git log -1 --pretty=format:\'%h\' ${GIT_COMMIT} | tr -d \'\n\'', returnStdout: true)    
     } else {
         return sh(script: 'git log -1 --skip 1 --pretty=format:\'%h\' ${GIT_COMMIT} | tr -d \'\n\'', returnStdout: true).trim()
+    }
+}
+
+def nexusPublish(project) {
+    if(env.PUBLISH_SNAPSHOT == 'false') {
+        println("Project to publish: " + project)
+        def item = nexusFetch('false', project)
+
+        if(item == null) {
+            sh(script: "./gradlew :${project}:publishMavenPublicationToNexusRepository") //execute gradle
+
+            // Fetch from Nexus
+            item = nexusFetch('false', project)
+
+            if(item == null) {
+                println("Release no encontrado en Nexus. Inesperado pero no se fallará el build debido a esta inconsistencia.")
+            } else {
+                def maven2 = item['maven2']
+
+                if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START == '') {
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
+                    env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = ""
+                }
+
+                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n"
+            }
+        } else {
+            // Error, artifact already exists in Nexus
+            def maven2 = item['maven2']
+
+            if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START == '') {
+                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
+                env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = ""
+            }
+
+            env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n⚠️ __Not Published (duplicated)__\n**Group:** ~~`" + maven2['groupId'] + "`~~\n**Name:** ~~`" + maven2['artifactId'] + "`~~\n**Version:** ~~`" + maven2['version'] + "`~~\n"
+        }
+    } else {
+        println("Project to publish: " + project)
+        sh (script: "./gradlew :${project}:publishMavenPublicationToNexusRepository") //execute gradle
+
+        // Fetch from Nexus
+        def item = nexusFetch('true', project)
+
+        if(item == null) {
+            println("Snapshot not found, not expected but we will not fail build.")
+        } else {
+            def maven2 = item['maven2']
+
+            if(env.PUBLISH_PR_ID == 'none') {
+                // Not in pull request
+                if(env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START == '') {
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
+                    env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END = ""
+                }
+
+                env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n"
+            } else {
+                // Pull request
+                if(env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START == '') {
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot for Pull Request **#" + env.PUBLISH_PR_ID + "**\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
+                    env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END = ""
+                }
+
+                env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n"
+            }
+        }
+    }
+}
+
+def validateSpigotMC() {
+    def data = sh(script: "curl -X GET \"https://api.spiget.org/v2/resources/53295/versions?sort=-releaseDate\"", returnStdout: true)
+    def jsonObj = readJSON text: data
+    println("Fetching latest publications from SpigotMC...")
+
+    for(element in jsonObj) {
+        if(element["name"] == env.BUILD_TARGET_RELEASE) {
+            error("Target release " + env.BUILD_TARGET_RELEASE + " is already published at SpigotMC!! Update Jenkinsfile and set a highest target release.")
+        }
     }
 }
