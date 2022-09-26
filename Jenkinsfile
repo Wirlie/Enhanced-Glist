@@ -100,23 +100,23 @@ pipeline {
                             }
                             break
                     }
-                    
+
                     // Target release version
                     env.BUILD_TARGET_RELEASE = 'none'
                     env.BUILD_TARGET_RELEASE_BYPASS = 'no' // Set this to yes to prevent build failing when target release is published at SpigotMC
-                    
+
                     def branchName = env.CHANGE_BRANCH
-                    
+
                     if(branchName == null) {
                         // Not in PR, use BRANCH_NAME instead
                         branchName = env.BRANCH_NAME
                     }
-                    
+
                     if(branchName.startsWith("renovate")) {
                         // Use develop as reference if this is a renovate branch
                         branchName = "develop"
                     }
-                    
+
                     switch(branchName) {
                         case "develop":
                         case "2.0.0":
@@ -127,23 +127,23 @@ pipeline {
                         default:
                             println("Branch does not have a target relase: " + branchName)
                     }
-                    
+
                     if(env.BRANCH_NAME != 'master' && env.BUILD_TARGET_RELEASE == 'none') {
-                        error("Only master branch is allowed to not have a target release, edit Jenkinsfile to fix this.")   
+                        error("Only master branch is allowed to not have a target release, edit Jenkinsfile to fix this.")
                     }
-                    
+
                     println("Target release for branch " + branchName + " is " + env.BUILD_TARGET_RELEASE)
-                    
+
                     // Validate that this target release is not published at SpigotMC
-                    if(env.BUILD_TARGET_RELEASE_BYPASS == 'no') { 
+                    if(env.BUILD_TARGET_RELEASE_BYPASS == 'no') {
                         validateSpigotMC()
                     }
                 }
             }
         }
         stage('Common Test') {
-            when { 
-                environment name: 'CI_SKIP', value: 'false' 
+            when {
+                environment name: 'CI_SKIP', value: 'false'
             }
             steps {
                 script {
@@ -159,8 +159,8 @@ pipeline {
             }
         }
         stage('BungeeCord Build') {
-            when { 
-                environment name: 'CI_SKIP', value: 'false' 
+            when {
+                environment name: 'CI_SKIP', value: 'false'
             }
             steps {
                 script {
@@ -177,7 +177,7 @@ pipeline {
             }
         }
         stage('BungeeCord Deploy') {
-            when { 
+            when {
                 environment name: 'CI_SKIP', value: 'false'
                 environment name: 'PUBLISH_TO_NEXUS', value: 'true'
             }
@@ -195,8 +195,8 @@ pipeline {
             }
         }
         stage('Velocity Build') {
-            when { 
-                environment name: 'CI_SKIP', value: 'false' 
+            when {
+                environment name: 'CI_SKIP', value: 'false'
             }
             steps {
                 script {
@@ -213,7 +213,7 @@ pipeline {
             }
         }
         stage('Velocity Deploy') {
-            when { 
+            when {
                 environment name: 'CI_SKIP', value: 'false'
                 environment name: 'PUBLISH_TO_NEXUS', value: 'true'
             }
@@ -249,7 +249,7 @@ pipeline {
             }
         }
         stage('Spigot Deploy') {
-            when { 
+            when {
                 environment name: 'CI_SKIP', value: 'false'
                 environment name: 'PUBLISH_TO_NEXUS', value: 'true'
             }
@@ -261,21 +261,21 @@ pipeline {
             }
         }
     }
-    
+
     post {
         always {
             script {
                 // Remove local.properties
                 sh 'rm -f ./local.properties'
-                
+
                 if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START != '') {
                     withCredentials([string(credentialsId: 'discord-webhook-maven-releases', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
                         discordSend(
-                            description: env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END, 
-                            footer: "Jenkins - Build Pipeline", 
+                            description: env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END,
+                            footer: "Jenkins - Build Pipeline",
                             link: env.BUILD_URL,
-                            result: "SUCCESS", 
-                            title: JOB_NAME, 
+                            result: "SUCCESS",
+                            title: JOB_NAME,
                             webhookURL: NEXUS_DISCORD_WEBHOOK
                         )
                     }
@@ -283,11 +283,11 @@ pipeline {
                 if(env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START != '') {
                     withCredentials([string(credentialsId: 'discord-webhook-maven-snapshots', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
                         discordSend(
-                            description: env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END, 
-                            footer: "Jenkins - Build Pipeline", 
+                            description: env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END,
+                            footer: "Jenkins - Build Pipeline",
                             link: env.BUILD_URL,
-                            result: "SUCCESS", 
-                            title: JOB_NAME, 
+                            result: "SUCCESS",
+                            title: JOB_NAME,
                             webhookURL: NEXUS_DISCORD_WEBHOOK
                         )
                     }
@@ -295,11 +295,11 @@ pipeline {
                 if(env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START != '') {
                     withCredentials([string(credentialsId: 'discord-webhook-github-pr', variable: 'NEXUS_DISCORD_WEBHOOK')]) {
                         discordSend(
-                            description: env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END, 
-                            footer: "Jenkins - Build Pipeline", 
+                            description: env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START + env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE + env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END,
+                            footer: "Jenkins - Build Pipeline",
                             link: env.BUILD_URL,
-                            result: "SUCCESS", 
-                            title: JOB_NAME, 
+                            result: "SUCCESS",
+                            title: JOB_NAME,
                             webhookURL: NEXUS_DISCORD_WEBHOOK
                         )
                     }
@@ -457,12 +457,12 @@ def nexusPublish(project) {
                 println("Release no encontrado en Nexus. Inesperado pero no se fallará el build debido a esta inconsistencia.")
             } else {
                 def maven2 = item['maven2']
-                
+
                 if(env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START == '') {
                     env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
                     env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = ""
                 }
-                
+
                 env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n"
             }
         } else {
@@ -473,7 +473,7 @@ def nexusPublish(project) {
                 env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Release\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
                 env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_END = ""
             }
-                
+
             env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_RELEASE_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n⚠️ __Not Published (duplicated)__\n**Group:** ~~`" + maven2['groupId'] + "`~~\n**Name:** ~~`" + maven2['artifactId'] + "`~~\n**Version:** ~~`" + maven2['version'] + "`~~\n"
         }
     } else {
@@ -494,7 +494,7 @@ def nexusPublish(project) {
                     env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
                     env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_END = ""
                 }
-                
+
                 env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_SNAPSHOT_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n"
             } else {
                 // Pull request
@@ -502,21 +502,21 @@ def nexusPublish(project) {
                     env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_START = "Nexus Snapshot for Pull Request **#" + env.PUBLISH_PR_ID + "**\n\n**Repository:**\n`https://nexus.wirlie.net/repository/" + item['repository'] + "/`\n"
                     env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_END = ""
                 }
-                
+
                 env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE = env.GENERATED_PR_ARTIFACTS_MESSAGE_PORTION_MIDDLE + "\n**Group:** `" + maven2['groupId'] + "`\n**Name:** `" + maven2['artifactId'] + "`\n**Version:** `" + maven2['version'] + "`\n"
             }
         }
-    }   
+    }
 }
 
 def validateSpigotMC() {
     def data = sh(script: "curl -X GET \"https://api.spiget.org/v2/resources/53295/versions?sort=-releaseDate\"", returnStdout: true)
     def jsonObj = readJSON text: data
     println("Fetching latest publications from SpigotMC...")
-    
+
     for(element in jsonObj) {
         if(element["name"] == env.BUILD_TARGET_RELEASE) {
-            error("Target release " + env.BUILD_TARGET_RELEASE + " is already published at SpigotMC!! Update Jenkinsfile and set a highest target release.")   
+            error("Target release " + env.BUILD_TARGET_RELEASE + " is already published at SpigotMC!! Update Jenkinsfile and set a highest target release.")
         }
     }
 }
