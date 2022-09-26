@@ -82,8 +82,8 @@ configure(subprojects.filter { it.name.contains("-API") }) {
                 name = "nexus"
                 url = if(artifactSnapshot) URI("https://nexus.wirlie.net/repository/public-snapshots/") else URI("https://nexus.wirlie.net/repository/public-releases/")
                 credentials {
-                    username = localProperties.getProperty("nexus-user")
-                    password = localProperties.getProperty("nexus-pass")
+                    username = localProperties.getProperty("nexus-user-publish")
+                    password = localProperties.getProperty("nexus-pass-publish")
                 }
             }
         }
