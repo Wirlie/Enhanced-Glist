@@ -530,7 +530,7 @@ def validateSpigotMC() {
 
 def downloadArtifact(url, groupId, artifactId, version) {
     def baseURL = url
-    baseURL += groupId.split(".").join("/")
+    baseURL += groupId.replace(".", "/")
     baseURL += "/" + artifactId + "/" + version
     
     sh "echo baseUrl=${baseURL}"
