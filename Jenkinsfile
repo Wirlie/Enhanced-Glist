@@ -57,24 +57,9 @@ pipeline {
                     sh './gradlew cleanCompiledArtifactsFolder'
                     
                     // Download third party dependencies and install locally
-                    // Because plugin author have not provided any API to use .......
-                    downloadArtifact("antiafkpro-3.6.3.jar", "https://nexus.fuzen.gg/repository/development/github/jet315/antiafkpro/3.6.3/antiafkpro-3.6.3.jar")
-                    downloadArtifact("antiafkpro-3.6.3.pom", "https://nexus.fuzen.gg/repository/development/github/jet315/antiafkpro/3.6.3/antiafkpro-3.6.3.pom")
-                    downloadArtifact("bungeecord-1.19-R0.1-SNAPSHOT.jar", "https://nexus.fuzen.gg/repository/development/net/md-5/bungeecord/1.19-R0.1-SNAPSHOT/bungeecord-1.19-R0.1-SNAPSHOT.jar")
-                    downloadArtifact("bungeecord-1.19-R0.1-SNAPSHOT.pom", "https://nexus.fuzen.gg/repository/development/net/md-5/bungeecord/1.19-R0.1-SNAPSHOT/bungeecord-1.19-R0.1-SNAPSHOT.pom")
-                    downloadArtifact("spigot-1.8.8-R0.1-SNAPSHOT.jar", "https://nexus.fuzen.gg/repository/development/org/spigotmc/spigot/1.8.8-R0.1-SNAPSHOT/spigot-1.8.8-R0.1-SNAPSHOT.jar")
-                    downloadArtifact("spigot-1.8.8-R0.1-SNAPSHOT.pom", "https://nexus.fuzen.gg/repository/development/org/spigotmc/spigot/1.8.8-R0.1-SNAPSHOT/spigot-1.8.8-R0.1-SNAPSHOT.pom")
-
-                    withMaven(
-                        maven: 'Maven 3.8.6'    
-                    ){
-                        sh "mvn install:install-file -Dfile=antiafkpro-3.6.3.jar -DgroupId=github.jet315 -DartifactId=antiafkpro -Dversion=3.6.3 -Dpackaging=jar"
-                        sh "mvn install:install-file -Dfile=antiafkpro-3.6.3.pom -DgroupId=github.jet315 -DartifactId=antiafkpro -Dversion=3.6.3 -Dpackaging=pom"
-                        sh "mvn install:install-file -Dfile=bungeecord-1.19-R0.1-SNAPSHOT.jar -DgroupId=net.md-5 -DartifactId=bungeecord -Dversion=1.19-R0.1-SNAPSHOT -Dpackaging=jar"
-                        sh "mvn install:install-file -Dfile=bungeecord-1.19-R0.1-SNAPSHOT.pom -DgroupId=net.md-5 -DartifactId=bungeecord -Dversion=1.19-R0.1-SNAPSHOT -Dpackaging=pom"
-                        sh "mvn install:install-file -Dfile=spigot-1.8.8-R0.1-SNAPSHOT.jar -DgroupId=org.spigotmc -DartifactId=spigot -Dversion=1.8.8-R0.1-SNAPSHOT -Dpackaging=jar"
-                        sh "mvn install:install-file -Dfile=spigot-1.8.8-R0.1-SNAPSHOT.pom -DgroupId=org.spigotmc -DartifactId=spigot -Dversion=1.8.8-R0.1-SNAPSHOT -Dpackaging=pom"
-                    }
+                    downloadArtifact("https://nexus.wirlie.net/repository/development/", "github.jet315", "antiafkpro", "3.6.3")
+                    downloadArtifact("https://nexus.wirlie.net/repository/development/", "net.md-5", "bungeecord", "1.19-R0.1-SNAPSHOT")
+                    downloadArtifact("https://nexus.wirlie.net/repository/development/", "org.spigotmc", "spigot", "1.8.8-R0.1-SNAPSHOT")
 
                     env.ARTIFACT_PUBLISH_SNAPSHOT = 'false'
                     env.PUBLISH_PR_ID = 'none'
@@ -543,8 +528,23 @@ def validateSpigotMC() {
     }
 }
 
-def downloadArtifact(name, url) {
+def downloadArtifact(url, groupId, artifactId, version) {
+    def baseURL = url
+    groupId.split(".").each { val ->
+        baseURL += "/" + val
+    }
+    baseURL += artifactId + "/" + version
+    
+    sh "echo baseUrl=${baseURL}"
+    
     withCredentials([string(credentialsId: 'nexus-jenkins-user-name', variable: 'NEXUS_FETCH_USERNAME'), string(credentialsId: 'nexus-jenkins-user-pass', variable: 'NEXUS_FETCH_USERPASS')]) {
-        sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output ${name} ${url}"
+        def jarName = artifactId + "-" + version + ".jar"
+        def jarURL = baseURL + "/" + jarName
+        def pomName = artifactId + "-" + version + ".pom"
+        def pomURL = baseURL + "/" + pomName
+        def metaURL = baseURL + "/maven-metadata.xml"
+        sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output ${jarName} ${jarURL}"
+        sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output ${pomName} ${baseURL}"
+        sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output maven-metadata.xml ${metaURL}"
     }
 }
