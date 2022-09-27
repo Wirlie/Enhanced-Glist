@@ -532,6 +532,7 @@ def validateSpigotMC() {
 
 def downloadArtifact(url) {
     withCredentials([string(credentialsId: 'nexus-jenkins-user-name', variable: 'NEXUS_FETCH_USERNAME'), string(credentialsId: 'nexus-jenkins-user-pass', variable: 'NEXUS_FETCH_USERPASS')]) {
+        sh "which wget"
         sh "wget --user=\$NEXUS_FETCH_USERNAME --password=\$NEXUS_FETCH_USERPASS ${url}"
     }
 }
