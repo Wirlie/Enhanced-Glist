@@ -40,7 +40,7 @@ subprojects {
 
         maven {
             url = uri("https://nexus.wirlie.net/repository/development/")
-            name = "nexus-develop-private"
+            name = "nexus-develop"
             credentials {
                 username = localProperties.getProperty("nexus-user")
                 password = localProperties.getProperty("nexus-pass")
