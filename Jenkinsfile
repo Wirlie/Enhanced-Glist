@@ -61,7 +61,9 @@ pipeline {
                     downloadArtifact("bungeecord-1.19-R0.1-SNAPSHOT.jar", "https://nexus.fuzen.gg/repository/development/net/md-5/bungeecord/1.19-R0.1-SNAPSHOT/bungeecord-1.19-R0.1-SNAPSHOT.jar")
                     downloadArtifact("spigot-1.8.8-R0.1-SNAPSHOT.jar", "https://nexus.fuzen.gg/repository/development/org/spigotmc/spigot/1.8.8-R0.1-SNAPSHOT/spigot-1.8.8-R0.1-SNAPSHOT.jar")
                     
-                    withMaven {
+                    withMaven(
+                        maven: 'Maven 3.8.6'    
+                    ){
                         sh "mvn help"   
                     }
 
