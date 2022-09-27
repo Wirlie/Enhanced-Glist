@@ -65,9 +65,9 @@ pipeline {
                     withMaven(
                         maven: 'Maven 3.8.6'    
                     ){
-                        sh "mvn install:install-file -Dfile=antiafkpro-3.6.3.jar -DgroupId=github.jet315 -DartifactId=antiafkpro -Dversion=3.6.3 -Dpackaging=pom"
-                        sh "mvn install:install-file -Dfile=bungeecord-1.19-R0.1-SNAPSHOT.jar -DgroupId=net.md-5 -DartifactId=bungeecord -Dversion=1.19-R0.1-SNAPSHOT -Dpackaging=pom"
-                        sh "mvn install:install-file -Dfile=spigot-1.8.8-R0.1-SNAPSHOT.jar -DgroupId=org.spigotmc -DartifactId=spigot -Dversion=1.8.8-R0.1-SNAPSHOT -Dpackaging=pom"
+                        sh "mvn install:install-file -Dfile=antiafkpro-3.6.3.jar -DgroupId=github.jet315 -DartifactId=antiafkpro -Dversion=3.6.3 -Dpackaging=jar"
+                        sh "mvn install:install-file -Dfile=bungeecord-1.19-R0.1-SNAPSHOT.jar -DgroupId=net.md-5 -DartifactId=bungeecord -Dversion=1.19-R0.1-SNAPSHOT -Dpackaging=jar"
+                        sh "mvn install:install-file -Dfile=spigot-1.8.8-R0.1-SNAPSHOT.jar -DgroupId=org.spigotmc -DartifactId=spigot -Dversion=1.8.8-R0.1-SNAPSHOT -Dpackaging=jar"
                     }
 
                     env.ARTIFACT_PUBLISH_SNAPSHOT = 'false'
