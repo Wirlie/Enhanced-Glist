@@ -530,10 +530,8 @@ def validateSpigotMC() {
 
 def downloadArtifact(url, groupId, artifactId, version) {
     def baseURL = url
-    groupId.split(".").each { val ->
-        baseURL += "/" + val
-    }
-    baseURL += artifactId + "/" + version
+    baseURL += groupId.split(".").join("/")
+    baseURL += "/" + artifactId + "/" + version
     
     sh "echo baseUrl=${baseURL}"
     
@@ -544,7 +542,7 @@ def downloadArtifact(url, groupId, artifactId, version) {
         def pomURL = baseURL + "/" + pomName
         def metaURL = baseURL + "/maven-metadata.xml"
         sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output ${jarName} ${jarURL}"
-        sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output ${pomName} ${baseURL}"
+        sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output ${pomName} ${pomURL}"
         sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output maven-metadata.xml ${metaURL}"
     }
 }
