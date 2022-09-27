@@ -53,6 +53,7 @@ pipeline {
 
                     sh 'echo empty > ./local.properties'
                     sh 'chmod +x ./gradlew' // give execution permission to gradlew file
+                    sh './gradlew clean'
                     sh './gradlew cleanCompiledArtifactsFolder'
                     
                     // Download third party dependencies and install locally
