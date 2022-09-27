@@ -57,10 +57,12 @@ pipeline {
                     
                     // Download third party dependencies and install locally
                     // Because plugin author have not provided any API to use .......
-                    downloadArtifact("https://nexus.fuzen.gg/repository/development/github/jet315/antiafkpro/3.6.3/antiafkpro-3.6.3.jar")
+                    downloadArtifact("antiafkpro-3.6.3.jar", "https://nexus.fuzen.gg/repository/development/github/jet315/antiafkpro/3.6.3/antiafkpro-3.6.3.jar")
+                    downloadArtifact("bungeecord-1.19-R0.1-SNAPSHOT.jar", "https://nexus.fuzen.gg/repository/development/net/md-5/bungeecord/1.19-R0.1-SNAPSHOT/bungeecord-1.19-R0.1-SNAPSHOT.jar")
+                    downloadArtifact("spigot-1.8.8-R0.1-SNAPSHOT.jar", "https://nexus.fuzen.gg/repository/development/org/spigotmc/spigot/1.8.8-R0.1-SNAPSHOT/spigot-1.8.8-R0.1-SNAPSHOT.jar")
                     
                     withMaven {
-                        sh "mvn clean verify"   
+                        sh "mvn help"   
                     }
 
                     env.ARTIFACT_PUBLISH_SNAPSHOT = 'false'
@@ -530,8 +532,8 @@ def validateSpigotMC() {
     }
 }
 
-def downloadArtifact(url) {
+def downloadArtifact(name, url) {
     withCredentials([string(credentialsId: 'nexus-jenkins-user-name', variable: 'NEXUS_FETCH_USERNAME'), string(credentialsId: 'nexus-jenkins-user-pass', variable: 'NEXUS_FETCH_USERPASS')]) {
-        sh "/usr/bin/wget --user=\$NEXUS_FETCH_USERNAME --password=\$NEXUS_FETCH_USERPASS ${url}"
+        sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output ${name} ${url}"
     }
 }
