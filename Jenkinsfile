@@ -64,7 +64,7 @@ pipeline {
                     withMaven(
                         maven: 'Maven 3.8.6'    
                     ){
-                        sh "mvn help"   
+                        sh "mvn install:install-file -Dfile=antiafkpro-3.6.3.jar -DgroupId=github.jet315 -DartifactId=antiafkpro -Dversion=3.6.3 -Dpackaging=pom"
                     }
 
                     env.ARTIFACT_PUBLISH_SNAPSHOT = 'false'
