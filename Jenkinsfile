@@ -536,21 +536,22 @@ def downloadArtifact(url, groupId, artifactId, version) {
     sh "echo baseUrl=${baseURL}"
     
     withCredentials([string(credentialsId: 'nexus-jenkins-user-name', variable: 'NEXUS_FETCH_USERNAME'), string(credentialsId: 'nexus-jenkins-user-pass', variable: 'NEXUS_FETCH_USERPASS')]) {
-        def jarName = artifactId + "-" + version + ".jar"
-        def jarURL = baseURL + "/" + jarName
-        def pomName = artifactId + "-" + version + ".pom"
-        def pomURL = baseURL + "/" + pomName
-        def metaURL = baseURL + "/maven-metadata.xml"
-        sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output ${jarName} ${jarURL}"
-        sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output ${pomName} ${pomURL}"
-        sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output maven-metadata.xml ${metaURL}"
+        //def jarName = artifactId + "-" + version + ".jar"
+        //def jarURL = baseURL + "/" + jarName
+        //def pomName = artifactId + "-" + version + ".pom"
+        //def pomURL = baseURL + "/" + pomName
+        //def metaURL = baseURL + "/maven-metadata.xml"
+        //sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output ${jarName} ${jarURL}"
+        //sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output ${pomName} ${pomURL}"
+        //sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output maven-metadata.xml ${metaURL}"
         // install
         withMaven(
             maven: 'Maven 3.8.6'    
         ){
-            sh "mvn install:install-file -Dfile=${jarName} -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=${version} -Dpackaging=jar"
-            sh "mvn install:install-file -Dfile=${pomName} -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=${version} -Dpackaging=pom"
-            sh "mvn install:install-file -Dfile=maven-metadata.xml -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=${version} -Dpackaging=xml"
+            //sh "mvn install:install-file -Dfile=${jarName} -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=${version} -Dpackaging=jar"
+            //sh "mvn install:install-file -Dfile=${pomName} -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=${version} -Dpackaging=pom"
+            //sh "mvn install:install-file -Dfile=maven-metadata.xml -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=${version} -Dpackaging=xml"
+            sh "mvn org.apache.maven.plugins:maven-dependency-plugin:3.3.0:get -Dartifact=${groupId}:${artifactId}:${version} -DrepoUrl=${url}"
         }
     }
 }
