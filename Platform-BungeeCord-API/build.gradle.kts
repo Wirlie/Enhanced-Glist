@@ -14,7 +14,6 @@ repositories {
 dependencies {
     compileOnly("net.md-5:bungeecord:1.19-R0.1-SNAPSHOT")
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("com.github.LeonMangler:PremiumVanish:6.2.6-4")
 
     compileOnly("net.kyori:adventure-api:4.11.0")
     compileOnly("net.kyori:adventure-platform-bungeecord:4.1.2")

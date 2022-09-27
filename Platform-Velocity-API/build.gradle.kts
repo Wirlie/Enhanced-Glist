@@ -7,7 +7,6 @@ repositories {
 
 dependencies {
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("com.github.LeonMangler:PremiumVanish:6.2.6-4")
 
     compileOnly("com.velocitypowered:velocity-api:3.1.1")
     kapt("com.velocitypowered:velocity-api:3.1.1")

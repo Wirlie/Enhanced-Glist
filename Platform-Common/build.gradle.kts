@@ -27,7 +27,6 @@ dependencies {
     implementation("com.google.code.gson:gson:2.9.1")
 
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("com.github.LeonMangler:PremiumVanish:6.2.6-4")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("dev.simplix:protocolize-api:2.2.2")
 
