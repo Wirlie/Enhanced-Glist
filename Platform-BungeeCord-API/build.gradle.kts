@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("net.md-5:bungeecord:1.19-R0.1-SNAPSHOT")
+    compileOnly("net.md-5:bungeecord:1.19-R0.1")
     compileOnly("net.luckperms:api:5.4")
 
     compileOnly("net.kyori:adventure-api:4.11.0")
