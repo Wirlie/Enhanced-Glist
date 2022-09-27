@@ -546,7 +546,8 @@ def downloadArtifact(url, groupId, artifactId, version) {
         //sh "curl -u \$NEXUS_FETCH_USERNAME:\$NEXUS_FETCH_USERPASS --output maven-metadata.xml ${metaURL}"
         // install
         withMaven(
-            maven: 'Maven 3.8.6'    
+            maven: 'Maven 3.8.6',
+            mavenSettingsConfig: 'fe98b5d7-774a-47fb-a5e8-07c052f33004'
         ){
             //sh "mvn install:install-file -Dfile=${jarName} -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=${version} -Dpackaging=jar"
             //sh "mvn install:install-file -Dfile=${pomName} -DgroupId=${groupId} -DartifactId=${artifactId} -Dversion=${version} -Dpackaging=pom"
