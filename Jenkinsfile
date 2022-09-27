@@ -54,6 +54,14 @@ pipeline {
                     sh 'echo empty > ./local.properties'
                     sh 'chmod +x ./gradlew' // give execution permission to gradlew file
                     sh './gradlew cleanCompiledArtifactsFolder'
+                    
+                    // Download third party dependencies and install locally
+                    // Because plugin author have not provided any API to use .......
+                    downloadArtifact("https://nexus.fuzen.gg/repository/development/github/jet315/antiafkpro/3.6.3/antiafkpro-3.6.3.jar")
+                    
+                    withMaven {
+                        sh "mvn clean verify"   
+                    }
 
                     env.ARTIFACT_PUBLISH_SNAPSHOT = 'false'
                     env.PUBLISH_PR_ID = 'none'
@@ -519,5 +527,11 @@ def validateSpigotMC() {
         if(element["name"] == env.BUILD_TARGET_RELEASE) {
             error("Target release " + env.BUILD_TARGET_RELEASE + " is already published at SpigotMC!! Update Jenkinsfile and set a highest target release.")
         }
+    }
+}
+
+def downloadArtifact(url) {
+    withCredentials([string(credentialsId: 'nexus-jenkins-user-name', variable: 'NEXUS_FETCH_USERNAME'), string(credentialsId: 'nexus-jenkins-user-pass', variable: 'NEXUS_FETCH_USERPASS')]) {
+        sh "wget --user=\$NEXUS_FETCH_USERNAME --password=\$NEXUS_FETCH_USERPASS ${url}"
     }
 }
