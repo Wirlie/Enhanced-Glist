@@ -59,15 +59,21 @@ pipeline {
                     // Download third party dependencies and install locally
                     // Because plugin author have not provided any API to use .......
                     downloadArtifact("antiafkpro-3.6.3.jar", "https://nexus.fuzen.gg/repository/development/github/jet315/antiafkpro/3.6.3/antiafkpro-3.6.3.jar")
+                    downloadArtifact("antiafkpro-3.6.3.pom", "https://nexus.fuzen.gg/repository/development/github/jet315/antiafkpro/3.6.3/antiafkpro-3.6.3.pom")
                     downloadArtifact("bungeecord-1.19-R0.1-SNAPSHOT.jar", "https://nexus.fuzen.gg/repository/development/net/md-5/bungeecord/1.19-R0.1-SNAPSHOT/bungeecord-1.19-R0.1-SNAPSHOT.jar")
+                    downloadArtifact("bungeecord-1.19-R0.1-SNAPSHOT.pom", "https://nexus.fuzen.gg/repository/development/net/md-5/bungeecord/1.19-R0.1-SNAPSHOT/bungeecord-1.19-R0.1-SNAPSHOT.pom")
                     downloadArtifact("spigot-1.8.8-R0.1-SNAPSHOT.jar", "https://nexus.fuzen.gg/repository/development/org/spigotmc/spigot/1.8.8-R0.1-SNAPSHOT/spigot-1.8.8-R0.1-SNAPSHOT.jar")
-                    
+                    downloadArtifact("spigot-1.8.8-R0.1-SNAPSHOT.pom", "https://nexus.fuzen.gg/repository/development/org/spigotmc/spigot/1.8.8-R0.1-SNAPSHOT/spigot-1.8.8-R0.1-SNAPSHOT.pom")
+
                     withMaven(
                         maven: 'Maven 3.8.6'    
                     ){
                         sh "mvn install:install-file -Dfile=antiafkpro-3.6.3.jar -DgroupId=github.jet315 -DartifactId=antiafkpro -Dversion=3.6.3 -Dpackaging=jar"
+                        sh "mvn install:install-file -Dfile=antiafkpro-3.6.3.pom -DgroupId=github.jet315 -DartifactId=antiafkpro -Dversion=3.6.3 -Dpackaging=pom"
                         sh "mvn install:install-file -Dfile=bungeecord-1.19-R0.1-SNAPSHOT.jar -DgroupId=net.md-5 -DartifactId=bungeecord -Dversion=1.19-R0.1-SNAPSHOT -Dpackaging=jar"
+                        sh "mvn install:install-file -Dfile=bungeecord-1.19-R0.1-SNAPSHOT.pom -DgroupId=net.md-5 -DartifactId=bungeecord -Dversion=1.19-R0.1-SNAPSHOT -Dpackaging=pom"
                         sh "mvn install:install-file -Dfile=spigot-1.8.8-R0.1-SNAPSHOT.jar -DgroupId=org.spigotmc -DartifactId=spigot -Dversion=1.8.8-R0.1-SNAPSHOT -Dpackaging=jar"
+                        sh "mvn install:install-file -Dfile=spigot-1.8.8-R0.1-SNAPSHOT.pom -DgroupId=org.spigotmc -DartifactId=spigot -Dversion=1.8.8-R0.1-SNAPSHOT -Dpackaging=pom"
                     }
 
                     env.ARTIFACT_PUBLISH_SNAPSHOT = 'false'
