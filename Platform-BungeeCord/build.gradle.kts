@@ -1,5 +1,6 @@
 
 repositories {
+    mavenLocal()
     maven {
         url = uri("https://papermc.io/repo/repository/maven-public/")
     }
@@ -17,7 +18,7 @@ dependencies {
     implementation(project(":EnhancedGlist-Updater"))
     implementation(project(":EnhancedGlist-Messenger"))
 
-    compileOnly("net.md-5:bungeecord:1.19-R0.1-SNAPSHOT")
+    compileOnly("net.md-5:bungeecord:1.19")
 
     implementation("net.kyori:adventure-api:4.11.0")
     implementation("net.kyori:adventure-platform-bungeecord:4.1.2")
