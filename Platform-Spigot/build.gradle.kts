@@ -1,5 +1,6 @@
 
 repositories {
+    mavenLocal()
     // Public Servers
     maven {
         url = uri("https://repo.essentialsx.net/releases/")
@@ -23,6 +24,7 @@ dependencies {
     compileOnly("net.essentialsx:EssentialsX:2.19.7")
     compileOnly("com.github.mbax:VanishNoPacket:3.22")
     compileOnly("com.github.xtomyserrax:StaffFacilities:5.0.8")
+    compileOnly("com.github.LeonMangler:PremiumVanishAPI:2.7.11-2")
 
     // Third Party libraries without public API (only for compilation, allocated at our private repository for development purposes)
     compileOnly("github.jet315:antiafkpro:3.6.3")

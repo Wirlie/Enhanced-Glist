@@ -58,7 +58,7 @@ pipeline {
                     
                     // Download third party dependencies and install locally
                     downloadArtifact("https://nexus.wirlie.net/repository/development/", "github.jet315", "antiafkpro", "3.6.3")
-                    downloadArtifact("https://nexus.wirlie.net/repository/development/", "net.md-5", "bungeecord", "1.19-R0.1")
+                    downloadArtifact("https://nexus.wirlie.net/repository/development/", "net.md-5", "bungeecord", "1.19")
                     downloadArtifact("https://nexus.wirlie.net/repository/development/", "org.spigotmc", "spigot", "1.8.8-R0.1")
 
                     env.ARTIFACT_PUBLISH_SNAPSHOT = 'false'
