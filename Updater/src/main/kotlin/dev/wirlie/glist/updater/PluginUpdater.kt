@@ -39,6 +39,7 @@ class PluginUpdater(
 
     private val gson = GsonBuilder().setPrettyPrinting().create()
     private var client = OkHttpClient()
+    private var firstCheck = true
 
     var updateAvailable = false
     var updateDownloadURL = "https://www.spigotmc.org/resources/enhanced-glist-bungeecord-velocity.53295/"
@@ -86,11 +87,13 @@ class PluginUpdater(
             val latestRelease = releases.maxByOrNull { it.releaseDate }!!
 
             if(ourRelease != null) {
+                logger.info("[Updater] Version found from spigot: ${ourRelease.name}")
                 if(ourRelease.name != latestRelease.name) {
                     // If our release does not match the latest release published at SpigotMC then an update is available...
                     hasUpdate = true
                 }
             } else {
+                logger.info("[Updater] Failed to retrieve current version from spigot (Not found: ${pluginVersion.replace("-SNAPSHOT", "")}), assuming that this version is out of date...")
                 // We cannot find our release, so probably this version is a really outdated version or is an unpublished version
                 hasUpdate = true
             }
@@ -100,6 +103,11 @@ class PluginUpdater(
                 updaterScheduler.stopUpdaterCheckTask()
                 printUpdateMessage(latestRelease)
                 scheduleConsoleNotificationTask(latestRelease)
+            } else {
+                if(firstCheck) {
+                    firstCheck = false
+                    printUpToDateMessage(latestRelease)
+                }
             }
         }, checkInterval)
     }
@@ -107,10 +115,14 @@ class PluginUpdater(
     private fun printUpdateMessage(latestRelease: SpigotReleaseModel) {
         logger.warning("======================= UPDATE AVAILABLE =======================")
         logger.warning("[Updater] New update available: ${latestRelease.name}")
-        logger.warning("[Updater] Current version: $pluginVersion")
+        logger.warning("[Updater] Current version: ${pluginVersion.replace("-SNAPSHOT", "")}")
         logger.warning("[Updater] Download the latest update from:")
         logger.warning("[Updater] $updateDownloadURL")
         logger.warning("=================================================================")
+    }
+
+    private fun printUpToDateMessage(latestRelease: SpigotReleaseModel) {
+        logger.info("[Updater] No updates available, current version: ${pluginVersion.replace("-SNAPSHOT", "")}, remote version: ${latestRelease.name}")
     }
 
     private fun scheduleConsoleNotificationTask(latestRelease: SpigotReleaseModel) {
