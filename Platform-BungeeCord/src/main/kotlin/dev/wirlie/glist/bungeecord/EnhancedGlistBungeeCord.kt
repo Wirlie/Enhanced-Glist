@@ -50,6 +50,7 @@ class EnhancedGlistBungeeCord: Plugin() {
             reloadMessenger()
         }
         platform.pluginFolder = dataFolder
+        platform.pluginVersion = this.description.version
         platform.console = adventure.console()
         platform.setupConfig()
 

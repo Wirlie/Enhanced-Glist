@@ -60,6 +60,7 @@ import kotlin.math.max
 abstract class Platform<S, P, C>: UpdaterScheduler {
 
     lateinit var pluginFolder: File
+    lateinit var pluginVersion: String
     lateinit var logger: PlatformLogger
 
     lateinit var translatorManager: TranslatorManager
@@ -125,6 +126,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             updaterConfig.notify.console.notificationInterval,
             logger,
             pluginFolder,
+            pluginVersion,
             updaterConfig.notify.console.enable
         )
         if(updaterConfig.checkForUpdates) {
@@ -220,6 +222,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             updaterConfig.notify.console.notificationInterval,
             logger,
             pluginFolder,
+            pluginVersion,
             updaterConfig.notify.console.enable
         )
         if(updaterConfig.checkForUpdates) {
