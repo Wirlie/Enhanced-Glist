@@ -100,8 +100,8 @@ class GlistCommand<S>(
         if(current != null) {
             return current
         }
-        val servers = platform.getAllServersGrouped()
-            .sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayersCount() }.thenBy { it.getName() })
+        val servers = platform.getAllServersGrouped(executor)
+            .sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getFilteredData(executor).provideData().size }.thenBy { it.getName() })
             .toMutableList()
 
         val newDisplay = if(

@@ -74,10 +74,6 @@ class VelocityPlatform(
         return server.getServer(name).orElse(null)?.run { VelocityPlatformServer(this@VelocityPlatform, this) }
     }
 
-    override fun getConnectedPlayersAmount(): Int {
-        return server.allPlayers.size
-    }
-
     override fun registerHooks() {
         val proxy = server
         val pluginManager = proxy.pluginManager

@@ -22,8 +22,10 @@ package dev.wirlie.glist.common.platform
 
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
+import dev.wirlie.glist.common.display.PlayersDataProvider
 
 class PlatformServerGroup<S>(
+    private val platform: Platform<S, *, *>,
     private val originalName: String,
     private val servers: List<PlatformServer<S>>,
     val byConfiguration: Boolean = true
@@ -56,11 +58,11 @@ class PlatformServerGroup<S>(
     fun getPlayers(): List<PlatformExecutor<S>> {
         return servers.flatMap { it.getPlayers() }
     }
-    /**
-     * Get player count of this server group.
-     */
-    fun getPlayersCount(): Int {
-        return servers.sumOf { it.getPlayers().size }
+
+    fun getFilteredData(executor: PlatformExecutor<S>): PlayersDataProvider<S> {
+        return PlayersDataProvider(executor, platform, getPlayers())
     }
+
+    fun fakePlayerCountForTest() = 0
 
 }

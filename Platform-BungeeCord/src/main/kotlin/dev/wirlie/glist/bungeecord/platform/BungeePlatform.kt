@@ -75,10 +75,6 @@ class BungeePlatform(
         return ProxyServer.getInstance().getServerInfo(name)?.run { BungeePlatformServer(this@BungeePlatform, this) }
     }
 
-    override fun getConnectedPlayersAmount(): Int {
-        return ProxyServer.getInstance().players.size
-    }
-
     override fun registerHooks() {
         val proxy = ProxyServer.getInstance()
         val pluginManager = proxy.pluginManager
