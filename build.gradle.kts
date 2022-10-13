@@ -20,7 +20,7 @@ repositories {
 
 allprojects {
     group = "net.wirlie"
-    val artifactVersion = System.getenv("ARTIFACT_VERSION") ?: "2.0.0-BETA4"
+    val artifactVersion = System.getenv("ARTIFACT_VERSION") ?: "2.0.0-BETA5"
     val artifactSnapshot = (System.getenv("ARTIFACT_PUBLISH_SNAPSHOT") ?: "true") == "true"
     version = if(artifactSnapshot) "$artifactVersion-SNAPSHOT" else artifactVersion
 }
