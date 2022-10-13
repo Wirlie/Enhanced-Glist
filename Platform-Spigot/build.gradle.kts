@@ -18,7 +18,7 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
     implementation("com.rabbitmq:amqp-client:5.16.0")
-    implementation("io.lettuce:lettuce-core:6.2.0.RELEASE")
+    implementation("io.lettuce:lettuce-core:6.2.1.RELEASE")
 
     // Third Party libraries with public API
     compileOnly("net.essentialsx:EssentialsX:2.19.7")

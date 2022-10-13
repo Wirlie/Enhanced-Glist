@@ -26,7 +26,7 @@ dependencies {
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
     implementation("com.google.code.gson:gson:2.9.1")
     implementation("com.rabbitmq:amqp-client:5.16.0")
-    implementation("io.lettuce:lettuce-core:6.2.0.RELEASE")
+    implementation("io.lettuce:lettuce-core:6.2.1.RELEASE")
 
     // Caffeine for Cache
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
