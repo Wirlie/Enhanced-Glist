@@ -87,7 +87,9 @@ class PluginUpdater(
             val latestRelease = releases.maxByOrNull { it.releaseDate }!!
 
             if(ourRelease != null) {
-                logger.info("[Updater] Version found from spigot: ${ourRelease.name}")
+                if(firstCheck) {
+                    logger.info("[Updater] Version found from spigot: ${ourRelease.name}")
+                }
                 if(ourRelease.name != latestRelease.name) {
                     // If our release does not match the latest release published at SpigotMC then an update is available...
                     hasUpdate = true
