@@ -119,7 +119,7 @@ class SlistCommand<S>(
             }
 
             // Ok, current this server to list players
-            server = PlatformServerGroup(currentServer.getName(), listOf(currentServer), false)
+            server = PlatformServerGroup(platform, currentServer.getName(), listOf(currentServer), false)
         }
 
         if(server == null) {
@@ -238,7 +238,7 @@ class SlistCommand<S>(
             return listOf()
         }
 
-        return platform.getAllServersGrouped().map { it.getName().lowercase() }.filter { args.isEmpty() || it.contains(args[0], true) }
+        return platform.getAllServersGrouped(executor).map { it.getName().lowercase() }.filter { args.isEmpty() || it.contains(args[0], true) }
     }
 
 }

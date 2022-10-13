@@ -20,31 +20,14 @@
 
 package dev.wirlie.glist.updater
 
-import org.spongepowered.configurate.objectmapping.ConfigSerializable
+class SpigotReleaseModel {
 
-@ConfigSerializable
-class MetaDataProperties {
+    val downloads: Int = 0
 
-    var build = BuildProperties()
+    val name: String = "unknown"
 
-    @ConfigSerializable
-    class BuildProperties {
+    val releaseDate: Long = 0L
 
-        var targetRelease = "unknown"
-
-        var project = "unknown"
-
-        var number = "unknown"
-
-        var branch = "unknown"
-
-        var fullHash = "unknown"
-
-        var timestamp = "unknown"
-
-        var version = "unknown"
-
-
-    }
+    val id: Int = 0
 
 }

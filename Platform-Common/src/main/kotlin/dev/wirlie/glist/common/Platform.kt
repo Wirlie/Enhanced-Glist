@@ -27,6 +27,7 @@ import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.configuration.sections.GroupServersSection
 import dev.wirlie.glist.common.configuration.sections.IgnoreServersSection
 import dev.wirlie.glist.common.configuration.sections.UpdatesSection
+import dev.wirlie.glist.common.display.PlayersDataProvider
 import dev.wirlie.glist.common.extensions.miniMessage
 import dev.wirlie.glist.common.gui.GUIManager
 import dev.wirlie.glist.common.hooks.HookManager
@@ -60,6 +61,7 @@ import kotlin.math.max
 abstract class Platform<S, P, C>: UpdaterScheduler {
 
     lateinit var pluginFolder: File
+    lateinit var pluginVersion: String
     lateinit var logger: PlatformLogger
 
     lateinit var translatorManager: TranslatorManager
@@ -125,6 +127,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             updaterConfig.notify.console.notificationInterval,
             logger,
             pluginFolder,
+            pluginVersion,
             updaterConfig.notify.console.enable
         )
         if(updaterConfig.checkForUpdates) {
@@ -220,6 +223,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             updaterConfig.notify.console.notificationInterval,
             logger,
             pluginFolder,
+            pluginVersion,
             updaterConfig.notify.console.enable
         )
         if(updaterConfig.checkForUpdates) {
@@ -244,8 +248,6 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
     abstract fun getAllServers(): List<PlatformServer<S>>
 
     abstract fun getServerByName(name: String): PlatformServer<S>?
-
-    abstract fun getConnectedPlayersAmount(): Int
 
     abstract fun registerHooks()
 
@@ -292,7 +294,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             // No group, try to return a server directly
             return getServerByName(name)?.run {
                 if(!ignoreServers.shouldIgnore(this.getName())) {
-                    PlatformServerGroup(this.getName(), listOf(this), false)
+                    PlatformServerGroup(this@Platform, this.getName(), listOf(this), false)
                 } else {
                     null
                 }
@@ -306,10 +308,10 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             return null
         }
 
-        return PlatformServerGroup(groupConfiguration.serverName, servers)
+        return PlatformServerGroup(this, groupConfiguration.serverName, servers)
     }
 
-    fun getAllServersGrouped(): List<PlatformServerGroup<S>> {
+    fun getAllServersGrouped(executor: PlatformExecutor<S>): List<PlatformServerGroup<S>> {
         val ignoreServersConfiguration = configuration.getSection(IgnoreServersSection::class.java)
         val groupsConfiguration = configuration.getSection(GroupServersSection::class.java)
         val allServers = getAllServers()
@@ -319,14 +321,14 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             val matchedServers = resolveServerGroupByConfiguration(serverConfig, allServers, ignoreServersConfiguration)
 
             if(matchedServers.isNotEmpty()) {
-                groups.add(PlatformServerGroup(serverConfig.serverName, matchedServers))
+                groups.add(PlatformServerGroup(this, serverConfig.serverName, matchedServers))
             }
         }
 
         // Make groups for servers without group
         allServers.filter { s -> groups.none { g -> g.getServers().contains(s) } }.forEach {
             if (!ignoreServersConfiguration.shouldIgnore(it.getName())) {
-                groups.add(PlatformServerGroup(it.getName(), listOf(it), byConfiguration = false))
+                groups.add(PlatformServerGroup(this, it.getName(), listOf(it), byConfiguration = false))
             }
         }
 
@@ -339,7 +341,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
                 if(minPlayers < 0) {
                     minPlayers = 0
                 }
-                this.filter { it.getPlayersCount() >= minPlayers }
+                this.filter { it.getPlayersFiltered(executor).provideData().size >= minPlayers }
             } else {
                 this
             }
@@ -393,6 +395,12 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
     abstract fun getPlayerByUUID(uuid: UUID): PlatformExecutor<S>?
 
     abstract fun reloadMessenger()
+
+    fun getPlayersFiltered(executor: PlatformExecutor<S>): PlayersDataProvider<S> {
+        return PlayersDataProvider(executor, this, getAllPlayers())
+    }
+
+    fun fakePlayerCountForTest() = 0
 
     companion object {
 

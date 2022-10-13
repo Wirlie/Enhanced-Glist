@@ -74,7 +74,7 @@ tasks.withType<ProcessResources> {
 
     inputs.properties(props)
     filteringCharset = "UTF-8"
-    filesMatching(listOf("metadata.conf", "config.conf", "plugin.yml")) {
+    filesMatching(listOf("config.conf", "plugin.yml")) {
         expand(props)
     }
 }

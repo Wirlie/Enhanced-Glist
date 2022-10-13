@@ -70,6 +70,7 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
             updaterConfiguration.notify.console.notificationInterval,
             this,
             dataFolder,
+            description.version,
             updaterConfiguration.notify.console.enable
         )
         if(updaterConfiguration.checkForUpdates) {
@@ -155,6 +156,7 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
             updaterConfiguration.notify.console.notificationInterval,
             this,
             dataFolder,
+            description.version,
             updaterConfiguration.notify.console.enable
         )
         if(updaterConfiguration.checkForUpdates) {

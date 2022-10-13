@@ -95,7 +95,7 @@ class ServersListGUIDisplay<S>(
                 }
 
                 val item = if(customIcon == null) {
-                    val itemSet = ItemStack(generalItem.material, min(max(if(generalItem.amount == -1) serverItem.getPlayersCount() else generalItem.amount, 1), 64))
+                    val itemSet = ItemStack(generalItem.material, min(max(if(generalItem.amount == -1) serverItem.getPlayersFiltered(executor).provideData().size else generalItem.amount, 1), 64))
 
                     itemSet.displayName(
                         platform.toPlatformComponent(
@@ -127,7 +127,7 @@ class ServersListGUIDisplay<S>(
 
                     itemSet
                 } else {
-                    val itemSet = ItemStack(customIcon.material, min(max(if(customIcon.amount == -1) serverItem.getPlayersCount() else customIcon.amount, 1), 64))
+                    val itemSet = ItemStack(customIcon.material, min(max(if(customIcon.amount == -1) serverItem.getPlayersFiltered(executor).provideData().size else customIcon.amount, 1), 64))
 
                     itemSet.displayName(
                         platform.toPlatformComponent(
@@ -396,7 +396,7 @@ class ServersListGUIDisplay<S>(
     private fun serverTagResolvers(server: PlatformServerGroup<S>): Array<TagResolver> {
         return mutableListOf(
             TagResolver.resolver("server-name", Tag.inserting(Component.text(server.getName()))),
-            TagResolver.resolver("player-count", Tag.inserting(Component.text(server.getPlayersCount()))),
+            TagResolver.resolver("player-count", Tag.inserting(Component.text(server.getPlayersFiltered(executor).provideData().size))),
         ).toTypedArray()
     }
 

@@ -77,6 +77,7 @@ class EnhancedGlistVelocity {
             reloadMessenger()
         }
         platform.pluginFolder = pluginDirectory.toFile()
+        platform.pluginVersion = BuildConstants.VERSION
         platform.console = proxyServer.consoleCommandSource
         platform.setupConfig()
 

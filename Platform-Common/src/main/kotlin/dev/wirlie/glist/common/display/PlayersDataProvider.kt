@@ -27,7 +27,7 @@ import dev.wirlie.glist.common.platform.PlatformExecutor
 
 class PlayersDataProvider<S>(
     val executor: PlatformExecutor<S>,
-    val platform: Platform<*,*,*>,
+    val platform: Platform<S,*,*>,
     data: List<PlatformExecutor<S>>
 ): FilteredDataProvider<PlatformExecutor<S>>(
     data

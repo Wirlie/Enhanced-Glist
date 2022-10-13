@@ -22,6 +22,7 @@ package dev.wirlie.glist.common.translation
 
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.configuration.sections.CommandsSection
+import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServerGroup
 import dev.wirlie.glist.common.util.AdventureUtil
 import net.kyori.adventure.text.Component
@@ -74,14 +75,14 @@ class TranslationMessages {
 
             var bars: Map<IntRange, ConfigurationNode> = mutableMapOf()
 
-            fun buildServersComponent(platform: Platform<*, *, *>, servers: List<PlatformServerGroup<*>>): Component {
+            fun <S> buildServersComponent(platform: Platform<S, *, *>, servers: List<PlatformServerGroup<S>>, executor: PlatformExecutor<S>): Component {
 
                 var component = Component.empty()
 
                 for((index, server) in servers.withIndex()) {
-                    val playerAmount = server.getPlayersCount()
-                    val totalPlayers = platform.getConnectedPlayersAmount()
-                    val percent = if(totalPlayers == 0) 0.0 else playerAmount * 100.0 / platform.getConnectedPlayersAmount()
+                    val playerAmount = server.getPlayersFiltered(executor).provideData().size
+                    val totalPlayers = platform.getPlayersFiltered(executor).provideData().size
+                    val percent = if(totalPlayers == 0) 0.0 else playerAmount * 100.0 / totalPlayers
                     var barsToUse = "<dark_gray>???????????????</dark_gray>"
 
                     for(entry in bars.entries) {

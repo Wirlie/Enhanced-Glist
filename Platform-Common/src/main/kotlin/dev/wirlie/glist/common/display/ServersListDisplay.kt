@@ -71,7 +71,7 @@ class ServersListDisplay<S>(
                 "total-pages", Tag.selfClosingInserting(Component.text("$totalPages"))
             ),
             TagResolver.resolver(
-                "players-amount", Tag.selfClosingInserting(Component.text("${platform.getConnectedPlayersAmount()}"))
+                "players-amount", Tag.selfClosingInserting(Component.text("${platform.getPlayersFiltered(executor).provideData().size}"))
             ),
             TagResolver.resolver(
                 "slist-label", Tag.selfClosingInserting(Component.text(slistLabel))
@@ -79,7 +79,7 @@ class ServersListDisplay<S>(
             TagResolver.resolver(
                 "servers",
                 Tag.selfClosingInserting(
-                    serversFormat.buildServersComponent(platform, page.items)
+                    serversFormat.buildServersComponent(platform, page.items, executor)
                 )
             ),
             TagResolver.resolver(
