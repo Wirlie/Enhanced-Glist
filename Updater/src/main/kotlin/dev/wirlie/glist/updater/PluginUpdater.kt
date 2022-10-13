@@ -93,9 +93,9 @@ class PluginUpdater(
                     hasUpdate = true
                 }
             } else {
-                logger.info("[Updater] Failed to retrieve current version from spigot (Not found: ${pluginVersion.replace("-SNAPSHOT", "")}), assuming that this version is out of date...")
+                //logger.info("[Updater] Failed to retrieve current version from spigot (Not found: ${pluginVersion.replace("-SNAPSHOT", "")}), assuming that this version is out of date...")
                 // We cannot find our release, so probably this version is a really outdated version or is an unpublished version
-                hasUpdate = true
+                //hasUpdate = true
             }
 
             if(hasUpdate) {
