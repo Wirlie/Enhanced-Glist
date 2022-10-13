@@ -341,7 +341,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
                 if(minPlayers < 0) {
                     minPlayers = 0
                 }
-                this.filter { it.getFilteredData(executor).provideData().size >= minPlayers }
+                this.filter { it.getPlayersFiltered(executor).provideData().size >= minPlayers }
             } else {
                 this
             }
@@ -396,7 +396,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
 
     abstract fun reloadMessenger()
 
-    fun getFilteredData(executor: PlatformExecutor<S>): PlayersDataProvider<S> {
+    fun getPlayersFiltered(executor: PlatformExecutor<S>): PlayersDataProvider<S> {
         return PlayersDataProvider(executor, this, getAllPlayers())
     }
 

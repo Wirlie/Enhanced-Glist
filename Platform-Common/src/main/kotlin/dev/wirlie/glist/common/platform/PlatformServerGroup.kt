@@ -59,7 +59,7 @@ class PlatformServerGroup<S>(
         return servers.flatMap { it.getPlayers() }
     }
 
-    fun getFilteredData(executor: PlatformExecutor<S>): PlayersDataProvider<S> {
+    fun getPlayersFiltered(executor: PlatformExecutor<S>): PlayersDataProvider<S> {
         return PlayersDataProvider(executor, platform, getPlayers())
     }
 

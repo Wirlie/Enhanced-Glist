@@ -80,8 +80,8 @@ class TranslationMessages {
                 var component = Component.empty()
 
                 for((index, server) in servers.withIndex()) {
-                    val playerAmount = server.getFilteredData(executor).provideData().size
-                    val totalPlayers = platform.getFilteredData(executor).provideData().size
+                    val playerAmount = server.getPlayersFiltered(executor).provideData().size
+                    val totalPlayers = platform.getPlayersFiltered(executor).provideData().size
                     val percent = if(totalPlayers == 0) 0.0 else playerAmount * 100.0 / totalPlayers
                     var barsToUse = "<dark_gray>???????????????</dark_gray>"
 
