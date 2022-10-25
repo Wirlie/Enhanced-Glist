@@ -15,7 +15,7 @@ dependencies {
     annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
     compileOnly("net.luckperms:api:5.4")
-    implementation("com.google.code.gson:gson:2.9.1")
+    implementation("com.google.code.gson:gson:2.10")
     implementation("com.rabbitmq:amqp-client:5.16.0")
     implementation("io.lettuce:lettuce-core:6.2.1.RELEASE")
 

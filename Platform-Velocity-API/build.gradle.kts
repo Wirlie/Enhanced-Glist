@@ -12,7 +12,7 @@ dependencies {
     kapt("com.velocitypowered:velocity-api:3.1.1")
     compileOnly("net.kyori:adventure-text-serializer-legacy:4.11.0")
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("com.google.code.gson:gson:2.9.1")
+    compileOnly("com.google.code.gson:gson:2.10")
 
     compileOnly(project(":EnhancedGlist-Common"))
 
