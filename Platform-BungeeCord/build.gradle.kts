@@ -29,7 +29,7 @@ dependencies {
     implementation("io.lettuce:lettuce-core:6.2.1.RELEASE")
 
     // Caffeine for Cache
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.2")
 
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")

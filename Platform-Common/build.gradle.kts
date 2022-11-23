@@ -31,7 +31,7 @@ dependencies {
     compileOnly("dev.simplix:protocolize-api:2.2.2")
 
     // Caffeine for Cache
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.2")
 
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")

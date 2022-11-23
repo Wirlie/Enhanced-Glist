@@ -17,7 +17,7 @@ dependencies {
     compileOnly(project(":EnhancedGlist-Common"))
 
     // Caffeine for Cache
-    compileOnly("com.github.ben-manes.caffeine:caffeine:3.1.1")
+    compileOnly("com.github.ben-manes.caffeine:caffeine:3.1.2")
 
     // Configurate - Sponge
     compileOnly("org.spongepowered:configurate-yaml:4.1.2")
