@@ -16,7 +16,7 @@ dependencies {
     compileOnly("net.md-5:bungeecord:1.19")
     compileOnly("net.luckperms:api:5.4")
 
-    compileOnly("net.kyori:adventure-api:4.11.0")
+    compileOnly("net.kyori:adventure-api:4.12.0")
     compileOnly("net.kyori:adventure-platform-bungeecord:4.1.2")
     compileOnly("net.kyori:adventure-text-minimessage:4.11.0")
     compileOnly("net.kyori:adventure-text-serializer-legacy:4.11.0")

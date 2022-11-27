@@ -20,7 +20,7 @@ dependencies {
 
     compileOnly("net.md-5:bungeecord:1.19")
 
-    implementation("net.kyori:adventure-api:4.11.0")
+    implementation("net.kyori:adventure-api:4.12.0")
     implementation("net.kyori:adventure-platform-bungeecord:4.1.2")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")

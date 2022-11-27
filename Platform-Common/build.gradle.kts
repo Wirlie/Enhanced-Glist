@@ -20,7 +20,7 @@ dependencies {
     implementation(project(":EnhancedGlist-Updater"))
     implementation(project(":EnhancedGlist-Messenger"))
 
-    implementation("net.kyori:adventure-api:4.11.0")
+    implementation("net.kyori:adventure-api:4.12.0")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
     implementation("net.kyori:adventure-text-serializer-gson:4.11.0")
