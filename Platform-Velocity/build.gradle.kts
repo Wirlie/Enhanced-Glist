@@ -13,9 +13,9 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.1.1")
     kapt("com.velocitypowered:velocity-api:3.1.1")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.12.0")
     compileOnly("net.luckperms:api:5.4")
-    implementation("com.google.code.gson:gson:2.9.1")
+    implementation("com.google.code.gson:gson:2.10")
     implementation("com.rabbitmq:amqp-client:5.16.0")
     implementation("io.lettuce:lettuce-core:6.2.1.RELEASE")
 
@@ -25,7 +25,7 @@ dependencies {
     implementation(project(":EnhancedGlist-Messenger"))
 
     // Caffeine for Cache
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.2")
 
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
