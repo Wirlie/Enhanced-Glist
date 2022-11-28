@@ -16,7 +16,7 @@ dependencies {
     implementation("net.kyori:adventure-api:4.11.0")
     implementation("net.kyori:adventure-platform-bukkit:4.1.2")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.12.0")
     implementation("com.rabbitmq:amqp-client:5.16.0")
     implementation("io.lettuce:lettuce-core:6.2.1.RELEASE")
 
