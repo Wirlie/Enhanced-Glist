@@ -23,7 +23,7 @@ dependencies {
     implementation("net.kyori:adventure-api:4.11.0")
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
     implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
-    implementation("net.kyori:adventure-text-serializer-gson:4.11.0")
+    implementation("net.kyori:adventure-text-serializer-gson:4.12.0")
     implementation("com.google.code.gson:gson:2.9.1")
 
     compileOnly("net.luckperms:api:5.4")
