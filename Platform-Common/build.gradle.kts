@@ -28,7 +28,7 @@ dependencies {
 
     compileOnly("net.luckperms:api:5.4")
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("dev.simplix:protocolize-api:2.2.2")
+    compileOnly("dev.simplix:protocolize-api:2.2.3")
 
     // Caffeine for Cache
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.2")
@@ -38,9 +38,9 @@ dependencies {
     implementation("org.spongepowered:configurate-hocon:4.1.2")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.mockito:mockito-core:4.9.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:4.9.0")
-    testImplementation("org.mockito:mockito-inline:4.9.0")
+    testImplementation("org.mockito:mockito-core:4.10.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:4.10.0")
+    testImplementation("org.mockito:mockito-inline:4.10.0")
 
 }
 
