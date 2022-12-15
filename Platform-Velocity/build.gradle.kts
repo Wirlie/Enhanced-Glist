@@ -17,7 +17,7 @@ dependencies {
     compileOnly("net.luckperms:api:5.4")
     implementation("com.google.code.gson:gson:2.10")
     implementation("com.rabbitmq:amqp-client:5.16.0")
-    implementation("io.lettuce:lettuce-core:6.2.1.RELEASE")
+    implementation("io.lettuce:lettuce-core:6.2.2.RELEASE")
 
     implementation(project(":EnhancedGlist-Common"))
     implementation(project(":EnhancedGlist-Velocity-API"))
