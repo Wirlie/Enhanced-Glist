@@ -13,8 +13,16 @@
         "minor",
         "patch"
       ],
+      "labels": ["dependencies", "minor update"],
       "groupName": "all non-major dependencies",
       "groupSlug": "all-minor-patch"
+    },
+    {
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "labels": ["dependencies", "major update"],
+      "dependencyDashboardApproval": true
     }
   ]
 }
