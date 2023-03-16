@@ -20,27 +20,27 @@ dependencies {
     implementation(project(":EnhancedGlist-Updater"))
     implementation(project(":EnhancedGlist-Messenger"))
 
-    implementation("net.kyori:adventure-api:4.12.0")
-    implementation("net.kyori:adventure-text-minimessage:4.12.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.12.0")
-    implementation("net.kyori:adventure-text-serializer-gson:4.12.0")
-    implementation("com.google.code.gson:gson:2.10")
+    implementation("net.kyori:adventure-api:4.13.0")
+    implementation("net.kyori:adventure-text-minimessage:4.13.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.13.0")
+    implementation("net.kyori:adventure-text-serializer-gson:4.13.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
     compileOnly("net.luckperms:api:5.4")
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("dev.simplix:protocolize-api:2.2.3")
+    compileOnly("dev.simplix:protocolize-api:2.2.6")
 
     // Caffeine for Cache
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.2")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
 
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.mockito:mockito-core:4.10.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:4.10.0")
-    testImplementation("org.mockito:mockito-inline:4.10.0")
+    testImplementation("org.mockito:mockito-core:4.11.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:4.11.0")
+    testImplementation("org.mockito:mockito-inline:4.11.0")
 
 }
 

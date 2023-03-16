@@ -13,12 +13,12 @@ repositories {
 dependencies {
     compileOnly("org.spigotmc:spigot:1.8.8-R0.1")
 
-    implementation("net.kyori:adventure-api:4.12.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.2.0")
-    implementation("net.kyori:adventure-text-minimessage:4.12.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.12.0")
+    implementation("net.kyori:adventure-api:4.13.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.0")
+    implementation("net.kyori:adventure-text-minimessage:4.13.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.13.0")
     implementation("com.rabbitmq:amqp-client:5.16.0")
-    implementation("io.lettuce:lettuce-core:6.2.2.RELEASE")
+    implementation("io.lettuce:lettuce-core:6.2.3.RELEASE")
 
     // Third Party libraries with public API
     compileOnly("net.essentialsx:EssentialsX:2.19.7")

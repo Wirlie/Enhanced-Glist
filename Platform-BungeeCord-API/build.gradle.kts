@@ -16,17 +16,17 @@ dependencies {
     compileOnly("net.md-5:bungeecord:1.19")
     compileOnly("net.luckperms:api:5.4")
 
-    compileOnly("net.kyori:adventure-api:4.12.0")
-    compileOnly("net.kyori:adventure-platform-bungeecord:4.2.0")
-    compileOnly("net.kyori:adventure-text-minimessage:4.12.0")
-    compileOnly("net.kyori:adventure-text-serializer-legacy:4.12.0")
+    compileOnly("net.kyori:adventure-api:4.13.0")
+    compileOnly("net.kyori:adventure-platform-bungeecord:4.3.0")
+    compileOnly("net.kyori:adventure-text-minimessage:4.13.0")
+    compileOnly("net.kyori:adventure-text-serializer-legacy:4.13.0")
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("com.google.code.gson:gson:2.10")
+    compileOnly("com.google.code.gson:gson:2.10.1")
 
     compileOnly(project(":EnhancedGlist-Common"))
 
     // Caffeine for Cache
-    compileOnly("com.github.ben-manes.caffeine:caffeine:3.1.2")
+    compileOnly("com.github.ben-manes.caffeine:caffeine:3.1.5")
 
     // Configurate - Sponge
     compileOnly("org.spongepowered:configurate-yaml:4.1.2")
