@@ -35,6 +35,9 @@ dependencies {
 
     implementation(project(":EnhancedGlist-Updater"))
     implementation(project(":EnhancedGlist-Messenger"))
+
+    // CMI
+    compileOnly(files("external-libraries/CMI-API9.3.1.5.jar"))
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

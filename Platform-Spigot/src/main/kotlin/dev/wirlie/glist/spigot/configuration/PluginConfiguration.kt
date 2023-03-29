@@ -83,6 +83,8 @@ class PluginConfiguration {
 
         var staffFacilities = StaffFacilitiesConfiguration()
 
+        var cmi = CMIConfiguration()
+
         @ConfigSerializable
         class JetsAntiAfkProConfiguration {
 
@@ -135,6 +137,13 @@ class PluginConfiguration {
 
         @ConfigSerializable
         class StaffFacilitiesConfiguration {
+
+            var enable = true
+
+        }
+
+        @ConfigSerializable
+        class CMIConfiguration {
 
             var enable = true
 
