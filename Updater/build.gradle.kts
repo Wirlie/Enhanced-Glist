@@ -10,7 +10,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:5.0.0-SNAPSHOT")
 
     // Spigot 1.8 uses 2.2.4
-    compileOnly("com.google.code.gson:gson:2.9.1")
+    compileOnly("com.google.code.gson:gson:2.10.1")
 }
 
 tasks.withType<JavaCompile> {

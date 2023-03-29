@@ -20,16 +20,16 @@ dependencies {
 
     compileOnly("net.md-5:bungeecord:1.19")
 
-    implementation("net.kyori:adventure-api:4.11.0")
-    implementation("net.kyori:adventure-platform-bungeecord:4.1.2")
-    implementation("net.kyori:adventure-text-minimessage:4.11.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.11.0")
-    implementation("com.google.code.gson:gson:2.9.1")
+    implementation("net.kyori:adventure-api:4.13.0")
+    implementation("net.kyori:adventure-platform-bungeecord:4.3.0")
+    implementation("net.kyori:adventure-text-minimessage:4.13.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.13.0")
+    implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.rabbitmq:amqp-client:5.16.0")
-    implementation("io.lettuce:lettuce-core:6.2.1.RELEASE")
+    implementation("io.lettuce:lettuce-core:6.2.3.RELEASE")
 
     // Caffeine for Cache
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.1")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
 
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
