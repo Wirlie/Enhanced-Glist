@@ -1,6 +1,5 @@
 
 repositories {
-    mavenLocal()
     // Essentials repository
     maven {
         url = uri("https://repo.essentialsx.net/releases/")
@@ -17,6 +16,7 @@ repositories {
     maven {
         url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     }
+    mavenLocal()
 }
 
 dependencies {
@@ -30,7 +30,9 @@ dependencies {
     implementation("io.lettuce:lettuce-core:6.2.3.RELEASE")
 
     // Third Party libraries with public API
-    compileOnly("net.essentialsx:EssentialsX:2.19.7")
+    compileOnly("net.essentialsx:EssentialsX:2.19.7") {
+        exclude("org.spigotmc", "spigot-api")
+    }
     compileOnly("com.github.mbax:VanishNoPacket:3.22")
     compileOnly("com.github.xtomyserrax:StaffFacilities:5.0.8")
     compileOnly("com.github.LeonMangler:PremiumVanishAPI:2.7.11-2")

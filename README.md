@@ -2,21 +2,27 @@
 [![Build Status](https://ci.wirlie.net/job/Enhanced-Glist/job/develop/badge/icon?subject=last%20develop%20build%20-%20build%20%23${buildNumber}&config=glistStatusBadge&style=flat-square)](https://ci.wirlie.net/job/Enhanced-Glist/job/develop/)
 
 # About
-Enhanced Glist is a high-configurable plugin that enhances the /glist command. Currently compatible with BungeeCord and Velocity.
+Enhanced Glist is a high-configurable plugin that enhances the /glist command. Currently compatible with BungeeCord and Velocity, for
+more information go to the SpigotMC page: https://www.spigotmc.org/resources/enhanced-glist-bungeecord-velocity.53295/
 
 # Compiling
-Compilation requires JDK 11 and up.  
-To compile the plugin, run `./gradlew build` from the terminal.  
-Once the plugin compiles, grab the jar from `/compiled` folder.
+1. Compilation requires JDK 11 and up.  
+2. To build the plugin run `./gradlew build` from the terminal.
+3. To get .jar files run `./gradlew shadowJar` from the terminal.
+4. Once plugin compiles, grab the jar from `/compiled` folder.
+   * `EnhancedGlist-BungeeCord-XXX.jar` - BungeeCord version.
+   * `EnhancedGlist-Velocity-XXX.jar` - Velocity version.
+   * `EnhancedGlist-Spigot-Bridge-XXX.jar` - Spigot Bridge version.
 
 # Links
+* Documentation: https://docs.wirlie.net/shelves/enhanced-glist
 * GitHub releases: https://github.com/Wirlie/Enhanced-Glist/releases
 * SpigotMC: https://www.spigotmc.org/resources/enhanced-glist-bungeecord-velocity.53295/
 * Experimental Builds: https://ci.wirlie.net/job/Enhanced%20Glist-DEV/
 * Stable Builds: https://ci.wirlie.net/job/Enhanced%20Glist/
 
-Supporting my work:  
-* Github Sponsor: https://github.com/sponsors/Wirlie
+Support my work:  
+* Become a Sponsor: https://github.com/sponsors/Wirlie
 
 # Issues
 Please feel free to open an [Issue](https://github.com/Wirlie/Enhanced-Glist/issues) if:
