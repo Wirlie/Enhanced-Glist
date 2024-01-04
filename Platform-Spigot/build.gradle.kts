@@ -1,17 +1,26 @@
 
 repositories {
     mavenLocal()
-    // Public Servers
+    // Essentials repository
     maven {
         url = uri("https://repo.essentialsx.net/releases/")
     }
+    // Jitpack repository
     maven {
         url = uri("https://jitpack.io")
+    }
+    // PaperMC repository
+    maven {
+        url = uri("https://papermc.io/repo/repository/maven-releases/")
+    }
+    // SpigotMC repository
+    maven {
+        url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     }
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot:1.8.8-R0.1")
+    compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
 
     implementation("net.kyori:adventure-api:4.13.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.0")
@@ -56,8 +65,6 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("io.lettuce", "dev.wirlie.shaded.io.lettuce")
     relocate("okhttp3", "dev.wirlie.shaded.okhttp3")
 }
-
-
 
 tasks.withType<ProcessResources> {
 
