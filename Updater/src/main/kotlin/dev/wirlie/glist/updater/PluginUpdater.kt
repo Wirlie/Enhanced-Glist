@@ -72,30 +72,13 @@ class PluginUpdater(
             val releases = getSpigotReleases()
             val versionExpected = pluginVersion.replace("-SNAPSHOT", "")
 
-            var ourRelease: SpigotReleaseModel? = null
-
-            // Try to get our release from published releases at SpigotMC
-            for(release in releases) {
-                if(release.name.trim().equals(versionExpected, true)) {
-                    // Release found!! At this point we know our release timestamp
-                    ourRelease = release
-                    break
-                }
-            }
-
+            val ourRelease = releases.firstOrNull { release -> release.name.trim().equals(versionExpected, true) } ?: return@scheduleUpdaterCheckTask
             var hasUpdate = false
             val latestRelease = releases.maxByOrNull { it.releaseDate }!!
 
-            if(ourRelease != null) {
-                logger.info("[Updater] Version found from spigot: ${ourRelease.name}")
-                if(ourRelease.name != latestRelease.name) {
-                    // If our release does not match the latest release published at SpigotMC then an update is available...
-                    hasUpdate = true
-                }
-            } else {
-                //logger.info("[Updater] Failed to retrieve current version from spigot (Not found: ${pluginVersion.replace("-SNAPSHOT", "")}), assuming that this version is out of date...")
-                // We cannot find our release, so probably this version is a really outdated version or is an unpublished version
-                //hasUpdate = true
+            if(!ourRelease.name.equals(latestRelease.name, true)) {
+                // If our release does not match the latest release published at SpigotMC then an update is available...
+                hasUpdate = true
             }
 
             if(hasUpdate) {
