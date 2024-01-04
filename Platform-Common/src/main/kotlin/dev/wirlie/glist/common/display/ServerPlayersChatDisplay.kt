@@ -93,8 +93,8 @@ class ServerPlayersChatDisplay<S>(
                     pageControllerMessages.buildController(
                         page.hasPrevious,
                         page.hasNext,
-                        "/$slistLabel ${(page.pageNumber + 1) - 1}",
-                        "/$slistLabel ${(page.pageNumber + 1) + 1}",
+                        "/$slistLabel ${serverGroup.getName()} ${(page.pageNumber + 1) - 1}",
+                        "/$slistLabel ${serverGroup.getName()} ${(page.pageNumber + 1) + 1}",
                         page.pageNumber,
                         executor.isConsole()
                     )
