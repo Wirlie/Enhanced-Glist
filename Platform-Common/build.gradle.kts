@@ -20,18 +20,18 @@ dependencies {
     implementation(project(":enhancedglist-updater"))
     implementation(project(":enhancedglist-messenger"))
 
-    implementation("net.kyori:adventure-api:4.13.0")
-    implementation("net.kyori:adventure-text-minimessage:4.13.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.13.0")
-    implementation("net.kyori:adventure-text-serializer-gson:4.13.0")
+    implementation("net.kyori:adventure-api:4.15.0")
+    implementation("net.kyori:adventure-text-minimessage:4.15.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.15.0")
+    implementation("net.kyori:adventure-text-serializer-gson:4.15.0")
     implementation("com.google.code.gson:gson:2.10.1")
 
     compileOnly("net.luckperms:api:5.4")
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("dev.simplix:protocolize-api:2.2.6")
+    compileOnly("dev.simplix:protocolize-api:2.3.3")
 
     // Caffeine for Cache
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
