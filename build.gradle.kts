@@ -54,7 +54,7 @@ allprojects {
 }
 
 // Apply shadow plugin to all subprojects except for the API project.
-configure(subprojects.filter { !it.name.contains("-API") }) {
+configure(subprojects.filter { !it.name.contains("-api") }) {
     apply(plugin = "com.github.johnrengelman.shadow")
 }
 
@@ -85,7 +85,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 }
 
 // Only add Publishing task to -API projects
-configure(subprojects.filter { it.name.contains("-API") }) {
+configure(subprojects.filter { it.name.contains("-api") }) {
     val subProject = this
 
     publishing {
