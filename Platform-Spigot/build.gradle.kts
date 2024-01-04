@@ -20,6 +20,10 @@ repositories {
     maven {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
+    // Wirlie repository
+    maven {
+        url = uri("https://nexus.wirlie.net/repository/public-releases/")
+    }
     mavenLocal()
 }
 
@@ -50,6 +54,9 @@ dependencies {
 
     implementation(project(":enhancedglist-updater"))
     implementation(project(":enhancedglist-messenger"))
+
+    // CMI - Allocated in nexus.wirlie.net because CMI API does not have a hosted repository...
+    compileOnly("github.zrips:cmi-api:9.6.5.0")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
