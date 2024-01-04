@@ -13,6 +13,11 @@ if(project.rootProject.file("local.properties").exists()) {
     if (localProperties.contains("nexus-user-publish") && localProperties.contains("nexus-pass-publish")) {
         publishUsername = localProperties.getProperty("nexus-user-publish")
         publishPassword = localProperties.getProperty("nexus-pass-publish")
+        println("[INFO] Properties found from local.properties:")
+        println("[INFO] Publish user length: ${publishUsername.length}")
+        println("[INFO] Publish password length: ${publishPassword.length}")
+    } else {
+        println("[WARN] No properties found from local.properties: [nexus-user-publish] and [nexus-pass-publish]")
     }
 }
 
