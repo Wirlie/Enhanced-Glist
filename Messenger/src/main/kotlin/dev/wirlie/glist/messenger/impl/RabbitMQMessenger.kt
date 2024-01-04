@@ -33,7 +33,7 @@ class RabbitMQMessenger(
     val port: Int,
     private val userName: String,
     val password: String,
-    private val isProxy: Boolean
+    isProxy: Boolean
 ): PlatformMessenger(logger) {
 
     private val receiveExchangeName = if(isProxy) "egl-proxy" else "egl-servers"
@@ -58,7 +58,7 @@ class RabbitMQMessenger(
 
         logger.info("[RabbitMQ] Channels created, waiting for incoming messages...")
 
-        val deliverCallback = DeliverCallback { consumerTag: String?, delivery: Delivery ->
+        val deliverCallback = DeliverCallback { _, delivery: Delivery ->
             val unpacked = unpackMessage(delivery.body)
             receiveMessage(
                 "",

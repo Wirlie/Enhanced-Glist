@@ -22,10 +22,10 @@ package dev.wirlie.glist.messenger.api
 
 interface MessengerLogger {
 
-    fun info(text: String)
+    fun info(message: String)
 
-    fun severe(text: String)
+    fun severe(message: String)
 
-    fun warning(text: String)
+    fun warning(message: String)
 
 }

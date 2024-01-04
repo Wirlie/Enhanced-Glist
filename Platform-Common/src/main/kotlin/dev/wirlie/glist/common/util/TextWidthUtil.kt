@@ -182,7 +182,7 @@ object TextWidthUtil {
         charWidth113['.'] = 2
     }
 
-    const val lineMaxWidth = 490
+    const val LINE_MAX_WIDTH = 490
 
     fun estimateWidth(char: Char, version: Int): Int {
         val charsToUse = when (version) {
@@ -290,10 +290,10 @@ object TextWidthUtil {
     fun center(text: String): String {
         val spaceWidth = charWidth112[' ']!!
         val totalWidth = estimateWidth(text, VERSION_113)
-        if (totalWidth + spaceWidth >= lineMaxWidth) {
+        if (totalWidth + spaceWidth >= LINE_MAX_WIDTH) {
             return text //no se puede centrar
         }
-        val remainingSpace = lineMaxWidth - totalWidth
+        val remainingSpace = LINE_MAX_WIDTH - totalWidth
         val spacesToFit = remainingSpace / spaceWidth
         val initialSpacesToFit = spacesToFit / 2
         val finalString = StringBuilder()

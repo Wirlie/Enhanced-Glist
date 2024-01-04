@@ -115,11 +115,7 @@ class AntiAFKProHook(
         val afkPlayer = api.getAFKPlayer(player)
         val afkTime = afkPlayer?.secondsAFK ?: 0
 
-        if(afkTime >= settings.timeToTreatPlayerAsAfk || afkPlayer != null && afkPlayer.isPlayerAFKByCommand) {
-            return true
-        }
-
-        return false
+        return afkTime >= settings.timeToTreatPlayerAsAfk || afkPlayer != null && afkPlayer.isPlayerAFKByCommand
     }
 
     override fun isVanished(player: Player): Boolean? {

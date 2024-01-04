@@ -24,7 +24,6 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.io.File
 import java.net.URI
 
 class PluginUpdater(
@@ -32,8 +31,7 @@ class PluginUpdater(
     private val checkInterval: Int,
     private val consoleNotificationInterval: Int,
     val logger: SimpleLogger,
-    val pluginFolder: File,
-    val pluginVersion: String,
+    private val pluginVersion: String,
     private val consoleNotification: Boolean,
     private val checkForUpdates: Boolean
 ) {
@@ -66,7 +64,7 @@ class PluginUpdater(
 
         val response = client.newCall(request).execute()
 
-        return gson.fromJson(response.body!!.string(), object: TypeToken<Array<SpigotReleaseModel>>(){}.type)
+        return gson.fromJson(response.body.string(), object: TypeToken<Array<SpigotReleaseModel>>(){}.type)
     }
 
     fun stop() {

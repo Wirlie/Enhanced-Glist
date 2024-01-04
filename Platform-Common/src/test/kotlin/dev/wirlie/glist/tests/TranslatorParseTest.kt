@@ -20,30 +20,8 @@
 
 package dev.wirlie.glist.tests
 
-import dev.wirlie.glist.common.Platform
-import dev.wirlie.glist.common.PlatformLogger
-import dev.wirlie.glist.common.configuration.PlatformConfiguration
-import dev.wirlie.glist.common.platform.PlatformExecutor
-import dev.wirlie.glist.common.platform.PlatformServerGroup
-import dev.wirlie.glist.common.translation.Translator
-import dev.wirlie.glist.common.translation.TranslatorManager
-import dev.wirlie.glist.common.util.AdventureUtil
-import net.kyori.adventure.audience.Audience
-import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.ClickEvent
-import net.kyori.adventure.text.event.HoverEvent
-import net.kyori.adventure.text.minimessage.tag.Tag
-import net.kyori.adventure.text.minimessage.tag.resolver.Formatter
-import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.junit.jupiter.MockitoExtension
-import java.io.File
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 @ExtendWith(MockitoExtension::class)
 class TranslatorParseTest {

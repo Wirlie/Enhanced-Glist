@@ -22,6 +22,7 @@ package dev.wirlie.glist.messenger.api
 
 import java.util.UUID
 
+@Suppress("unused")
 abstract class MessageListener<T: SerializableMessage>(
     val clazz: Class<T>
 ) {

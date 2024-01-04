@@ -63,6 +63,7 @@ class PlatformServerGroup<S>(
         return PlayersDataProvider(executor, platform, getPlayers())
     }
 
+    @Suppress("SameReturnValue")
     fun fakePlayerCountForTest() = 0
 
 }

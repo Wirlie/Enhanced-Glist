@@ -69,7 +69,6 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
             updaterConfiguration.checkInterval,
             updaterConfiguration.notify.console.notificationInterval,
             this,
-            dataFolder,
             description.version,
             updaterConfiguration.notify.console.enable,
             updaterConfiguration.checkForUpdates
@@ -153,7 +152,6 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
             updaterConfiguration.checkInterval,
             updaterConfiguration.notify.console.notificationInterval,
             this,
-            dataFolder,
             description.version,
             updaterConfiguration.notify.console.enable,
             updaterConfiguration.checkForUpdates
