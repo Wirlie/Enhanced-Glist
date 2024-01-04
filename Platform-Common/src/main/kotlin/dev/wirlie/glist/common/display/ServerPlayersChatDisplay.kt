@@ -132,7 +132,7 @@ class ServerPlayersChatDisplay<S>(
 
         val columnsPerRow = platform.configuration.getSection(GeneralSection::class.java).playersPerRow
         val behaviorConfiguration = platform.configuration.getSection(BehaviorSection::class.java)
-        val columnWidth = TextWidthUtil.lineMaxWidth / columnsPerRow
+        val columnWidth = TextWidthUtil.LINE_MAX_WIDTH / columnsPerRow
         var component = Component.empty()
         var rowComponent = Component.empty()
         var columnIndex = 0
@@ -174,7 +174,7 @@ class ServerPlayersChatDisplay<S>(
             val onlyString = AdventureUtil.legacySectionSerialize(playerComponent)
             val width = TextWidthUtil.estimateWidth(onlyString, TextWidthUtil.VERSION_113)
 
-            if(columnIndex == 0 && width > TextWidthUtil.lineMaxWidth) {
+            if(columnIndex == 0 && width > TextWidthUtil.LINE_MAX_WIDTH) {
                 // String is longer than width of row
                 component = component.append(
                     AdventureUtil.parseMiniMessage(

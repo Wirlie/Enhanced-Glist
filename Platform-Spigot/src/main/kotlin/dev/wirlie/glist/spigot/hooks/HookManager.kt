@@ -126,6 +126,15 @@ class HookManager(val plugin: EnhancedGlistSpigot) {
                 plugin.logger.info("[Hook] StaffFacilities hook disabled by configuration.")
             }
         }
+
+        pluginManager.getPlugin("CMI")?.run {
+            if(config.hooks.cmi.enable) {
+                plugin.logger.info("[Hook] CMI plugin found.")
+                hooks.add(CMIHook(plugin).also { pluginManager.registerEvents(it, plugin) })
+            } else {
+                plugin.logger.info("[Hook] CMI hook disabled by configuration.")
+            }
+        }
     }
 
     fun getHooks() = hooks.toList()

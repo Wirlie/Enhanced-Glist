@@ -54,7 +54,7 @@ class PlatformLogger(
         warning(message, null)
     }
 
-    private fun warning(message: Component, throwable: Throwable?) {
+    private fun warning(message: Component, @Suppress("SameParameterValue") throwable: Throwable?) {
         console.sendMessage(
             Component.empty()
                 .append(prefix)
@@ -72,7 +72,7 @@ class PlatformLogger(
         error(message, null)
     }
 
-    private fun error(message: Component, throwable: Throwable?) {
+    private fun error(message: Component, @Suppress("SameParameterValue") throwable: Throwable?) {
         console.sendMessage(
             Component.empty()
                 .append(prefix)

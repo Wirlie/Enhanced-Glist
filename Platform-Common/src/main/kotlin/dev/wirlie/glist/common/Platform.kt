@@ -126,14 +126,10 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             updaterConfig.checkInterval,
             updaterConfig.notify.console.notificationInterval,
             logger,
-            pluginFolder,
             pluginVersion,
-            updaterConfig.notify.console.enable
+            updaterConfig.notify.console.enable,
+            updaterConfig.checkForUpdates
         )
-        if(updaterConfig.checkForUpdates) {
-            // Only check for updates if enabled
-            pluginUpdater.setup()
-        }
 
         // register messenger messages
         setupMessenger()
@@ -222,14 +218,10 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             updaterConfig.checkInterval,
             updaterConfig.notify.console.notificationInterval,
             logger,
-            pluginFolder,
             pluginVersion,
-            updaterConfig.notify.console.enable
+            updaterConfig.notify.console.enable,
+            updaterConfig.checkForUpdates
         )
-        if(updaterConfig.checkForUpdates) {
-            // Only check for updates if enabled
-            pluginUpdater.setup()
-        }
         // Reload Protocolize
         guiManager?.reload()
         logger.info(
@@ -243,6 +235,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
 
     abstract fun toPlatformExecutorPlayer(executor: P): PlatformExecutor<S>
 
+    @Suppress("unused")
     abstract fun toPlatformExecutorConsole(executor: C): PlatformExecutor<S>
 
     abstract fun getAllServers(): List<PlatformServer<S>>
@@ -400,6 +393,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
         return PlayersDataProvider(executor, this, getAllPlayers())
     }
 
+    @Suppress("SameReturnValue")
     fun fakePlayerCountForTest() = 0
 
     companion object {
