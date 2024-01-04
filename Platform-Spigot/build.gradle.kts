@@ -56,6 +56,7 @@ dependencies {
     implementation(project(":enhancedglist-messenger"))
 
     // CMI - Allocated in nexus.wirlie.net because CMI API does not have a hosted repository...
+    // CMI API - https://github.com/Zrips/CMI-API
     compileOnly("github.zrips:cmi-api:9.6.5.0")
 }
 
