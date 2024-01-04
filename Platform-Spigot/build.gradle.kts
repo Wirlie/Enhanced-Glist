@@ -1,17 +1,30 @@
 
 repositories {
-    mavenLocal()
-    // Public Servers
+    // Essentials repository
     maven {
         url = uri("https://repo.essentialsx.net/releases/")
     }
+    // Jitpack repository
     maven {
         url = uri("https://jitpack.io")
     }
+    // PaperMC repository
+    maven {
+        url = uri("https://papermc.io/repo/repository/maven-releases/")
+    }
+    // SpigotMC repository
+    maven {
+        url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    }
+    // BungeeCord repository
+    maven {
+        url = uri("https://oss.sonatype.org/content/repositories/snapshots")
+    }
+    mavenLocal()
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot:1.8.8-R0.1")
+    compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
 
     implementation("net.kyori:adventure-api:4.13.0")
     implementation("net.kyori:adventure-platform-bukkit:4.3.0")
@@ -21,7 +34,9 @@ dependencies {
     implementation("io.lettuce:lettuce-core:6.2.3.RELEASE")
 
     // Third Party libraries with public API
-    compileOnly("net.essentialsx:EssentialsX:2.19.7")
+    compileOnly("net.essentialsx:EssentialsX:2.19.7") {
+        exclude("org.spigotmc", "spigot-api")
+    }
     compileOnly("com.github.mbax:VanishNoPacket:3.22")
     compileOnly("com.github.xtomyserrax:StaffFacilities:5.0.8")
     compileOnly("com.github.LeonMangler:PremiumVanishAPI:2.7.11-2")
@@ -33,11 +48,8 @@ dependencies {
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
 
-    implementation(project(":EnhancedGlist-Updater"))
-    implementation(project(":EnhancedGlist-Messenger"))
-
-    // CMI
-    compileOnly(files("external-libraries/CMI-API9.3.1.5.jar"))
+    implementation(project(":enhancedglist-updater"))
+    implementation(project(":enhancedglist-messenger"))
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
@@ -59,8 +71,6 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
     relocate("io.lettuce", "dev.wirlie.shaded.io.lettuce")
     relocate("okhttp3", "dev.wirlie.shaded.okhttp3")
 }
-
-
 
 tasks.withType<ProcessResources> {
 

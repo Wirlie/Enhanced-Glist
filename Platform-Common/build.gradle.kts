@@ -17,8 +17,8 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":EnhancedGlist-Updater"))
-    implementation(project(":EnhancedGlist-Messenger"))
+    implementation(project(":enhancedglist-updater"))
+    implementation(project(":enhancedglist-messenger"))
 
     implementation("net.kyori:adventure-api:4.13.0")
     implementation("net.kyori:adventure-text-minimessage:4.13.0")

@@ -19,10 +19,10 @@ dependencies {
     implementation("com.rabbitmq:amqp-client:5.16.0")
     implementation("io.lettuce:lettuce-core:6.2.3.RELEASE")
 
-    implementation(project(":EnhancedGlist-Common"))
-    implementation(project(":EnhancedGlist-Velocity-API"))
-    implementation(project(":EnhancedGlist-Updater"))
-    implementation(project(":EnhancedGlist-Messenger"))
+    implementation(project(":enhancedglist-common"))
+    implementation(project(":enhancedglist-velocity-api"))
+    implementation(project(":enhancedglist-updater"))
+    implementation(project(":enhancedglist-messenger"))
 
     // Caffeine for Cache
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")

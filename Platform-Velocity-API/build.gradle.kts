@@ -14,7 +14,7 @@ dependencies {
     compileOnly("net.luckperms:api:5.4")
     compileOnly("com.google.code.gson:gson:2.10.1")
 
-    compileOnly(project(":EnhancedGlist-Common"))
+    compileOnly(project(":enhancedglist-common"))
 
     // Caffeine for Cache
     compileOnly("com.github.ben-manes.caffeine:caffeine:3.1.5")

@@ -77,7 +77,7 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
             pluginUpdater.setup()
         }
 
-        getCommand("egls")!!.executor = GlistExecutor(this)
+        getCommand("egls")!!.setExecutor(GlistExecutor(this))
 
         server.pluginManager.also { pluginManager ->
             pluginManager.registerEvents(PlayerJoinListener(this), this)
