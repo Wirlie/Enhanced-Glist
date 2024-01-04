@@ -71,11 +71,9 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
             this,
             dataFolder,
             description.version,
-            updaterConfiguration.notify.console.enable
+            updaterConfiguration.notify.console.enable,
+            updaterConfiguration.checkForUpdates
         )
-        if(updaterConfiguration.checkForUpdates) {
-            pluginUpdater.setup()
-        }
 
         getCommand("egls")!!.setExecutor(GlistExecutor(this))
 
@@ -157,11 +155,9 @@ class EnhancedGlistSpigot: JavaPlugin(), SimpleLogger, UpdaterScheduler, Messeng
             this,
             dataFolder,
             description.version,
-            updaterConfiguration.notify.console.enable
+            updaterConfiguration.notify.console.enable,
+            updaterConfiguration.checkForUpdates
         )
-        if(updaterConfiguration.checkForUpdates) {
-            pluginUpdater.setup()
-        }
     }
 
     override fun info(message: String) {

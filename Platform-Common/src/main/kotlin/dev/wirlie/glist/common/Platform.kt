@@ -128,12 +128,9 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             logger,
             pluginFolder,
             pluginVersion,
-            updaterConfig.notify.console.enable
+            updaterConfig.notify.console.enable,
+            updaterConfig.checkForUpdates
         )
-        if(updaterConfig.checkForUpdates) {
-            // Only check for updates if enabled
-            pluginUpdater.setup()
-        }
 
         // register messenger messages
         setupMessenger()
@@ -224,12 +221,9 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
             logger,
             pluginFolder,
             pluginVersion,
-            updaterConfig.notify.console.enable
+            updaterConfig.notify.console.enable,
+            updaterConfig.checkForUpdates
         )
-        if(updaterConfig.checkForUpdates) {
-            // Only check for updates if enabled
-            pluginUpdater.setup()
-        }
         // Reload Protocolize
         guiManager?.reload()
         logger.info(

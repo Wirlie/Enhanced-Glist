@@ -34,7 +34,8 @@ class PluginUpdater(
     val logger: SimpleLogger,
     val pluginFolder: File,
     val pluginVersion: String,
-    private val consoleNotification: Boolean
+    private val consoleNotification: Boolean,
+    private val checkForUpdates: Boolean
 ) {
 
     private val gson = GsonBuilder().setPrettyPrinting().create()
@@ -44,8 +45,16 @@ class PluginUpdater(
     var updateAvailable = false
     var updateDownloadURL = "https://www.spigotmc.org/resources/enhanced-glist-bungeecord-velocity.53295/"
 
-    fun setup() {
-        scheduleCheck()
+    init {
+        setup()
+    }
+
+    private fun setup() {
+        if(checkForUpdates) {
+            scheduleCheck()
+        } else {
+            logger.info("[Updater] Updater is disabled from config (check-for-updates = false).")
+        }
     }
 
     private fun getSpigotReleases(): Array<SpigotReleaseModel> {
