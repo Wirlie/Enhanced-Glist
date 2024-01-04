@@ -10,8 +10,10 @@ if(project.rootProject.file("local.properties").exists()) {
     val localProperties = Properties()
     localProperties.load(project.rootProject.file("local.properties").inputStream())
 
-    publishUsername = localProperties.getProperty("nexus-user-publish")
-    publishPassword = localProperties.getProperty("nexus-pass-publish")
+    if (localProperties.contains("nexus-user-publish") && localProperties.contains("nexus-pass-publish")) {
+        publishUsername = localProperties.getProperty("nexus-user-publish")
+        publishPassword = localProperties.getProperty("nexus-pass-publish")
+    }
 }
 
 // Plugins
