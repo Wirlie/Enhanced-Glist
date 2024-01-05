@@ -96,6 +96,7 @@ class PluginUpdater(
                 scheduleConsoleNotificationTask(latestRelease)
             } else {
                 if(firstCheck) {
+                    firstCheck = false
                     printUpToDateMessage(latestRelease)
                 }
             }
