@@ -15,7 +15,8 @@
       ],
       "labels": ["dependencies", "minor update"],
       "groupName": "all non-major dependencies",
-      "groupSlug": "all-minor-patch"
+      "groupSlug": "all-minor-patch",
+      "allowedVersions": "!/5.0.0-SNAPSHOT$/"
     },
     {
       "matchUpdateTypes": [
