@@ -25,6 +25,7 @@ import com.velocitypowered.api.proxy.Player
 import com.velocitypowered.api.proxy.ProxyServer
 import com.velocitypowered.api.proxy.server.RegisteredServer
 import com.velocitypowered.api.scheduler.ScheduledTask
+import dev.simplix.protocolize.api.chat.ChatElement
 import dev.wirlie.glist.common.Platform
 import dev.wirlie.glist.common.platform.PlatformExecutor
 import dev.wirlie.glist.common.platform.PlatformServer
@@ -107,9 +108,9 @@ class VelocityPlatform(
         server.commandManager.executeAsync(playerVelocity, command)
     }
 
-    override fun toPlatformComponent(component: Component): Any {
-        // Velocity already supports Adventure components (hurra!! BungeeCord is another story...)
-        return component
+    override fun toProtocolizeChatElement(component: Component): ChatElement<Any> {
+        // Velocity already supports Adventure components
+        return ChatElement.of(component)
     }
 
     override fun getAllPlayers(): List<PlatformExecutor<RegisteredServer>> {

@@ -71,7 +71,7 @@ class ServersListGUIDisplay<S>(
     override fun buildPageDisplay(page: Page<PlatformServerGroup<S>>) {
         inventory = GUIInventory(InventoryType.chestInventoryWithRows(menuRows)).also {
             it.title(
-                platform.toPlatformComponent(
+                platform.toProtocolizeChatElement(
                     AdventureUtil.parseMiniMessage(
                         configuration.title,
                         *commonTagResolvers(page),
@@ -98,7 +98,7 @@ class ServersListGUIDisplay<S>(
                     val itemSet = ItemStack(generalItem.material, min(max(if(generalItem.amount == -1) serverItem.getPlayersFiltered(executor).provideData().size else generalItem.amount, 1), 64))
 
                     itemSet.displayName(
-                        platform.toPlatformComponent(
+                        platform.toProtocolizeChatElement(
                             AdventureUtil.parseMiniMessage(
                                 generalItem.displayName,
                                 *commonTagResolvers(page),
@@ -109,7 +109,7 @@ class ServersListGUIDisplay<S>(
                     )
                     itemSet.lore(
                         generalItem.lore.map {
-                            platform.toPlatformComponent(
+                            platform.toProtocolizeChatElement(
                                 AdventureUtil.parseMiniMessage(
                                     it,
                                     *commonTagResolvers(page),
@@ -117,8 +117,7 @@ class ServersListGUIDisplay<S>(
                                     *playerTagResolvers(executor)
                                 ).decoration(TextDecoration.ITALIC, false)
                             )
-                        },
-                        false
+                        }
                     )
 
                     if(itemSet.itemType() == ItemType.PLAYER_HEAD) {
@@ -130,7 +129,7 @@ class ServersListGUIDisplay<S>(
                     val itemSet = ItemStack(customIcon.material, min(max(if(customIcon.amount == -1) serverItem.getPlayersFiltered(executor).provideData().size else customIcon.amount, 1), 64))
 
                     itemSet.displayName(
-                        platform.toPlatformComponent(
+                        platform.toProtocolizeChatElement(
                             AdventureUtil.parseMiniMessage(
                                 customIcon.displayName,
                                 *commonTagResolvers(page),
@@ -141,7 +140,7 @@ class ServersListGUIDisplay<S>(
                     )
                     itemSet.lore(
                         customIcon.lore.map {
-                            platform.toPlatformComponent(
+                            platform.toProtocolizeChatElement(
                                 AdventureUtil.parseMiniMessage(
                                     it,
                                     *commonTagResolvers(page),
@@ -149,8 +148,7 @@ class ServersListGUIDisplay<S>(
                                     *playerTagResolvers(executor)
                                 ).decoration(TextDecoration.ITALIC, false)
                             )
-                        },
-                        false
+                        }
                     )
 
                     if(itemSet.itemType() == ItemType.PLAYER_HEAD) {
@@ -171,7 +169,7 @@ class ServersListGUIDisplay<S>(
                 val item = ItemStack(emptyItem.material, emptyItem.amount)
 
                 item.displayName(
-                    platform.toPlatformComponent(
+                    platform.toProtocolizeChatElement(
                         AdventureUtil.parseMiniMessage(
                             emptyItem.displayName,
                             *commonTagResolvers(page),
@@ -181,15 +179,14 @@ class ServersListGUIDisplay<S>(
                 )
                 item.lore(
                     emptyItem.lore.map {
-                        platform.toPlatformComponent(
+                        platform.toProtocolizeChatElement(
                             AdventureUtil.parseMiniMessage(
                                 it,
                                 *commonTagResolvers(page),
                                 *playerTagResolvers(executor)
                             ).decoration(TextDecoration.ITALIC, false)
                         )
-                    },
-                    false
+                    }
                 )
 
                 if(item.itemType() == ItemType.PLAYER_HEAD) {
@@ -232,7 +229,7 @@ class ServersListGUIDisplay<S>(
 
                 if(definition.displayName.data != null) {
                     item.displayName(
-                        platform.toPlatformComponent(
+                        platform.toProtocolizeChatElement(
                             AdventureUtil.parseMiniMessage(
                                 definition.displayName.data!!,
                                 *commonTagResolvers(null),
@@ -245,15 +242,14 @@ class ServersListGUIDisplay<S>(
                 if(definition.lore.data != null) {
                     item.lore(
                         definition.lore.data!!.map {
-                            platform.toPlatformComponent(
+                            platform.toProtocolizeChatElement(
                                 AdventureUtil.parseMiniMessage(
                                     it,
                                     *commonTagResolvers(null),
                                     *playerTagResolvers(executor)
                                 )
                             )
-                        },
-                        false
+                        }
                     )
                 }
 
@@ -295,7 +291,7 @@ class ServersListGUIDisplay<S>(
                     }
 
                     item.displayName(
-                        platform.toPlatformComponent(
+                        platform.toProtocolizeChatElement(
                             AdventureUtil.parseMiniMessage(
                                 config.displayName,
                                 *commonTagResolvers(null),
@@ -306,15 +302,14 @@ class ServersListGUIDisplay<S>(
 
                     item.lore(
                         config.lore.map {
-                            platform.toPlatformComponent(
+                            platform.toProtocolizeChatElement(
                                 AdventureUtil.parseMiniMessage(
                                     it,
                                     *commonTagResolvers(null),
                                     *playerTagResolvers(executor)
                                 ).decoration(TextDecoration.ITALIC, false)
                             )
-                        },
-                        false
+                        }
                     )
 
                     val finalSlot = slot + i
@@ -336,7 +331,7 @@ class ServersListGUIDisplay<S>(
                     }
 
                     item.displayName(
-                        platform.toPlatformComponent(
+                        platform.toProtocolizeChatElement(
                             AdventureUtil.parseMiniMessage(
                                 config.displayName,
                                 *commonTagResolvers(null),
@@ -347,15 +342,14 @@ class ServersListGUIDisplay<S>(
 
                     item.lore(
                         config.lore.map {
-                            platform.toPlatformComponent(
+                            platform.toProtocolizeChatElement(
                                 AdventureUtil.parseMiniMessage(
                                     it,
                                     *commonTagResolvers(null),
                                     *playerTagResolvers(executor)
                                 ).decoration(TextDecoration.ITALIC, false)
                             )
-                        },
-                        false
+                        }
                     )
 
                     val finalSlot = slot + i

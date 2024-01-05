@@ -5,6 +5,10 @@ repositories {
     maven {
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
+    // Protocolize Repo
+    maven {
+        url = uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/")
+    }
 }
 
 dependencies {
@@ -30,6 +34,9 @@ dependencies {
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
+
+    // Protocolize
+    compileOnly("dev.simplix:protocolize-api:2.3.3")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

@@ -77,7 +77,7 @@ class ServerPlayersGUIDisplay<S>(
 
         inventory = GUIInventory(InventoryType.chestInventoryWithRows(menuRows)).also {
             it.title(
-                platform.toPlatformComponent(
+                platform.toProtocolizeChatElement(
                     AdventureUtil.parseMiniMessage(
                         configuration.title,
                         *commonTagResolvers(page),
@@ -96,7 +96,7 @@ class ServerPlayersGUIDisplay<S>(
                 val item = ItemStack(generalItem.material, min(max(generalItem.amount, 1), 64))
 
                 item.displayName(
-                    platform.toPlatformComponent(
+                    platform.toProtocolizeChatElement(
                         AdventureUtil.parseMiniMessage(
                             generalItem.displayName,
                             *commonTagResolvers(page),
@@ -106,15 +106,14 @@ class ServerPlayersGUIDisplay<S>(
                 )
                 item.lore(
                     generalItem.lore.map {
-                        platform.toPlatformComponent(
+                        platform.toProtocolizeChatElement(
                             AdventureUtil.parseMiniMessage(
                                 it,
                                 *commonTagResolvers(page),
                                 *playerTagResolvers(playerItem)
                             ).decoration(TextDecoration.ITALIC, false)
                         )
-                    },
-                    false
+                    }
                 )
 
                 if (generalItem.material == ItemType.PLAYER_HEAD) {
@@ -130,7 +129,7 @@ class ServerPlayersGUIDisplay<S>(
                 }
 
                 item.displayName(
-                    platform.toPlatformComponent(
+                    platform.toProtocolizeChatElement(
                         AdventureUtil.parseMiniMessage(
                             emptyItem.displayName,
                             *commonTagResolvers(page)
@@ -139,14 +138,13 @@ class ServerPlayersGUIDisplay<S>(
                 )
                 item.lore(
                     emptyItem.lore.map {
-                        platform.toPlatformComponent(
+                        platform.toProtocolizeChatElement(
                             AdventureUtil.parseMiniMessage(
                                 it,
                                 *commonTagResolvers(page)
                             ).decoration(TextDecoration.ITALIC, false)
                         )
-                    },
-                    false
+                    }
                 )
 
                 inventory.item(i, item)
@@ -186,7 +184,7 @@ class ServerPlayersGUIDisplay<S>(
 
                 if(definition.displayName.data != null) {
                     item.displayName(
-                        platform.toPlatformComponent(
+                        platform.toProtocolizeChatElement(
                             AdventureUtil.parseMiniMessage(
                                 definition.displayName.data!!,
                                 *commonTagResolvers(null),
@@ -199,15 +197,14 @@ class ServerPlayersGUIDisplay<S>(
                 if(definition.lore.data != null) {
                     item.lore(
                         definition.lore.data!!.map {
-                            platform.toPlatformComponent(
+                            platform.toProtocolizeChatElement(
                                 AdventureUtil.parseMiniMessage(
                                     it,
                                     *commonTagResolvers(null),
                                     *playerTagResolvers(executor)
                                 )
                             )
-                        },
-                        false
+                        }
                     )
                 }
 
@@ -251,7 +248,7 @@ class ServerPlayersGUIDisplay<S>(
                     }
 
                     item.displayName(
-                        platform.toPlatformComponent(
+                        platform.toProtocolizeChatElement(
                             AdventureUtil.parseMiniMessage(
                                 config.displayName,
                                 *commonTagResolvers(null),
@@ -262,15 +259,14 @@ class ServerPlayersGUIDisplay<S>(
 
                     item.lore(
                         config.lore.map {
-                            platform.toPlatformComponent(
+                            platform.toProtocolizeChatElement(
                                 AdventureUtil.parseMiniMessage(
                                     it,
                                     *commonTagResolvers(null),
                                     *playerTagResolvers(executor)
                                 ).decoration(TextDecoration.ITALIC, false)
                             )
-                        },
-                        false
+                        }
                     )
 
                     val finalSlot = slot + i
@@ -294,7 +290,7 @@ class ServerPlayersGUIDisplay<S>(
                     }
 
                     item.displayName(
-                        platform.toPlatformComponent(
+                        platform.toProtocolizeChatElement(
                             AdventureUtil.parseMiniMessage(
                                 config.displayName,
                                 *commonTagResolvers(null),
@@ -305,15 +301,14 @@ class ServerPlayersGUIDisplay<S>(
 
                     item.lore(
                         config.lore.map {
-                            platform.toPlatformComponent(
+                            platform.toProtocolizeChatElement(
                                 AdventureUtil.parseMiniMessage(
                                     it,
                                     *commonTagResolvers(null),
                                     *playerTagResolvers(executor)
                                 ).decoration(TextDecoration.ITALIC, false)
                             )
-                        },
-                        false
+                        }
                     )
 
                     val finalSlot = slot + i

@@ -10,6 +10,10 @@ repositories {
     maven {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
+    // Protocolize Repo
+    maven {
+        url = uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/")
+    }
 }
 
 dependencies {
@@ -37,6 +41,9 @@ dependencies {
     // Third Party Plugin Libraries
     compileOnly("net.luckperms:api:5.4")
     compileOnly("com.github.LeonMangler:PremiumVanishAPI:2.9.0-4")
+
+    // Protocolize
+    compileOnly("dev.simplix:protocolize-api:2.3.3")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
