@@ -30,6 +30,7 @@ dependencies {
     compileOnly("net.luckperms:api:5.4")
     compileOnly("net.luckperms:api:5.4")
     compileOnly("dev.simplix:protocolize-api:2.3.3")
+    testImplementation("dev.simplix:protocolize-api:2.3.3")
 
     // Caffeine for Cache
     implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
@@ -39,10 +40,9 @@ dependencies {
     implementation("org.spongepowered:configurate-hocon:4.1.2")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.mockito:mockito-core:4.11.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:4.11.0")
-    testImplementation("org.mockito:mockito-inline:4.11.0")
-
+    testImplementation("org.mockito:mockito-core:5.2.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.2.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
 }
 
 tasks.withType<ProcessResources> {
