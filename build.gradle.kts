@@ -42,7 +42,7 @@ allprojects {
     // The group of the artifact
     group = "net.wirlie"
     // The current artifact version
-    val baseVersion = "2.0.0-BETA6"
+    val baseVersion = "2.0.0-BETA7"
     // Version can be modified by the Continuous Integration server via an environment variable (for example Jenkins)
     val artifactVersion = System.getenv("ARTIFACT_VERSION") ?: baseVersion
     // Environment variable used by the Continuos Integration server to define if the current build is a snapshot or a release

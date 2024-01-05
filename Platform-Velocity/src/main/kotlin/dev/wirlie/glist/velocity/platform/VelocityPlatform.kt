@@ -118,7 +118,7 @@ class VelocityPlatform(
     }
 
     override fun scheduleUpdaterCheckTask(task: Runnable, periodSeconds: Int) {
-        updaterCheckTask = server.scheduler.buildTask(plugin, task).delay(0, TimeUnit.SECONDS).repeat(periodSeconds.toLong(), TimeUnit.SECONDS).schedule()
+        updaterCheckTask = server.scheduler.buildTask(plugin, task).delay(10, TimeUnit.SECONDS).repeat(periodSeconds.toLong(), TimeUnit.SECONDS).schedule()
     }
 
     override fun stopUpdaterCheckTask() {

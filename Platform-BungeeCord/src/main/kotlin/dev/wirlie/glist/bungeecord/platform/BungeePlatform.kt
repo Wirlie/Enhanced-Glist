@@ -130,7 +130,7 @@ class BungeePlatform(
     }
 
     override fun scheduleUpdaterCheckTask(task: Runnable, periodSeconds: Int) {
-        updateCheckTask = ProxyServer.getInstance().scheduler.schedule(plugin, task, 0L, periodSeconds.toLong(), TimeUnit.SECONDS)
+        updateCheckTask = ProxyServer.getInstance().scheduler.schedule(plugin, task, 10L, periodSeconds.toLong(), TimeUnit.SECONDS)
     }
 
     override fun stopUpdaterCheckTask() {

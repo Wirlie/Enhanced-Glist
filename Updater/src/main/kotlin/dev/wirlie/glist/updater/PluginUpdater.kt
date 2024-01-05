@@ -79,7 +79,25 @@ class PluginUpdater(
             val releases = getSpigotReleases()
             val versionExpected = pluginVersion.replace("-SNAPSHOT", "")
 
-            val ourRelease = releases.firstOrNull { release -> release.name.trim().equals(versionExpected, true) } ?: return@scheduleUpdaterCheckTask
+            val ourRelease = releases.firstOrNull { release -> release.name.trim().equals(versionExpected, true) }
+
+            if (ourRelease == null) {
+                val latestRelease = releases.maxByOrNull { it.releaseDate }!!
+                if(firstCheck) {
+                    firstCheck = false
+                    logger.warning("[Updater] ----------------------------------------------------------------------------------")
+                    logger.warning("[Updater] Updater is unable to find the current version of the plugin from SpigotMC website")
+                    logger.warning("[Updater]             Plugin Version: ${pluginVersion.replace("-SNAPSHOT", "")}")
+                    logger.warning("[Updater]    Latest SpigotMC Version: ${latestRelease.name}")
+                    logger.warning("[Updater] Maybe are you using a preview build of Enhanced Glist?")
+                    logger.warning("[Updater] If you think that this is an error please fill a report at our")
+                    logger.warning("[Updater] GitHub repository: https://github.com/Wirlie/Enhanced-Glist")
+                    logger.warning("[Updater] ----------------------------------------------------------------------------------")
+                }
+
+                return@scheduleUpdaterCheckTask
+            }
+
             var hasUpdate = false
             val latestRelease = releases.maxByOrNull { it.releaseDate }!!
 
