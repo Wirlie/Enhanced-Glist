@@ -24,8 +24,8 @@ if(project.rootProject.file("local.properties").exists()) {
 // Plugins
 plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    kotlin("jvm") version "1.8.10"
-    kotlin("kapt") version "1.8.10"
+    kotlin("jvm") version "1.9.22"
+    kotlin("kapt") version "1.9.22"
     `maven-publish`
     idea
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.7"

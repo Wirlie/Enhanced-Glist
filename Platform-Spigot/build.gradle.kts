@@ -30,20 +30,20 @@ repositories {
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
 
-    implementation("net.kyori:adventure-api:4.13.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.0")
-    implementation("net.kyori:adventure-text-minimessage:4.13.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.13.0")
-    implementation("com.rabbitmq:amqp-client:5.16.0")
-    implementation("io.lettuce:lettuce-core:6.2.3.RELEASE")
+    implementation("net.kyori:adventure-api:4.15.0")
+    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
+    implementation("net.kyori:adventure-text-minimessage:4.15.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.15.0")
+    implementation("com.rabbitmq:amqp-client:5.20.0")
+    implementation("io.lettuce:lettuce-core:6.3.0.RELEASE")
 
     // Third Party libraries with public API
-    compileOnly("net.essentialsx:EssentialsX:2.19.7") {
+    compileOnly("net.essentialsx:EssentialsX:2.20.1") {
         exclude("org.spigotmc", "spigot-api")
     }
     compileOnly("com.github.mbax:VanishNoPacket:3.22")
     compileOnly("com.github.xtomyserrax:StaffFacilities:5.0.8")
-    compileOnly("com.github.LeonMangler:PremiumVanishAPI:2.7.11-2")
+    compileOnly("com.github.LeonMangler:PremiumVanishAPI:2.9.0-4")
 
     // Third Party libraries without public API (only for compilation, allocated at our private repository for development purposes)
     compileOnly("github.jet315:antiafkpro:3.6.3")

@@ -5,6 +5,10 @@ repositories {
     maven {
         url = uri("https://repo.papermc.io/repository/maven-public/")
     }
+    // Protocolize Repo
+    maven {
+        url = uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/")
+    }
 }
 
 dependencies {
@@ -13,11 +17,11 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.1.1")
     kapt("com.velocitypowered:velocity-api:3.1.1")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.13.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.15.0")
     compileOnly("net.luckperms:api:5.4")
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation("com.rabbitmq:amqp-client:5.16.0")
-    implementation("io.lettuce:lettuce-core:6.2.3.RELEASE")
+    implementation("com.rabbitmq:amqp-client:5.20.0")
+    implementation("io.lettuce:lettuce-core:6.3.0.RELEASE")
 
     implementation(project(":enhancedglist-common"))
     implementation(project(":enhancedglist-velocity-api"))
@@ -25,11 +29,14 @@ dependencies {
     implementation(project(":enhancedglist-messenger"))
 
     // Caffeine for Cache
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
+
+    // Protocolize
+    compileOnly("dev.simplix:protocolize-api:2.3.3")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {

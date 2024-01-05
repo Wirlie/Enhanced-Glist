@@ -11,6 +11,7 @@ repositories {
     maven {
         url = uri("https://oss.sonatype.org/content/repositories/snapshots")
     }
+    // Protocolize Repo
     maven {
         url = uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/")
     }
@@ -20,28 +21,28 @@ dependencies {
     implementation(project(":enhancedglist-updater"))
     implementation(project(":enhancedglist-messenger"))
 
-    implementation("net.kyori:adventure-api:4.13.0")
-    implementation("net.kyori:adventure-text-minimessage:4.13.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.13.0")
-    implementation("net.kyori:adventure-text-serializer-gson:4.13.0")
+    implementation("net.kyori:adventure-api:4.15.0")
+    implementation("net.kyori:adventure-text-minimessage:4.15.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.15.0")
+    implementation("net.kyori:adventure-text-serializer-gson:4.15.0")
     implementation("com.google.code.gson:gson:2.10.1")
 
     compileOnly("net.luckperms:api:5.4")
     compileOnly("net.luckperms:api:5.4")
-    compileOnly("dev.simplix:protocolize-api:2.2.6")
+    compileOnly("dev.simplix:protocolize-api:2.3.3")
+    testImplementation("dev.simplix:protocolize-api:2.3.3")
 
     // Caffeine for Cache
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.5")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
 
     // Configurate - Sponge
     implementation("org.spongepowered:configurate-yaml:4.1.2")
     implementation("org.spongepowered:configurate-hocon:4.1.2")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.mockito:mockito-core:4.11.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:4.11.0")
-    testImplementation("org.mockito:mockito-inline:4.11.0")
-
+    testImplementation("org.mockito:mockito-core:5.2.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.2.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
 }
 
 tasks.withType<ProcessResources> {

@@ -20,6 +20,7 @@
 
 package dev.wirlie.glist.bungeecord.platform
 
+import dev.simplix.protocolize.api.chat.ChatElement
 import dev.wirlie.glist.bungeecord.EnhancedGlistBungeeCord
 import dev.wirlie.glist.bungeecord.api.events.AFKStateChangeEvent
 import dev.wirlie.glist.bungeecord.api.events.VanishStateChangeEvent
@@ -110,16 +111,18 @@ class BungeePlatform(
         ProxyServer.getInstance().pluginManager.dispatchCommand(playerBungee, command)
     }
 
-    override fun toPlatformComponent(component: Component): Any {
+    override fun toProtocolizeChatElement(component: Component): ChatElement<Any> {
         // Adventure to legacy string
         val legacyString = AdventureUtil.legacySectionSerialize(component)
         // Really unsafe and inconsistent, but we do not have another option...
-        return TextComponent.fromLegacyText(legacyString).also {
-            for(com in it) {
-                // Unfortunately, we cannot track what components are italic by the user and what components are italic due BungeeCord implementation...
-                com.isItalic = false
+        return ChatElement.of(
+            TextComponent.fromLegacyText(legacyString).also {
+                for(com in it) {
+                    // Unfortunately, we cannot track what components are italic by the user and what components are italic due BungeeCord implementation...
+                    com.isItalic = false
+                }
             }
-        }
+        )
     }
 
     override fun getAllPlayers(): List<PlatformExecutor<ServerInfo>> {

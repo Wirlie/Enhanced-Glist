@@ -22,6 +22,7 @@ package dev.wirlie.glist.common
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import dev.simplix.protocolize.api.chat.ChatElement
 import dev.wirlie.glist.common.configuration.PlatformConfiguration
 import dev.wirlie.glist.common.configuration.sections.GeneralSection
 import dev.wirlie.glist.common.configuration.sections.GroupServersSection
@@ -381,7 +382,7 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
 
     abstract fun callVanishStateChangeEvent(fromPlayer: PlatformExecutor<S>, state: Boolean): CompletableFuture<Boolean>
 
-    abstract fun toPlatformComponent(component: Component): Any
+    abstract fun toProtocolizeChatElement(component: Component): ChatElement<Any>
 
     abstract fun getPlayerByName(name: String): PlatformExecutor<S>?
 
