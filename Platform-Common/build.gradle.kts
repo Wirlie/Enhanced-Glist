@@ -40,8 +40,8 @@ dependencies {
     implementation("org.spongepowered:configurate-hocon:4.1.2")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.mockito:mockito-core:5.2.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.2.0")
+    testImplementation("org.mockito:mockito-core:5.8.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.8.0")
     testImplementation("org.mockito:mockito-inline:5.2.0")
 }
 
