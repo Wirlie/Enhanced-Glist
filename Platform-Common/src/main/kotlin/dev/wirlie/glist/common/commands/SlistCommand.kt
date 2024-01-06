@@ -71,7 +71,7 @@ class SlistCommand<S>(
                 }
 
                 cache = Caffeine.newBuilder()
-                    .expireAfterAccess(time, TimeUnit.SECONDS)
+                    .expireAfterWrite(time, TimeUnit.SECONDS)
                     .build()
             }
         }
