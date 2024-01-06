@@ -26,7 +26,7 @@ import dev.wirlie.glist.common.platform.PlatformExecutor
 import net.kyori.adventure.text.Component
 import java.util.UUID
 
-class PlayerManager(
+open class PlayerManager(
     val platform: Platform<*, *, *>
 ) {
 
@@ -37,7 +37,7 @@ class PlayerManager(
      * Remove all states related to player.
      * @param uuid Player UUID.
      */
-    fun removeStates(uuid: UUID) {
+    open fun removeStates(uuid: UUID) {
         knowAFKState.remove(uuid)
         knowVanishState.remove(uuid)
     }
@@ -46,14 +46,14 @@ class PlayerManager(
      * Check if player has "AFK" state.
      * @return true if player has state, false if not or if player state is not know.
      */
-    fun hasAFKState(uuid: UUID) = getAFKState(uuid) ?: false
+    open fun hasAFKState(uuid: UUID) = getAFKState(uuid) ?: false
 
     /**
      * Get AFK state of player.
      * @param executor Executor to get current AFK state.
      * @return true if executor is AFK, null if no state is know for provided player.
      */
-    fun getAFKState(executor: PlatformExecutor<*>): Boolean? {
+    open fun getAFKState(executor: PlatformExecutor<*>): Boolean? {
         if(executor.isConsole()) throw IllegalArgumentException("Console executor is not allowed here.")
         return getAFKState(executor.getUUID())
     }
@@ -63,14 +63,14 @@ class PlayerManager(
      * @param uuid Player UUID.
      * @return true if executor is AFK, null if no state is know for provided player.
      */
-    fun getAFKState(uuid: UUID) = knowAFKState[uuid]
+    open fun getAFKState(uuid: UUID) = knowAFKState[uuid]
 
     /**
      * Set AFK state of player.
      * @param executor Player to set state.
      * @param state New state to set.
      */
-    fun setAFKState(executor: PlatformExecutor<*>, state: Boolean) {
+    open fun setAFKState(executor: PlatformExecutor<*>, state: Boolean) {
         setAFKState(executor.getUUID(), state)
     }
 
@@ -79,7 +79,7 @@ class PlayerManager(
      * @param uuid Player UUID.
      * @param state New state to set.
      */
-    fun setAFKState(uuid: UUID, state: Boolean) {
+    open fun setAFKState(uuid: UUID, state: Boolean) {
         knowAFKState[uuid] = state
     }
 
@@ -88,7 +88,7 @@ class PlayerManager(
      * @param executor Player to get state.
      * @return true if executor is in Vanish mode, null if no state is know for provided player.
      */
-    fun getVanishState(executor: PlatformExecutor<*>): Boolean? {
+    open fun getVanishState(executor: PlatformExecutor<*>): Boolean? {
         if(executor.isConsole()) throw IllegalArgumentException("Console executor is not allowed here.")
         return getVanishState(executor.getUUID())
     }
@@ -98,20 +98,20 @@ class PlayerManager(
      * @param uuid Player UUID.
      * @return true if executor is in Vanish mode, null if no state is know for provided player.
      */
-    fun getVanishState(uuid: UUID) = knowVanishState[uuid]
+    open fun getVanishState(uuid: UUID) = knowVanishState[uuid]
 
     /**
      * Check if player has "Vanish" state.
      * @return true if player has state, false if not or if player state is not know.
      */
-    fun hasVanishState(uuid: UUID) = getVanishState(uuid) ?: false
+    open fun hasVanishState(uuid: UUID) = getVanishState(uuid) ?: false
 
     /**
      * Set Vanish state of player.
      * @param executor Player to set state.
      * @param state New state to set.
      */
-    fun setVanishState(executor: PlatformExecutor<*>, state: Boolean) {
+    open fun setVanishState(executor: PlatformExecutor<*>, state: Boolean) {
         setVanishState(executor.getUUID(), state)
     }
 
@@ -120,7 +120,7 @@ class PlayerManager(
      * @param uuid Player UUID
      * @param state New state to set.
      */
-    fun setVanishState(uuid: UUID, state: Boolean) {
+    open fun setVanishState(uuid: UUID, state: Boolean) {
         knowVanishState[uuid] = state
     }
 
@@ -128,7 +128,7 @@ class PlayerManager(
      * Utility function to handle player disconnection. This will remove all data related to the player to prevent
      * a memory leak.
      */
-    fun handlePlayerDisconnect(uuid: UUID) {
+    open fun handlePlayerDisconnect(uuid: UUID) {
         knowAFKState.remove(uuid)
         knowVanishState.remove(uuid)
     }
@@ -136,7 +136,7 @@ class PlayerManager(
     /**
      * @return Current prefix of player.
      */
-    fun getPrefix(executor: PlatformExecutor<*>): Component {
+    open fun getPrefix(executor: PlatformExecutor<*>): Component {
         if(executor.isConsole()) {
             throw IllegalArgumentException("Console executor is not allowed here.")
         }

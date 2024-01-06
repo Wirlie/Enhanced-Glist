@@ -30,11 +30,13 @@ import com.velocitypowered.api.plugin.Plugin
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import dev.wirlie.glist.common.configuration.sections.CommunicationSection
+import dev.wirlie.glist.common.player.PlayerManager
 import dev.wirlie.glist.messenger.impl.DummyPlatformMessenger
 import dev.wirlie.glist.messenger.PlatformMessenger
 import dev.wirlie.glist.messenger.impl.RabbitMQMessenger
 import dev.wirlie.glist.messenger.impl.RedisMessenger
 import dev.wirlie.glist.velocity.api.impl.EnhancedGlistAPIImpl
+import dev.wirlie.glist.velocity.hooks.PlayerManagerUsingPremiumVanish
 import dev.wirlie.glist.velocity.listener.PlayerDisconnectListener
 import dev.wirlie.glist.velocity.listener.PlayerJoinListener
 import dev.wirlie.glist.velocity.listener.PlayerServerChangeListener
@@ -52,7 +54,10 @@ import java.nio.file.Path
     url = "https://www.spigotmc.org/resources/enhancedbungeelist.53295/",
     description = "Enhanced Glist is a high-configurable plugin that enhances /glist command.",
     authors = ["Wirlie"],
-    dependencies = [Dependency(id = "luckperms", optional = true)]
+    dependencies = [
+        Dependency(id = "luckperms", optional = true),
+        Dependency(id = "premiumvanish", optional = true)
+    ]
 )
 class EnhancedGlistVelocity {
 
@@ -83,9 +88,16 @@ class EnhancedGlistVelocity {
 
         setupMessenger()
 
+        var customPlayerManager: PlayerManager? = null
+        if(proxyServer.pluginManager.isLoaded("premiumvanish")) {
+            platform.logger.info("[Hook] PremiumVanish is enabled, using custom player manager.")
+            customPlayerManager = PlayerManagerUsingPremiumVanish(platform)
+        }
+
         platform.setup(
             VelocityPlatformCommandManager(platform, commandManager),
-            messenger
+            messenger,
+            customPlayerManager
         )
 
         proxyServer.eventManager.register(this, PlayerDisconnectListener(platform))

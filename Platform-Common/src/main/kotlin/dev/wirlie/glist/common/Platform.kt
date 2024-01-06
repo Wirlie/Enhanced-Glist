@@ -90,7 +90,8 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
 
     fun setup(
         commandManager: PlatformCommandManager<S>,
-        networkMessenger: PlatformMessenger
+        networkMessenger: PlatformMessenger,
+        customPlayerManager: PlayerManager? = null
     ) {
         unsafeInstance = this
         messenger = networkMessenger
@@ -103,7 +104,9 @@ abstract class Platform<S, P, C>: UpdaterScheduler {
         platformCommandManager.registerCommands()
         hookManager = HookManager(this)
         registerHooks()
-        playerManager = PlayerManager(this)
+
+        // Use custom player manager if provided
+        playerManager = customPlayerManager ?: PlayerManager(this)
 
         try {
             networkMessenger.register()

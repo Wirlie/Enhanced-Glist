@@ -9,6 +9,10 @@ repositories {
     maven {
         url = uri("https://mvn.exceptionflug.de/repository/exceptionflug-public/")
     }
+    // PremiumVanish
+    maven {
+        url = uri("https://jitpack.io")
+    }
 }
 
 dependencies {
@@ -37,6 +41,9 @@ dependencies {
 
     // Protocolize
     compileOnly("dev.simplix:protocolize-api:2.3.3")
+
+    // PremiumVanish
+    compileOnly("com.github.LeonMangler:PremiumVanishAPI:2.9.0-4")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
