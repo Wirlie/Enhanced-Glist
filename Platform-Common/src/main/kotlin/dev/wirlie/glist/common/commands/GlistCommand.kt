@@ -53,10 +53,6 @@ class GlistCommand<S>(
     permission
 ) {
 
-    private val cache = Caffeine.newBuilder()
-        .expireAfterAccess(5, TimeUnit.MINUTES)
-        .build<String, PageDisplay<PlatformServerGroup<S>>>()
-
     override fun tryExecution(executor: PlatformExecutor<S>, args: Array<String>) {
         val display = getDisplayFor(executor)
         val audience = executor.asAudience()
@@ -94,12 +90,6 @@ class GlistCommand<S>(
      * @return Display instance.
      */
     private fun getDisplayFor(executor: PlatformExecutor<S>): PageDisplay<PlatformServerGroup<S>> {
-        val key = if (executor.isConsole()) "console" else "player-${executor.getUUID()}"
-        val current = cache.getIfPresent(key)
-
-        if(current != null) {
-            return current
-        }
         val servers = platform.getAllServersGrouped(executor)
             .sortedWith(compareByDescending<PlatformServerGroup<S>> { it.getPlayersFiltered(executor).provideData().size }.thenBy { it.getName() })
             .toMutableList()
@@ -134,8 +124,6 @@ class GlistCommand<S>(
                 rows
             )
         }
-
-        cache.put(key, newDisplay)
 
         return newDisplay
     }
