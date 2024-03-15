@@ -21,11 +21,11 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.1.1")
     kapt("com.velocitypowered:velocity-api:3.1.1")
     annotationProcessor("com.velocitypowered:velocity-api:3.1.1")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.15.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.16.0")
     compileOnly("net.luckperms:api:5.4")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.rabbitmq:amqp-client:5.20.0")
-    implementation("io.lettuce:lettuce-core:6.3.0.RELEASE")
+    implementation("io.lettuce:lettuce-core:6.3.2.RELEASE")
 
     implementation(project(":enhancedglist-common"))
     implementation(project(":enhancedglist-velocity-api"))
