@@ -21,10 +21,10 @@ dependencies {
     implementation(project(":enhancedglist-updater"))
     implementation(project(":enhancedglist-messenger"))
 
-    implementation("net.kyori:adventure-api:4.15.0")
-    implementation("net.kyori:adventure-text-minimessage:4.15.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.15.0")
-    implementation("net.kyori:adventure-text-serializer-gson:4.15.0")
+    implementation("net.kyori:adventure-api:4.16.0")
+    implementation("net.kyori:adventure-text-minimessage:4.16.0")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.16.0")
+    implementation("net.kyori:adventure-text-serializer-gson:4.16.0")
     implementation("com.google.code.gson:gson:2.10.1")
 
     compileOnly("net.luckperms:api:5.4")
@@ -40,8 +40,8 @@ dependencies {
     implementation("org.spongepowered:configurate-hocon:4.1.2")
 
     testImplementation(kotlin("test"))
-    testImplementation("org.mockito:mockito-core:5.8.0")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.8.0")
+    testImplementation("org.mockito:mockito-core:5.11.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
     testImplementation("org.mockito:mockito-inline:5.2.0")
 }
 
