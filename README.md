@@ -26,8 +26,8 @@ more information go to the SpigotMC page: https://www.spigotmc.org/resources/enh
 * Documentation: https://docs.wirlie.net/shelves/enhanced-glist
 * GitHub releases: https://github.com/Wirlie/Enhanced-Glist/releases
 * SpigotMC: https://www.spigotmc.org/resources/enhanced-glist-bungeecord-velocity.53295/
-* Experimental Builds: https://ci.wirlie.net/job/Enhanced%20Glist-DEV/
-* Stable Builds: https://ci.wirlie.net/job/Enhanced%20Glist/
+* Experimental Builds: https://ci.wirlie.net/job/Enhanced-Glist/job/develop/
+* Stable Builds: https://ci.wirlie.net/job/Enhanced-Glist/
 
 Support my work:  
 * Become a Sponsor: https://github.com/sponsors/Wirlie
