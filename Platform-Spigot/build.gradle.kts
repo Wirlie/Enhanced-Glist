@@ -30,15 +30,15 @@ repositories {
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
 
-    implementation("net.kyori:adventure-api:4.15.0")
-    implementation("net.kyori:adventure-platform-bukkit:4.3.2")
-    implementation("net.kyori:adventure-text-minimessage:4.15.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.15.0")
-    implementation("com.rabbitmq:amqp-client:5.20.0")
-    implementation("io.lettuce:lettuce-core:6.3.0.RELEASE")
+    implementation("net.kyori:adventure-api:4.26.1")
+    implementation("net.kyori:adventure-platform-bukkit:4.4.1")
+    implementation("net.kyori:adventure-text-minimessage:4.26.1")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
+    implementation("com.rabbitmq:amqp-client:5.35.0")
+    implementation("io.lettuce:lettuce-core:6.8.2.RELEASE")
 
     // Third Party libraries with public API
-    compileOnly("net.essentialsx:EssentialsX:2.20.1") {
+    compileOnly("net.essentialsx:EssentialsX:2.21.2") {
         exclude("org.spigotmc", "spigot-api")
     }
     compileOnly("com.github.mbax:VanishNoPacket:3.22")
@@ -49,8 +49,8 @@ dependencies {
     compileOnly("github.jet315:antiafkpro:3.6.3")
 
     // Configurate - Sponge
-    implementation("org.spongepowered:configurate-yaml:4.1.2")
-    implementation("org.spongepowered:configurate-hocon:4.1.2")
+    implementation("org.spongepowered:configurate-yaml:4.2.0")
+    implementation("org.spongepowered:configurate-hocon:4.2.0")
 
     implementation(project(":enhancedglist-updater"))
     implementation(project(":enhancedglist-messenger"))
