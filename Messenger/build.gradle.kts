@@ -5,8 +5,8 @@ repositories {
 
 dependencies {
     // Communication types
-    implementation("com.rabbitmq:amqp-client:5.20.0")
-    implementation("io.lettuce:lettuce-core:6.3.0.RELEASE")
+    implementation("com.rabbitmq:amqp-client:5.35.0")
+    implementation("io.lettuce:lettuce-core:6.8.2.RELEASE")
 }
 
 tasks.withType<JavaCompile> {

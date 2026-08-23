@@ -24,26 +24,26 @@ dependencies {
 
     compileOnly("net.md-5:bungeecord:1.19")
 
-    implementation("net.kyori:adventure-api:4.15.0")
-    implementation("net.kyori:adventure-platform-bungeecord:4.3.2")
-    implementation("net.kyori:adventure-text-minimessage:4.15.0")
-    implementation("net.kyori:adventure-text-serializer-legacy:4.15.0")
-    implementation("com.google.code.gson:gson:2.10.1")
-    implementation("com.rabbitmq:amqp-client:5.20.0")
-    implementation("io.lettuce:lettuce-core:6.3.0.RELEASE")
+    implementation("net.kyori:adventure-api:4.26.1")
+    implementation("net.kyori:adventure-platform-bungeecord:4.4.1")
+    implementation("net.kyori:adventure-text-minimessage:4.26.1")
+    implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
+    implementation("com.google.code.gson:gson:2.14.0")
+    implementation("com.rabbitmq:amqp-client:5.35.0")
+    implementation("io.lettuce:lettuce-core:6.8.2.RELEASE")
 
     // Caffeine for Cache
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.2.4")
 
     // Configurate - Sponge
-    implementation("org.spongepowered:configurate-yaml:4.1.2")
+    implementation("org.spongepowered:configurate-yaml:4.2.0")
 
     // Third Party Plugin Libraries
-    compileOnly("net.luckperms:api:5.4")
+    compileOnly("net.luckperms:api:5.5")
     compileOnly("com.github.LeonMangler:PremiumVanishAPI:2.9.0-4")
 
     // Protocolize
-    compileOnly("dev.simplix:protocolize-api:2.3.3")
+    compileOnly("dev.simplix:protocolize-api:2.4.3")
 }
 
 tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
